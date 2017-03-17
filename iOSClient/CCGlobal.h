@@ -44,8 +44,6 @@ extern NSString *const appSecretCryptoCloud;
 extern NSString *const urlBaseDownloadDB;
 extern NSString *const urlBaseUploadDB;
 
-extern NSString *const BKPasscodeKeychainServiceName;
-
 #ifndef EXTENSION
 
 //AppDelegate *appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
@@ -59,10 +57,6 @@ extern NSString *const BKPasscodeKeychainServiceName;
 
 // UUID
 #define k_UUID_SIM                                      @"4BACFE4A-61A6-44B1-9A85-13FD167565AB"
-
-// Capabilities Group & Service Key Share
-#define k_capabilitiesGroups                            @"group.it.twsweb.Crypto-Cloud"
-#define k_serviceShareKeyChain                          @"Crypto Cloud"
 
 #define k_dismissAfterSecond                            4
 
@@ -108,15 +102,6 @@ extern NSString *const BKPasscodeKeychainServiceName;
 #define k_permission_can_rename                         @"N"
 #define k_permission_can_move                           @"V"
 
-// Session
-#define k_download_session                              @"it.twsweb.download.session"
-#define k_download_session_foreground                   @"it.twsweb.download.sessionforeground"
-#define k_download_session_wwan                         @"it.twsweb.download.sessionwwan"
-
-#define k_upload_session                                @"it.twsweb.upload.session"
-#define k_upload_session_foreground                     @"it.twsweb.upload.sessionforeground"
-#define k_upload_session_wwan                           @"it.twsweb.upload.sessionwwan"
-
 #define k_networkingSessionNotification                 @"networkingSessionNotification"
 
 // TaskIdentifier
@@ -132,13 +117,6 @@ extern NSString *const BKPasscodeKeychainServiceName;
 #define k_taskStatusSuspend                             -3
 
 #define k_timerVerifySession                            15.0
-
-// OperationQueue
-#define k_netQueueName                                  @"it.twsweb.cryptocloud.queue"
-#define k_netQueueDownloadName                          @"it.twsweb.cryptocloud.queueDownload"
-#define k_netQueueDownloadWWanName                      @"it.twsweb.cryptocloud.queueDownloadWWan"
-#define k_netQueueUploadName                            @"it.twsweb.cryptocloud.queueUpload"
-#define k_netQueueUploadWWanName                        @"it.twsweb.cryptocloud.queueUploadWWan"
 
 #define k_maxConcurrentOperation                        10
 #define k_maxConcurrentOperationDownloadUpload          10
@@ -176,12 +154,11 @@ extern NSString *const BKPasscodeKeychainServiceName;
 #define selectorOpenIn                                  @"openIn"
 #define selectorOpenWindowShare                         @"openWindowShare"
 #define selectorReadFile                                @"readFile"
-#define selectorReadFileOffline                         @"readFileOffline"
 #define selectorReadFileUploadFile                      @"readFileUploadFile"
 #define selectorReadFileVerifyUpload                    @"readFileVerifyUpload"
 #define selectorReadFolder                              @"readFolder"
 #define selectorReadFolderForced                        @"readFolderForced"
-#define selectorReadFolderRefresh                       @"readFolderRefresh"
+#define selectorReadFolderWithDownload                  @"readFolderWithDownload"
 #define selectorReadShare                               @"readShare"
 #define selectorReload                                  @"reload"
 #define selectorRename                                  @"rename"
@@ -218,6 +195,7 @@ extern NSString *const BKPasscodeKeychainServiceName;
 #define actionSettingFavorite                           @"settingFavorite"
 #define actionShare                                     @"share"
 #define actionShareWith                                 @"shareWith"
+#define actionSubscribingNextcloudServer                @"subscribingNextcloudServer"
 #define actionUnShare                                   @"unShare"
 #define actionUpdateShare                               @"updateShare"
 #define actionUploadFile                                @"uploadFile"

@@ -189,6 +189,13 @@
     [UICKeyChainStore setString:sEncrypted forKey:@"createMenuEncrypted" service:k_serviceShareKeyChain];
 }
 
++ (void)setFavoriteOffline:(BOOL)encrypted
+{
+    NSString *sFavoriteOffline = (encrypted) ? @"true" : @"false";
+    [UICKeyChainStore setString:sFavoriteOffline forKey:@"favoriteOffline" service:k_serviceShareKeyChain];
+}
+
+
 #pragma ------------------------------ GET
 
 + (NSString *)getKeyChainPasscodeForUUID:(NSString *)uuid
@@ -361,6 +368,11 @@
 + (BOOL)getCreateMenuEncrypted
 {
     return [[UICKeyChainStore stringForKey:@"createMenuEncrypted" service:k_serviceShareKeyChain] boolValue];
+}
+
++ (BOOL)getFavoriteOffline
+{
+    return [[UICKeyChainStore stringForKey:@"favoriteOffline" service:k_serviceShareKeyChain] boolValue];
 }
 
 #pragma --------------------------------------------------------------------------------------------
@@ -717,8 +729,8 @@
     else
         translate = NSLocalizedString(localize, nil);
     
-    translate = [translate stringByReplacingOccurrencesOfString:@"_brand_" withString:_brand_];
-    translate = [translate stringByReplacingOccurrencesOfString:@"_mail_me_" withString:_mail_me_];
+    translate = [translate stringByReplacingOccurrencesOfString:@"_brand_" withString:k_brand];
+    translate = [translate stringByReplacingOccurrencesOfString:@"_mail_me_" withString:k_mailMe];
     
     return translate;
 }
@@ -921,8 +933,6 @@
     NSString *fileNamePlist, *temp, *passcode;
     NSError *error;
     
-    CCCrypto *crypto = [[CCCrypto alloc] init];
-    
     // find the plist
     // 1) directory temp
     // 2) directory serverUrl
@@ -942,9 +952,9 @@
     NSString *uuid = [data objectForKey:@"uuid"];
     
     // AutoInsert password if possible Versione 1.3
-    [crypto autoInsertPasscodeUUID:uuid text:title];
+    [[CCCrypto sharedManager] autoInsertPasscodeUUID:uuid text:title];
     
-    passcode = [crypto getKeyPasscode:uuid];
+    passcode = [[CCCrypto sharedManager] getKeyPasscode:uuid];
 
     metadata.cryptated = YES;
     metadata.directory = [[data objectForKey:@"dir"] boolValue];
@@ -1260,6 +1270,14 @@
     UIGraphicsEndImageContext();
     
     return newImage;
+}
+
++ (NSString *)URLEncodeStringFromString:(NSString *)string
+{
+    static CFStringRef charset = CFSTR("!@#$%&*()+'\";:=,/?[] ");
+    CFStringRef str = (__bridge CFStringRef)string;
+    CFStringEncoding encoding = kCFStringEncodingUTF8;
+    return (NSString *)CFBridgingRelease(CFURLCreateStringByAddingPercentEscapes(NULL, str, NULL, charset, encoding));
 }
 
 @end

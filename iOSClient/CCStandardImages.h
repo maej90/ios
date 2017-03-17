@@ -31,6 +31,7 @@
 #define image_actionSheetOffline                @"actionSheetOffline"
 #define image_actionSheetFavorite               @"actionSheetFavorite"
 #define image_actionSheetLocal                  @"localStorage"
+#define image_actionSheetRemoveLocal            @"actionSheetRemoveLocal"
 #define image_activeCameraUpload                @"activeCameraUpload"
 #define image_attention                         @"attention"
 #define image_audio                             @"audio"
@@ -43,6 +44,7 @@
 #define image_checked                           @"checked"
 
 #define image_decryptedSelectedFiles            @"decryptedSelectedFiles"
+#define image_delete                            @"delete"
 #define image_deleteSelectedFiles               @"deleteSelectedFiles"
 #define image_directory                         @"directory"
 #define image_directorycriptata                 @"directorycriptata"
@@ -128,6 +130,7 @@
 #define image_settingsClearCache                @"settingsClearCache"
 #define image_settingsCredentials               @"settingsCredentials"
 #define image_settingsCryptoCloud               @"settingsCryptoCloud"
+#define image_settingsFavoriteOffline           @"settingsFavoriteOffline"
 #define image_settingsRemoveCryptoCloud         @"settingsRemoveCryptoCloud"
 #define image_settingsExit                      @"settingsExit"
 #define image_settingsHelp                      @"settingsHelp"

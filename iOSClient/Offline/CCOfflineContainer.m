@@ -28,7 +28,7 @@
 #import "CCSynchronize.h"
 
 #ifdef CUSTOM_BUILD
-    #import "Custom.h"
+    #import "CustomSwift.h"
 #else
     #import "Nextcloud-Swift.h"
 #endif
@@ -68,7 +68,7 @@
     
     // Create data model
 
-#ifdef NO_OFFLINE
+#ifdef OPTION_OFFLINE_DISABLE
     _pageType = @[k_pageOfflineFavorites, k_pageOfflineLocal];
 #else
     _pageType = @[k_pageOfflineFavorites, k_pageOfflineOffline, k_pageOfflineLocal];
@@ -93,12 +93,14 @@
     [self.view addSubview:_pageViewController.view];
     [self.pageViewController didMoveToParentViewController:self];
     
+    /*
     // Enable swipe gesture only for page controller
     for (UIScrollView *view in self.pageViewController.view.subviews) {
         if ([view isKindOfClass:[UIScrollView class]]) {
             view.scrollEnabled = NO;
         }
     }
+    */
 }
 
 // Apparirà

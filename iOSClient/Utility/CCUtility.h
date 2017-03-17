@@ -82,6 +82,8 @@
 
 + (void)setCreateMenuEncrypted:(BOOL)encrypted;
 
++ (void)setFavoriteOffline:(BOOL)encrypted;
+
 // GET
 
 + (NSString *)getKeyChainPasscodeForUUID:(NSString *)uuid;
@@ -118,6 +120,8 @@
 + (NSString *)getFileNameMask:(NSString *)key;
 
 + (BOOL)getCreateMenuEncrypted;
+
++ (BOOL)getFavoriteOffline;
 
 // ===== Varius =====
 
@@ -181,5 +185,6 @@
 + (NSDate *)datetimeWithOutDate:(NSDate *)datDate;
 + (BOOL)isValidEmail:(NSString *)checkString;
 + (UIImage*)drawText:(NSString*)text inImage:(UIImage*)image;
++ (NSString *)URLEncodeStringFromString:(NSString *)string;
 
 @end

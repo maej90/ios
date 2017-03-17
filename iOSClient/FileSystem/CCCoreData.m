@@ -294,19 +294,18 @@
     else return NO;
 }
 
-+ (float)getServerVersionActiveAccount:(NSString *)activeAccount
++ (NSInteger)getServerVersionMajorActiveAccount:(NSString *)activeAccount
 {
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(account == %@)", activeAccount];
     TableAccount *record = [TableAccount MR_findFirstWithPredicate:predicate];
 
     if (record) {
-        NSInteger versionMajor = [record.versionMajor integerValue];
-        NSInteger versionMinor = [record.versionMinor integerValue];
         
-        return versionMajor + versionMinor/100;
+        NSInteger versionMajor = [record.versionMajor integerValue];
+        return versionMajor;
 
     } else
-        return 0.0;
+        return 0;
 }
 
 + (void)setCameraUpload:(BOOL)state activeAccount:(NSString *)activeAccount
@@ -1066,11 +1065,18 @@
     else return nil;
 }
 
-+ (void)clearDateReadDirectory:(NSString *)serverUrl activeAccount:(NSString *)activeAccount
++ (void)clearDateReadAccount:(NSString *)activeAccount serverUrl:(NSString *)serverUrl directoryID:(NSString *)directoryID
 {
     [MagicalRecord saveWithBlockAndWait:^(NSManagedObjectContext *localContext) {
         
-        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(serverUrl == %@) AND (account == %@)", serverUrl, activeAccount];
+        NSPredicate *predicate;
+        
+        if ([serverUrl length] > 0)
+            predicate = [NSPredicate predicateWithFormat:@"(serverUrl == %@) AND (account == %@)", serverUrl, activeAccount];
+        
+        if ([directoryID length] > 0)
+            predicate = [NSPredicate predicateWithFormat:@"(directoryID == %@) AND (account == %@)", directoryID, activeAccount];
+        
         TableDirectory *record = [TableDirectory MR_findFirstWithPredicate:predicate inContext:localContext];
         
         if (record) {
@@ -1848,7 +1854,8 @@
 {
     [MagicalRecord saveWithBlockAndWait:^(NSManagedObjectContext *localContext) {
         
-        [TableActivity MR_deleteAllMatchingPredicate:[NSPredicate predicateWithFormat:@"(account == %@) AND (idActivity == %d)", account, activity.idActivity] inContext:localContext];
+        if (activity.idActivity != 0)
+            [TableActivity MR_deleteAllMatchingPredicate:[NSPredicate predicateWithFormat:@"(account == %@) AND (idActivity == %d)", account, activity.idActivity] inContext:localContext];
         
         TableActivity *record = [TableActivity MR_createEntityInContext:localContext];
 
@@ -1859,6 +1866,7 @@
         record.link = activity.link;
         record.message = activity.message;
         record.subject = activity.subject;
+        record.verbose = [NSNumber numberWithInteger:activity.verbose];
     }];
 }
 
@@ -1875,26 +1883,17 @@
     return [records sortedArrayUsingDescriptors:[NSArray arrayWithObjects:descriptor, nil]];
 }
 
-+ (NSInteger)getLastIDActivityActiveAccount:(NSString *)activeAccount
-{
-    NSNumber *lastID  = [TableActivity MR_aggregateOperation:@"max:" onAttribute:@"idActivity" withPredicate:[NSPredicate predicateWithFormat:@"(account == %@)", activeAccount]];
-    
-    return [lastID integerValue];
-}
-
 #pragma --------------------------------------------------------------------------------------------
 #pragma mark ===== File System =====
 #pragma --------------------------------------------------------------------------------------------
 
 + (BOOL)downloadFile:(CCMetadata *)metadata directoryUser:(NSString *)directoryUser activeAccount:(NSString *)activeAccount
 {
-    CCCrypto *crypto = [[CCCrypto alloc] init];
-    
     // ----------------------------------------- FILESYSTEM ------------------------------------------
     
     // if encrypted, rewrite
     if (metadata.cryptated == YES)
-        if ([crypto decrypt:metadata.fileID fileNameDecrypted:metadata.fileID fileNamePrint:metadata.fileNamePrint password:[crypto getKeyPasscode:metadata.uuid] directoryUser:directoryUser] == 0) return NO;
+        if ([[CCCrypto sharedManager] decrypt:metadata.fileID fileNameDecrypted:metadata.fileID fileNamePrint:metadata.fileNamePrint password:[[CCCrypto sharedManager] getKeyPasscode:metadata.uuid] directoryUser:directoryUser] == 0) return NO;
     
     // ------------------------------------------ COREDATA -------------------------------------------
     

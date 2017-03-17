@@ -28,7 +28,7 @@
 #import "CCMain.h"
 
 #ifdef CUSTOM_BUILD
-    #import "Custom.h"
+    #import "CustomSwift.h"
 #else
     #import "Nextcloud-Swift.h"
 #endif
@@ -78,13 +78,19 @@
 - (void)addFavoriteFolder:(NSString *)serverUrl
 {
     NSString *directoryID = [CCCoreData getDirectoryIDFromServerUrl:serverUrl activeAccount:app.activeAccount];
-    
+    NSString *selector;
     CCMetadataNet *metadataNet = [[CCMetadataNet alloc] initWithAccount:app.activeAccount];
     
     metadataNet.action = actionReadFolder;
     metadataNet.directoryID = directoryID;
     metadataNet.priority = NSOperationQueuePriorityNormal;
-    metadataNet.selector = selectorReadFolder;
+    
+    if ([CCUtility getFavoriteOffline])
+        selector = selectorReadFolderWithDownload;
+    else
+        selector = selectorReadFolder;
+    
+    metadataNet.selector = selector;
     metadataNet.serverUrl = serverUrl;
     
     [app addNetworkingOperationQueue:app.netQueue delegate:self metadataNet:metadataNet];
@@ -130,11 +136,21 @@
             if (metadata.directory) {
                 
                 NSString *directoryID = [CCCoreData getDirectoryIDFromServerUrl:serverUrl activeAccount:app.activeAccount];
-                [self readFolderServerUrl:serverUrl directoryID:directoryID selector:selectorReadFolder];
+                NSString *selector;
+                
+                if ([CCUtility getFavoriteOffline])
+                    selector = selectorReadFolderWithDownload;
+                else
+                    selector = selectorReadFolder;
+                
+                [self readFolderServerUrl:serverUrl directoryID:directoryID selector:selector];
                 
             } else {
                 
-                [self readFile:metadata];
+                if ([CCUtility getFavoriteOffline])
+                    [self readFile:metadata withDownload:YES];
+                else
+                    [self readFile:metadata withDownload:NO];
             }
             
             father = serverUrl;
@@ -187,7 +203,7 @@
         
         for (CCMetadata *metadata in metadatas) {
             
-            [self readFile:metadata];
+            [self readFile:metadata withDownload:YES];
         }
     });
 }
@@ -262,22 +278,26 @@
         // ----- Test : (DELETE) -----
         
         NSMutableArray *metadatasNotPresents = [[NSMutableArray alloc] init];
-        NSArray *tableMetadatasInDB = [CCCoreData getTableMetadataWithPredicate:[NSPredicate predicateWithFormat:@"(account == %@) AND (directoryID == %@) AND ((session == NULL) OR (session == ''))", app.activeAccount, metadataNet.directoryID] context:nil];
+        NSArray *tableMetadatas = [CCCoreData getTableMetadataWithPredicate:[NSPredicate predicateWithFormat:@"(account == %@) AND (directoryID == %@) AND ((session == NULL) OR (session == ''))", app.activeAccount, metadataNet.directoryID] context:nil];
         
-        for (TableMetadata *tableMetadataDB in tableMetadatasInDB) {
+        for (TableMetadata *tableMetadata in tableMetadatas) {
+            
+            // reject cryptated
+            if (tableMetadata.cryptated)
+                continue;
             
             BOOL fileIDFound = NO;
             
             for (CCMetadata *metadata in metadatas) {
                 
-                if ([tableMetadataDB.fileID isEqualToString:metadata.fileID]) {
+                if ([tableMetadata.fileID isEqualToString:metadata.fileID]) {
                     fileIDFound = YES;
                     break;
                 }
             }
             
             if (!fileIDFound)
-                [metadatasNotPresents addObject:[CCCoreData insertEntityInMetadata:tableMetadataDB]];
+                [metadatasNotPresents addObject:[CCCoreData insertEntityInMetadata:tableMetadata]];
         }
         
         dispatch_async(dispatch_get_main_queue(), ^{
@@ -326,7 +346,7 @@
                 
             } else {
             
-                if ([metadataNet.selector isEqualToString:selectorReadFolder]) {
+                if ([metadataNet.selector isEqualToString:selectorReadFolderWithDownload]) {
                     
                     // It's in session
                     BOOL recordInSession = NO;
@@ -344,7 +364,7 @@
                     [metadatasForVerifyChange addObject:metadata];
                 }
                 
-                if ([metadataNet.selector isEqualToString:selectorReadFolderRefresh]) {
+                if ([metadataNet.selector isEqualToString:selectorReadFolder]) {
                     
                     // Verify if do not exists this Metadata
                     if (![CCCoreData getTableMetadataWithPreficate:[NSPredicate predicateWithFormat:@"(account == %@) AND (fileID == %@)", metadataNet.account, metadata.fileID]]) {
@@ -358,7 +378,7 @@
         }
         
         if ([metadatasForVerifyChange count] > 0)
-            [self verifyChangeMedatas:metadatasForVerifyChange serverUrl:metadataNet.serverUrl account:metadataNet.account synchronize:YES];
+            [self verifyChangeMedatas:metadatasForVerifyChange serverUrl:metadataNet.serverUrl account:metadataNet.account withDownload:YES];
     });
 }
 
@@ -366,7 +386,7 @@
 #pragma mark ===== Read File =====
 #pragma --------------------------------------------------------------------------------------------
 
-- (void)readFile:(CCMetadata *)metadata
+- (void)readFile:(CCMetadata *)metadata withDownload:(BOOL)withDownload
 {
     NSString *serverUrl = [CCCoreData getServerUrlFromDirectoryID:metadata.directoryID activeAccount:app.activeAccount];
     if (serverUrl == nil) return;
@@ -377,10 +397,11 @@
     metadataNet.fileID = metadata.fileID;
     metadataNet.fileName = metadata.fileName;
     metadataNet.fileNamePrint = metadata.fileNamePrint;
-    metadataNet.serverUrl = serverUrl;
-    metadataNet.selector = selectorReadFileOffline;
+    metadataNet.options = [NSNumber numberWithBool:withDownload] ;
     metadataNet.priority = NSOperationQueuePriorityLow;
-        
+    metadataNet.selector = selectorReadFile;
+    metadataNet.serverUrl = serverUrl;
+    
     [app addNetworkingOperationQueue:app.netQueue delegate:self metadataNet:metadataNet];
 }
 
@@ -400,7 +421,9 @@
 {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
         
-        [self verifyChangeMedatas:[[NSArray alloc] initWithObjects:metadata, nil] serverUrl:metadataNet.serverUrl account:app.activeAccount synchronize:NO];
+        BOOL withDownload = [metadataNet.options boolValue];
+        
+        [self verifyChangeMedatas:[[NSArray alloc] initWithObjects:metadata, nil] serverUrl:metadataNet.serverUrl account:app.activeAccount withDownload:withDownload];
     });
 }
 
@@ -409,7 +432,7 @@
 #pragma --------------------------------------------------------------------------------------------
 
 // MULTI THREAD
-- (void)verifyChangeMedatas:(NSArray *)allRecordMetadatas serverUrl:(NSString *)serverUrl account:(NSString *)account synchronize:(BOOL)synchronize
+- (void)verifyChangeMedatas:(NSArray *)allRecordMetadatas serverUrl:(NSString *)serverUrl account:(NSString *)account withDownload:(BOOL)withDownload
 {
     NSMutableArray *metadatas = [[NSMutableArray alloc] init];
     
@@ -427,14 +450,14 @@
         
         TableLocalFile *record = [TableLocalFile MR_findFirstWithPredicate:[NSPredicate predicateWithFormat:@"(account == %@) AND (fileID == %@)", app.activeAccount, metadata.fileID]];
         
-        if (synchronize) {
+        if (withDownload) {
             
             if (![record.rev isEqualToString:metadata.rev])
                 changeRev = YES;
             
         } else {
             
-            if (record && ![record.rev isEqualToString:metadata.rev])
+            if (record && ![record.rev isEqualToString:metadata.rev]) // it must be in TableRecord
                 changeRev = YES;
         }
         
@@ -459,15 +482,15 @@
     
     dispatch_async(dispatch_get_main_queue(), ^{
         if ([metadatas count])
-            [self SynchronizeMetadatas:metadatas serverUrl:serverUrl synchronize:synchronize];
+            [self SynchronizeMetadatas:metadatas serverUrl:serverUrl withDownload:withDownload];
     });
 }
 
 // MAIN THREAD
-- (void)SynchronizeMetadatas:(NSArray *)metadatas serverUrl:(NSString *)serverUrl synchronize:(BOOL)synchronize
+- (void)SynchronizeMetadatas:(NSArray *)metadatas serverUrl:(NSString *)serverUrl withDownload:(BOOL)withDownload
 {
     // HUD
-    if ([metadatas count] > 50 && synchronize) {
+    if ([metadatas count] > 50 && withDownload) {
         if (!_hud) _hud = [[CCHud alloc] initWithView:[[[UIApplication sharedApplication] delegate] window]];
         [_hud visibleIndeterminateHud];
     }
@@ -501,7 +524,7 @@
             if (![oldDirectoryID isEqualToString:metadata.directoryID]) {
                 serverUrl = [CCCoreData getServerUrlFromDirectoryID:metadata.directoryID activeAccount:app.activeAccount];
                 oldDirectoryID = metadata.directoryID;
-                [CCCoreData clearDateReadDirectory:serverUrl activeAccount:app.activeAccount];
+                [CCCoreData clearDateReadAccount:app.activeAccount serverUrl:serverUrl directoryID:nil];
             }
             
             [CCCoreData addMetadata:metadata activeAccount:app.activeAccount activeUrl:serverUrl context:nil];

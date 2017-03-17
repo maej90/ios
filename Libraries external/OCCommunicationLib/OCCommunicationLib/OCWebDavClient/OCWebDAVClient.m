@@ -1,3 +1,4 @@
+
 //
 //  OCWebDAVClient.m
 //  OCWebDAVClient
@@ -708,7 +709,7 @@ NSString const *OCWebDAVModificationDateKey	= @"modificationdate";
 
 #pragma mark - Get Notification
 
-- (void) getNotificationServer:(NSString*)serverPath onCommunication:(OCCommunication *)sharedOCCommunication success:(void(^)(NSHTTPURLResponse *operation, id response))success
+- (void)getNotificationServer:(NSString*)serverPath onCommunication:(OCCommunication *)sharedOCCommunication success:(void(^)(NSHTTPURLResponse *operation, id response))success
                           failure:(void(^)(NSHTTPURLResponse *operation, id  _Nullable responseObject, NSError *error))failure{
     
     _requestMethod = @"GET";
@@ -723,12 +724,55 @@ NSString const *OCWebDAVModificationDateKey	= @"modificationdate";
     [operation resume];
 }
 
-- (void) setNotificationServer:(NSString *)serverPath type:(NSString *)type onCommunication:(OCCommunication *)sharedOCCommunication success:(void(^)(NSHTTPURLResponse *, id))success failure:(void(^)(NSHTTPURLResponse *, id  _Nullable responseObject, NSError *))failure {
+- (void)setNotificationServer:(NSString *)serverPath type:(NSString *)type onCommunication:(OCCommunication *)sharedOCCommunication success:(void(^)(NSHTTPURLResponse *, id))success failure:(void(^)(NSHTTPURLResponse *, id  _Nullable responseObject, NSError *))failure {
     
     NSParameterAssert(success);
     
     _requestMethod = type;
     
+    NSMutableURLRequest *request = [self sharedRequestWithMethod:_requestMethod path:serverPath parameters:nil];
+    
+    OCHTTPRequestOperation *operation = [self mr_operationWithRequest:request onCommunication:sharedOCCommunication success:success failure:failure];
+    [self setRedirectionBlockOnDatataskWithOCCommunication:sharedOCCommunication andSessionManager:sharedOCCommunication.networkSessionManager];
+    [operation resume];
+}
+
+- (void)subscribingNextcloudServerPush:(NSString *)serverPath authorizationToken:(NSString *)authorizationToken pushTokenHash:(NSString *)pushTokenHash devicePublicKey:(NSString *)devicePublicKey onCommunication:(OCCommunication *)sharedOCCommunication success:(void(^)(NSHTTPURLResponse *, id))success failure:(void(^)(NSHTTPURLResponse *, id  _Nullable responseObject, NSError *))failure {
+    
+    NSParameterAssert(success);
+    
+    _requestMethod = @"POST";
+    
+    NSString *pushTokenHashParam = [NSString stringWithFormat:@"?pushTokenHash=%@",pushTokenHash];
+    NSString *devicePublicKeyParam = [NSString stringWithFormat:@"&devicePublicKey=%@",devicePublicKey];
+    
+    serverPath = [serverPath stringByAppendingString:pushTokenHashParam];
+    serverPath = [serverPath stringByAppendingString:devicePublicKeyParam];
+    
+    NSMutableURLRequest *request = [self sharedRequestWithMethod:_requestMethod path:serverPath parameters:nil];
+    [request setValue:[NSString stringWithFormat:@"token %@", authorizationToken] forHTTPHeaderField:@"Authorization"];
+    
+    OCHTTPRequestOperation *operation = [self mr_operationWithRequest:request onCommunication:sharedOCCommunication success:success failure:failure];
+    [self setRedirectionBlockOnDatataskWithOCCommunication:sharedOCCommunication andSessionManager:sharedOCCommunication.networkSessionManager];
+    [operation resume];
+}
+
+- (void)subscribingPushProxy:(NSString *)serverPath authorizationToken:(NSString *)authorizationToken pushToken:(NSString *)pushToken deviceIdentifier:(NSString *)deviceIdentifier deviceIdentifierSignature:(NSString *)deviceIdentifierSignature userPublicKey:(NSString *)userPublicKey onCommunication:(OCCommunication *)sharedOCCommunication success:(void(^)(NSHTTPURLResponse *, id))success failure:(void(^)(NSHTTPURLResponse *, id  _Nullable responseObject, NSError *))failure {
+    
+    NSParameterAssert(success);
+    
+    _requestMethod = @"POST";
+    
+    pushToken = [NSString stringWithFormat:@"?pushToken=%@",pushToken];
+    deviceIdentifier = [NSString stringWithFormat:@"&deviceIdentifier=%@",deviceIdentifier];
+    deviceIdentifierSignature = [NSString stringWithFormat:@"&deviceIdentifierSignature=%@",deviceIdentifierSignature];
+    userPublicKey = [NSString stringWithFormat:@"&userPublicKey=%@",userPublicKey];
+    
+    serverPath = [serverPath stringByAppendingString:pushToken];
+    serverPath = [serverPath stringByAppendingString:deviceIdentifier];
+    serverPath = [serverPath stringByAppendingString:deviceIdentifierSignature];
+    serverPath = [serverPath stringByAppendingString:userPublicKey];
+
     NSMutableURLRequest *request = [self sharedRequestWithMethod:_requestMethod path:serverPath parameters:nil];
     
     OCHTTPRequestOperation *operation = [self mr_operationWithRequest:request onCommunication:sharedOCCommunication success:success failure:failure];

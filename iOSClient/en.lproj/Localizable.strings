@@ -58,6 +58,8 @@
 "_postpone_"                = "Postpone";
 "_remove_"                  = "Remove";
 "_file_not_found_"          = "File not found";
+"_confirm_"                 = "Confirm";
+"_continue_"                = "Do you want to continue ?";
 
 // App
 
@@ -137,6 +139,8 @@
 "_user_web_"                = "Website";
 "_user_twitter_"            = "Twitter";
 "_quota_using_"             = "You are using %@ of %@";
+"_favorite_offline_"        = "Favorites available offline";
+"_favorite_offline_footer_" = "Making all favorites available offline may take a long time with a high memory occupation.";
 
 // Manage Camera Upload
 
@@ -338,6 +342,7 @@
 "_share_"                       = "Share";
 "_reload_"                      = "Reload";
 "_open_in_"                     = "Open in...";
+"_remove_local_file_"           = "Remove from cache";
 "_add_local_"                   = "Add to local storage";
 "_comm_erro_pull_down_"         = "Attention communication error with the server, pull down to refresh.";
 "_file_not_downloaded_"         = "file not downloaded";
@@ -405,7 +410,7 @@
 
 "_search_this_folder_"          = "Search in this folder";
 "_search_all_folders_"          = "Search in all folders";
-"_search_sub_folder_"           = "Search in this folder and subfolders";
+"_search_sub_folder_"           = "Search here and subfolders";
 
 // Security
 

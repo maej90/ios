@@ -75,7 +75,7 @@
 + (BOOL)getCameraUploadCryptatedVideoActiveAccount:(NSString *)activeAccount;
 + (BOOL)getCameraUploadWWanPhotoActiveAccount:(NSString *)activeAccount;
 + (BOOL)getCameraUploadWWanVideoActiveAccount:(NSString *)activeAccount;
-+ (float)getServerVersionActiveAccount:(NSString *)activeAccount;
++ (NSInteger)getServerVersionMajorActiveAccount:(NSString *)activeAccount;
 
 + (void)setCameraUpload:(BOOL)state activeAccount:(NSString *)activeAccount;
 + (void)setCameraUploadBackground:(BOOL)state activeAccount:(NSString *)activeAccount;
@@ -146,7 +146,7 @@
 + (NSString *)getDirectoryIDFromServerUrl:(NSString *)serverUrl activeAccount:(NSString *)activeAccount;
 + (NSString *)getServerUrlFromDirectoryID:(NSString *)directoryID activeAccount:(NSString *)activeAccount;
 
-+ (void)clearDateReadDirectory:(NSString *)serverUrl activeAccount:(NSString *)activeAccount;
++ (void)clearDateReadAccount:(NSString *)activeAccount serverUrl:(NSString *)serverUrl directoryID:(NSString *)directoryID;
 + (void)clearAllDateReadDirectory;
 
 + (BOOL)isDirectoryOutOfDate:(int)numAddDay directoryID:(NSString *)directoryID activeAccount:(NSString *)activeAccount;
@@ -212,7 +212,6 @@
 
 + (void)addActivity:(OCActivity *)activity account:(NSString *)account;
 + (NSArray *)getAllTableActivityWithPredicate:(NSPredicate *)predicate;
-+ (NSInteger)getLastIDActivityActiveAccount:(NSString *)activeAccount;
 
 // ===== File System =====
 

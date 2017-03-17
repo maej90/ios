@@ -1397,7 +1397,7 @@
 
 #pragma mark - Notification Server
 
-- (void) getNotificationServer:(NSString*)serverPath onCommunication:(OCCommunication *)sharedOCComunication successRequest:(void(^)(NSHTTPURLResponse *response, NSArray *listOfNotifications, NSString *redirectedServer)) successRequest failureRequest:(void(^)(NSHTTPURLResponse *response, NSError *error, NSString *redirectedServer)) failureRequest {
+- (void)getNotificationServer:(NSString*)serverPath onCommunication:(OCCommunication *)sharedOCComunication successRequest:(void(^)(NSHTTPURLResponse *response, NSArray *listOfNotifications, NSString *redirectedServer)) successRequest failureRequest:(void(^)(NSHTTPURLResponse *response, NSError *error, NSString *redirectedServer)) failureRequest {
     
     serverPath = [serverPath encodeString:NSUTF8StringEncoding];
     serverPath = [serverPath stringByAppendingString:k_url_acces_remote_notification_api];
@@ -1491,7 +1491,7 @@
     }];
 }
 
-- (void) setNotificationServer:(NSString*)serverPath type:(NSString *)type onCommunication:(OCCommunication *)sharedOCComunication successRequest:(void (^)(NSHTTPURLResponse *, NSString *))successRequest failureRequest:(void (^)(NSHTTPURLResponse *, NSError *, NSString *))failureRequest {
+- (void)setNotificationServer:(NSString*)serverPath type:(NSString *)type onCommunication:(OCCommunication *)sharedOCComunication successRequest:(void (^)(NSHTTPURLResponse *, NSString *))successRequest failureRequest:(void (^)(NSHTTPURLResponse *, NSError *, NSString *))failureRequest {
     
     serverPath = [serverPath encodeString:NSUTF8StringEncoding];
     
@@ -1499,11 +1499,64 @@
     request = [self getRequestWithCredentials:request];
     
     [request setNotificationServer:serverPath type:type onCommunication:sharedOCComunication success:^(NSHTTPURLResponse *response, id responseObject) {
+        
         if (successRequest) {
             //Return success
             successRequest(response, request.redirectedServer);
         }
+        
     } failure:^(NSHTTPURLResponse *response, NSData *responseData, NSError *error) {
+        
+        failureRequest(response, error, request.redirectedServer);
+    }];
+}
+
+- (void)subscribingNextcloudServerPush:(NSString *)serverPath pushTokenHash:(NSString *)pushTokenHash devicePublicKey:(NSString *)devicePublicKey onCommunication:(OCCommunication *)sharedOCComunication successRequest:(void(^)(NSHTTPURLResponse *response, NSString *publicKey, NSString *deviceIdentifier, NSString *signature, NSString *redirectedServer)) successRequest failureRequest:(void (^)(NSHTTPURLResponse *, NSError *, NSString *))failureRequest {
+    
+    serverPath = [serverPath encodeString:NSUTF8StringEncoding];
+    serverPath = [serverPath stringByAppendingString:k_url_acces_remote_subscribing_nextcloud_server_api];
+
+    OCWebDAVClient *request = [OCWebDAVClient new];
+    request = [self getRequestWithCredentials:request];
+    
+    [request subscribingNextcloudServerPush:serverPath authorizationToken:_password pushTokenHash:pushTokenHash devicePublicKey:devicePublicKey onCommunication:sharedOCComunication success:^(NSHTTPURLResponse *response, id responseObject) {
+        
+        NSData *responseData = (NSData*) responseObject;
+        
+        //Parse
+        NSError *error;
+        NSDictionary *jsongParsed = [NSJSONSerialization JSONObjectWithData:responseData options:NSJSONReadingMutableContainers error:&error];
+        NSLog(@"[LOG] Subscribing at the Nextcloud server : %@",jsongParsed);
+        
+        NSString *publicKey = [jsongParsed objectForKey:@"publicKey"];
+        NSString *deviceIdentifier = [jsongParsed objectForKey:@"deviceIdentifier"];
+        NSString *signature = [jsongParsed objectForKey:@"signature"];
+        
+        successRequest(response, publicKey, deviceIdentifier, signature, request.redirectedServer);
+        
+    } failure:^(NSHTTPURLResponse *response, NSData *responseData, NSError *error) {
+                
+        failureRequest(response, error, request.redirectedServer);
+    }];
+}
+
+- (void)subscribingPushProxy:(NSString *)serverPath pushToken:(NSString *)pushToken deviceIdentifier:(NSString *)deviceIdentifier deviceIdentifierSignature:(NSString *)deviceIdentifierSignature userPublicKey:(NSString *)userPublicKey onCommunication:(OCCommunication *)sharedOCComunication successRequest:(void (^)(NSHTTPURLResponse *, NSString *))successRequest failureRequest:(void (^)(NSHTTPURLResponse *, NSError *, NSString *))failureRequest {
+    
+    serverPath = [serverPath encodeString:NSUTF8StringEncoding];
+    serverPath = [serverPath stringByAppendingString:@"/device"];
+    
+    OCWebDAVClient *request = [OCWebDAVClient new];
+    request = [self getRequestWithCredentials:request];
+    
+    [request subscribingPushProxy:serverPath authorizationToken:_password pushToken:pushToken deviceIdentifier:deviceIdentifier deviceIdentifierSignature:deviceIdentifierSignature userPublicKey:userPublicKey onCommunication:sharedOCComunication success:^(NSHTTPURLResponse *response, id responseObject) {
+        
+        if (successRequest) {
+            //Return success
+            successRequest(response, request.redirectedServer);
+        }
+        
+    } failure:^(NSHTTPURLResponse *response, NSData *responseData, NSError *error) {
+        
         failureRequest(response, error, request.redirectedServer);
     }];
 }
@@ -1553,7 +1606,6 @@
                     if ([data valueForKey:@"link"]    && ![[data valueForKey:@"link"]    isEqual:[NSNull null]]) activity.link    = [data valueForKey:@"link"];
                     if ([data valueForKey:@"message"] && ![[data valueForKey:@"message"] isEqual:[NSNull null]]) activity.message = [data valueForKey:@"message"];
                     if ([data valueForKey:@"subject"] && ![[data valueForKey:@"subject"] isEqual:[NSNull null]]) activity.subject = [data valueForKey:@"subject"];
-                    if ([data valueForKey:@"type"] && ![[data valueForKey:@"type"] isEqual:[NSNull null]]) activity.subject = [data valueForKey:@"type"];
                     
                     [listOfActivity addObject:activity];
                 }

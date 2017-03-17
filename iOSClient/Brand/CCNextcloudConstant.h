@@ -21,28 +21,53 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#define _brand_                                         @"Nextcloud"
-#define _mail_me_                                       @"ios@nextcloud.com"
-#define _text_copyright_                                @"Nextcloud %@ © 2017 T.W.S. Inc."
-#define _login_base_url_                                @"https://cloud.twsweb.it"
+// Brand
+#define k_brand                         @"Nextcloud"
+#define k_mailMe                        @"ios@nextcloud.com"
+#define k_textCopyright                 @"Nextcloud %@ © 2017 T.W.S. Inc."
+#define k_loginBaseUrl                  @"https://cloud.twsweb.it"
+#define k_pushNotificationServer        @"https://push-notifications.nextcloud.com"
+
+// Capabilities Group & Service Key Share
+#define k_capabilitiesGroups            @"group.it.twsweb.Crypto-Cloud"
+#define k_serviceShareKeyChain          @"Crypto Cloud"
+#define k_metadataKeyedUnarchiver       @"it.twsweb.Crypto-Cloud.metadata"
+
+// Session
+#define k_download_session              @"it.twsweb.Crypto-Cloud.download.session"
+#define k_download_session_foreground   @"it.twsweb.Crypto-Cloud.download.sessionforeground"
+#define k_download_session_wwan         @"it.twsweb.Crypto-Cloud.download.sessionwwan"
+#define k_upload_session                @"it.twsweb.Crypto-Cloud.upload.session"
+#define k_upload_session_foreground     @"it.twsweb.Crypto-Cloud.upload.sessionforeground"
+#define k_upload_session_wwan           @"it.twsweb.Crypto-Cloud.upload.sessionwwan"
+
+// OperationQueue
+#define k_queue                         @"it.twsweb.Crypto-Cloud.queue"
+#define k_download_queue                @"it.twsweb.Crypto-Cloud.download.queue"
+#define k_download_queuewwan            @"it.twsweb.Crypto-Cloud.download.queuewwan"
+#define k_upload_queue                  @"it.twsweb.Crypto-Cloud.upload.queue"
+#define k_upload_queuewwan              @"it.twsweb.Crypto-Cloud.upload.queuewwan"
 
 /* Define option compiler */
 
 /*
- #define NO_MULTIUSER
+ #define OPTION_MULTIUSER_DISABLE
+ #define OPTION_CRYPTO_CLOUD_SYSTEM_DISABLE
+ #define OPTION_OFFLINE_DISABLE
+ 
+ #define OPTION_NOTIFICATION_PUSH_ENABLE
+ #define OPTION_AUTOMATIC_UPLOAD_ENABLE
+ #define OPTION_DISABLE_INTRO
+ 
+ #define MENU_BRAND_ENABLE
  #define NO_REQUEST_LOGIN_URL
- #define NO_CRYPTO_CLOUD_SYSTEM
- #define NO_OFFLINE
- #define MENU_BRAND
  */
 
-#define NO_OFFLINE
+#define OPTION_OFFLINE_DISABLE
 
 // -----------------------------------------------------------------------------------------------------------
 // COLOR
 // -----------------------------------------------------------------------------------------------------------
-
-// NEXTCLOUD COLOR
 
 #define COLOR_BRAND                     [UIColor colorWithRed:0.0/255.0 green:130.0/255.0 blue:201.0/255.0 alpha:1.0]                   // BLU NC : #0082c9
 

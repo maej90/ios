@@ -68,7 +68,7 @@ class DocumentPickerViewController: UIDocumentPickerExtensionViewController, CCN
     lazy var networkingOperationQueue: OperationQueue = {
         
         var queue = OperationQueue()
-        queue.name = k_netQueueName
+        queue.name = k_queue
         queue.maxConcurrentOperationCount = 10
         
         return queue
@@ -186,7 +186,7 @@ class DocumentPickerViewController: UIDocumentPickerExtensionViewController, CCN
         }
         
         if CCUtility.getOnlyLockDir() == false && parameterPasscodeCorrect == false {
-            openBKPasscode("Nextcloud")
+            openBKPasscode(k_brand)
         }
     }
     
@@ -613,7 +613,7 @@ extension DocumentPickerViewController {
             viewController.passcodeInputView.maximumLength = 64
         }
         
-        let touchIDManager = BKTouchIDManager.init(keychainServiceName: BKPasscodeKeychainServiceName)
+        let touchIDManager = BKTouchIDManager.init(keychainServiceName: k_serviceShareKeyChain)
         touchIDManager?.promptText = NSLocalizedString("_scan_fingerprint_", comment: "")
         viewController.touchIDManager = touchIDManager
         viewController.title = title

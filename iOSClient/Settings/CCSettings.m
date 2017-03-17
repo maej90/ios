@@ -25,6 +25,7 @@
 #import "AppDelegate.h"
 #import "CCMain.h"
 #import "OCCapabilities.h"
+#import "CCSynchronize.h"
 
 #define alertViewEsci 1
 #define alertViewAzzeraCache 2
@@ -102,14 +103,12 @@
     [row.cellConfig setObject:[UIFont systemFontOfSize:15.0]forKey:@"detailTextLabel.font"];
     [section addFormRow:row];
     
-#ifndef NO_MULTIUSER
     // Change Account
     row = [XLFormRowDescriptor formRowDescriptorWithTag:@"changecredentials" rowType:XLFormRowDescriptorTypeButton title:NSLocalizedString(@"_change_credentials_", nil)];
     [row.cellConfig setObject:[UIFont systemFontOfSize:15.0]forKey:@"textLabel.font"];
     [row.cellConfig setObject:[UIImage imageNamed:image_settingsCredentials] forKey:@"imageView.image"];
     row.action.formSegueIdentifier = @"CCManageAccountSegue";
     [section addFormRow:row];
-#endif
     
     // quota
     row = [XLFormRowDescriptor formRowDescriptorWithTag:@"quota" rowType:XLFormRowDescriptorTypeButton title:@""];
@@ -161,7 +160,6 @@
     [row.cellConfig setObject:[UIFont systemFontOfSize:15.0]forKey:@"detailTextLabel.font"];
     [section addFormRow:row];
 
-    
     // Section AUTOMATIC UPLOAD OF CAMERA IMAGES ----------------------------
     
     section = [XLFormSectionDescriptor formSection];
@@ -184,7 +182,18 @@
     row.action.formSegueIdentifier = @"CCManageOptimizationsSegue";
     [section addFormRow:row];
 
-#ifndef NO_CRYPTO_CLOUD_SYSTEM
+    // Section FOLDERS FAVORITES OFFLINE ------------------------------------
+    
+    section = [XLFormSectionDescriptor formSection];
+    [form addFormSection:section];
+    section.footerTitle = NSLocalizedString(@"_favorite_offline_footer_", nil);
+    
+    row = [XLFormRowDescriptor formRowDescriptorWithTag:@"favoriteoffline" rowType:XLFormRowDescriptorTypeBooleanSwitch title:NSLocalizedString(@"_favorite_offline_", nil)];
+    [row.cellConfig setObject:[UIImage imageNamed:image_settingsFavoriteOffline] forKey:@"imageView.image"];
+    [row.cellConfig setObject:[UIFont systemFontOfSize:15.0]forKey:@"textLabel.font"];
+    [section addFormRow:row];
+
+#ifndef OPTION_CRYPTO_CLOUD_SYSTEM_DISABLE
     // Section CRYPTO CLOUD SYSTEM ------------------------------------------
     
     section = [XLFormSectionDescriptor formSection];
@@ -203,7 +212,7 @@
     section = [XLFormSectionDescriptor formSectionWithTitle:NSLocalizedString(@"_information_", nil)];
     [form addFormSection:section];
     NSString *versionApp = [NSString stringWithFormat:@"%@.%@", [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"], [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleVersion"]];
-    section.footerTitle = [NSString stringWithFormat:_text_copyright_, versionApp];
+    section.footerTitle = [NSString stringWithFormat:k_textCopyright, versionApp];
     
     // Acknowledgements
     row = [XLFormRowDescriptor formRowDescriptorWithTag:@"buttonLeftAligned" rowType:XLFormRowDescriptorTypeButton title:NSLocalizedString(@"_acknowledgements_", nil)];
@@ -309,6 +318,7 @@
     [CCAspect aspectTabBar:self.tabBarController.tabBar hidden:NO];
     
     [self reloadForm];
+    [self recalculateSize];
 }
 
 // E' apparsa
@@ -383,7 +393,8 @@
     XLFormRowDescriptor *rowBloccoPasscode = [self.form formRowWithTag:@"bloccopasscode"];
     XLFormRowDescriptor *rowSimplyPasscode = [self.form formRowWithTag:@"simplypasscode"];
     XLFormRowDescriptor *rowOnlyLockDir = [self.form formRowWithTag:@"onlylockdir"];
-    
+    XLFormRowDescriptor *rowFavoriteOffline = [self.form formRowWithTag:@"favoriteoffline"];
+
     XLFormRowDescriptor *rowVersionServer = [self.form formRowWithTag:@"versionserver"];
     XLFormRowDescriptor *rowUrlCloud = [self.form formRowWithTag:@"urlcloud"];
     XLFormRowDescriptor *rowUserNameCloud = [self.form formRowWithTag:@"usernamecloud"];
@@ -411,6 +422,7 @@
     
     if ([CCUtility getSimplyBlockCode]) [rowSimplyPasscode setValue:@1]; else [rowSimplyPasscode setValue:@0];
     if ([CCUtility getOnlyLockDir]) [rowOnlyLockDir setValue:@1]; else [rowOnlyLockDir setValue:@0];
+    if ([CCUtility getFavoriteOffline]) [rowFavoriteOffline setValue:@1]; else [rowFavoriteOffline setValue:@0];
     
     // Avatar
     UIImage *avatar = [[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/avatar.png", app.directoryUser]];
@@ -475,9 +487,9 @@
 
         XLFormRowDescriptor *rowAzzeraCache = [self.form formRowWithTag:@"azzeracache"];
 
-        //NSString *size = [CCUtility transformedSize:[[self getUserDirectorySize] longValue]];
-        //rowAzzeraCache.title = [NSString stringWithFormat:NSLocalizedString(@"_clear_cache_", nil), size];
-        rowAzzeraCache.title = NSLocalizedString(@"_clear_cache_no_size_", nil);
+        NSString *size = [CCUtility transformedSize:[[self getUserDirectorySize] longValue]];
+        rowAzzeraCache.title = [NSString stringWithFormat:NSLocalizedString(@"_clear_cache_", nil), size];
+        //rowAzzeraCache.title = NSLocalizedString(@"_clear_cache_no_size_", nil);
         
         [self.tableView performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO];
 
@@ -504,6 +516,29 @@
             [CCUtility setSimplyBlockCode:[[rowDescriptor.value valueData] boolValue]];
         else
             [self changeSimplyPassword];
+    }
+    
+    if ([rowDescriptor.tag isEqualToString:@"favoriteoffline"]) {
+        
+        if ([[rowDescriptor.value valueData] boolValue] == YES) {
+            
+            UIAlertController *alertController = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"_confirm_", nil) message:NSLocalizedString(@"_continue_", nil) preferredStyle:UIAlertControllerStyleActionSheet];
+            
+            [alertController addAction: [UIAlertAction actionWithTitle:NSLocalizedString(@"_ok_", nil) style:UIAlertActionStyleDestructive handler:^(UIAlertAction *action) {
+                [CCUtility setFavoriteOffline:true];
+                [self synchronizeFavorites];
+            }]];
+            
+            [alertController addAction: [UIAlertAction actionWithTitle:NSLocalizedString(@"_cancel_", nil) style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {
+                [self reloadForm];
+            }]];
+            
+            [self presentViewController:alertController animated:YES completion:nil];
+
+        } else {
+            
+            [CCUtility setFavoriteOffline:false];
+        }
     }
 }
 
@@ -546,7 +581,7 @@
         viewController.passcodeInputView.maximumLength = 64;
     }
     
-    BKTouchIDManager *touchIDManager = [[BKTouchIDManager alloc] initWithKeychainServiceName:BKPasscodeKeychainServiceName];
+    BKTouchIDManager *touchIDManager = [[BKTouchIDManager alloc] initWithKeychainServiceName:k_serviceShareKeyChain];
     touchIDManager.promptText = NSLocalizedString(@"_scan_fingerprint_", nil);
     viewController.touchIDManager = touchIDManager;
     
@@ -579,7 +614,7 @@
             viewController.passcodeInputView.maximumLength = 64;
         }
         
-        BKTouchIDManager *touchIDManager = [[BKTouchIDManager alloc] initWithKeychainServiceName:BKPasscodeKeychainServiceName];
+        BKTouchIDManager *touchIDManager = [[BKTouchIDManager alloc] initWithKeychainServiceName:k_serviceShareKeyChain];
         touchIDManager.promptText = NSLocalizedString(@"_scan_fingerprint_", nil);
         viewController.touchIDManager = touchIDManager;
 
@@ -611,7 +646,7 @@
             viewController.passcodeInputView.maximumLength = 64;
         }
         
-        BKTouchIDManager *touchIDManager = [[BKTouchIDManager alloc] initWithKeychainServiceName:BKPasscodeKeychainServiceName];
+        BKTouchIDManager *touchIDManager = [[BKTouchIDManager alloc] initWithKeychainServiceName:k_serviceShareKeyChain];
         touchIDManager.promptText = NSLocalizedString(@"_scan_fingerprint_", nil);
         viewController.touchIDManager = touchIDManager;
         
@@ -657,6 +692,28 @@
     [self deselectFormRow:sender];
 }
 
+- (void)synchronizeFavorites
+{
+    NSArray *recordsTableMetadata = [CCCoreData  getTableMetadataWithPredicate:[NSPredicate predicateWithFormat:@"(account == %@) AND (favorite == 1)", app.activeAccount] context:nil];
+    
+    for (TableMetadata *tableMetadata in recordsTableMetadata) {
+        
+        if ([tableMetadata.directory boolValue]) {
+        
+            NSString *serverUrl = [CCCoreData getServerUrlFromDirectoryID:tableMetadata.directoryID activeAccount:app.activeAccount];
+            serverUrl = [CCUtility stringAppendServerUrl:serverUrl addFileName:tableMetadata.fileNamePrint];
+        
+            NSArray *TableDirectories = [CCCoreData getDirectoryIDsFromBeginsWithServerUrl:serverUrl activeAccount:app.activeAccount];
+        
+            for (TableDirectory *tableDirecory in TableDirectories)
+                [CCCoreData clearDateReadAccount:app.activeAccount serverUrl:nil directoryID:tableDirecory.directoryID];
+            
+        } 
+    }
+    
+    [[CCSynchronize sharedSynchronize] readListingFavorites];
+}
+
 #pragma --------------------------------------------------------------------------------------------
 #pragma mark === Mail ===
 #pragma --------------------------------------------------------------------------------------------
@@ -696,8 +753,8 @@
     // Email Recipents
     NSArray *toRecipents;
     
-    messageBody = [NSString stringWithFormat:@"\n\n\nNextcloud Version %@ (%@)", [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"], [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleVersion"]];
-    toRecipents = [NSArray arrayWithObject:_mail_me_];
+    messageBody = [NSString stringWithFormat:@"\n\n\n%@ Version %@ (%@)", k_brand,[[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"], [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleVersion"]];
+    toRecipents = [NSArray arrayWithObject:k_mailMe];
     
     MFMailComposeViewController *mc = [[MFMailComposeViewController alloc] init];
     mc.mailComposeDelegate = self;

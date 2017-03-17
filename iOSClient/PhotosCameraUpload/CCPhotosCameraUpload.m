@@ -26,7 +26,7 @@
 #import "AppDelegate.h"
 
 #ifdef CUSTOM_BUILD
-    #import "Custom.h"
+    #import "CustomSwift.h"
 #else
     #import "Nextcloud-Swift.h"
 #endif
@@ -1255,8 +1255,8 @@
         
         [communication createFolder:folderPathName onCommunication:communication withForbiddenCharactersSupported:app.hasServerForbiddenCharactersSupport successRequest:^(NSHTTPURLResponse *response, NSString *redirectedServer) {
             
-            [CCCoreData clearDateReadDirectory:[CCUtility deletingLastPathComponentFromServerUrl:folderPathName] activeAccount:app.activeAccount];
-            
+            [CCCoreData clearDateReadAccount:app.activeAccount serverUrl:[CCUtility deletingLastPathComponentFromServerUrl:folderPathName] directoryID:nil];
+                        
             dispatch_semaphore_signal(semaphore);
             
         } failureRequest:^(NSHTTPURLResponse *response, NSError *error, NSString *redirectedServer) {

@@ -44,7 +44,7 @@
 
 #ifdef CUSTOM_BUILD
     #import "Firebase.h"
-    #import "Custom.h"
+    #import "CustomSwift.h"
 #else
     #import "Nextcloud-Swift.h"
 #endif
@@ -137,23 +137,23 @@
     
     // Operation Queue OC Networking
     _netQueue = [[NSOperationQueue alloc] init];
-    _netQueue.name = k_netQueueName;
+    _netQueue.name = k_queue;
     _netQueue.maxConcurrentOperationCount = k_maxConcurrentOperation;
    
     _netQueueDownload = [[NSOperationQueue alloc] init];
-    _netQueueDownload.name = k_netQueueDownloadName;
+    _netQueueDownload.name = k_download_queue;
     _netQueueDownload.maxConcurrentOperationCount = k_maxConcurrentOperationDownloadUpload;
 
     _netQueueDownloadWWan = [[NSOperationQueue alloc] init];
-    _netQueueDownloadWWan.name = k_netQueueDownloadWWanName;
+    _netQueueDownloadWWan.name = k_download_queuewwan;
     _netQueueDownloadWWan.maxConcurrentOperationCount = k_maxConcurrentOperationDownloadUpload;
     
     _netQueueUpload = [[NSOperationQueue alloc] init];
-    _netQueueUpload.name = k_netQueueUploadName;
+    _netQueueUpload.name = k_upload_queue;
     _netQueueUpload.maxConcurrentOperationCount = k_maxConcurrentOperationDownloadUpload;
     
     _netQueueUploadWWan = [[NSOperationQueue alloc] init];
-    _netQueueUploadWWan.name = k_netQueueUploadWWanName;
+    _netQueueUploadWWan.name = k_upload_queuewwan;
     _netQueueUploadWWan.maxConcurrentOperationCount = k_maxConcurrentOperationDownloadUpload;
     
     // Add notification change session
@@ -231,13 +231,6 @@
             NSLog(@"[LOG] Other error code: %li",(long)error.code);
         }
     }];
-    
-    // permission request notification
-    if ([application respondsToSelector:@selector(registerUserNotificationSettings:)]) {
-        
-        UIUserNotificationSettings *settings = [UIUserNotificationSettings settingsForTypes:(UIUserNotificationTypeBadge|UIUserNotificationTypeAlert|UIUserNotificationTypeSound) categories:nil];
-        [application registerUserNotificationSettings:settings];
-    }
     
     // Tint Color GLOBAL WINDOW
     [self.window setTintColor:COLOR_WINDOW_TINTCOLOR];
@@ -389,7 +382,7 @@
     NSLog(@"[LOG] Update Folder Photo");
     NSString *folderCameraUpload = [CCCoreData getCameraUploadFolderNamePathActiveAccount:self.activeAccount activeUrl:self.activeUrl];
     if ([folderCameraUpload length] > 0)
-        [[CCSynchronize sharedSynchronize] readFolderServerUrl:folderCameraUpload directoryID:[CCCoreData getDirectoryIDFromServerUrl:folderCameraUpload activeAccount:self.activeAccount] selector:selectorReadFolderRefresh];
+        [[CCSynchronize sharedSynchronize] readFolderServerUrl:folderCameraUpload directoryID:[CCCoreData getDirectoryIDFromServerUrl:folderCameraUpload activeAccount:self.activeAccount] selector:selectorReadFolder];
 
     // Execute : after 0.5 sec.
     
@@ -403,7 +396,7 @@
         NSLog(@"[LOG] Initialize Camera Upload");
         [[NSNotificationCenter defaultCenter] postNotificationName:@"initStateCameraUpload" object:nil];
         
-#ifndef NO_OFFLINE
+#ifndef OPTION_OFFLINE_DISABLE
         NSLog(@"[LOG] files Offline");
         [[CCSynchronize sharedSynchronize] readOffline];
 #endif
@@ -463,9 +456,39 @@
 
 - (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
 {
+
     
     [[EngagementAgent shared] registerDeviceToken:deviceToken];
     NSLog(@"DEVICE TOKEN = %@", deviceToken);
+
+#if defined(OPTION_NOTIFICATION_PUSH_ENABLE)
+    
+    NSString *pushToken = [[[[deviceToken description] stringByReplacingOccurrencesOfString: @"<" withString: @""] stringByReplacingOccurrencesOfString: @">" withString: @""] stringByReplacingOccurrencesOfString: @" " withString: @""];
+    NSString *pushTokenHash = [[CCCrypto sharedManager] createSHA512:pushToken];
+    
+    NSDictionary *devicePushKey = [NSDictionary dictionaryWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"DevicePushKey-Info" ofType:@"plist"]];
+    
+#ifdef DEBUG
+    NSString *devicePublicKey = [devicePushKey objectForKey:@"devicePublicKeyDevelopment"];
+#else
+    NSString *devicePublicKey = [devicePushKey objectForKey:@"devicePublicKeyProduction"];
+#endif
+    
+    NSLog(@"DEVICE TOKEN = %@", pushToken);
+    
+    if ([devicePublicKey length] > 0 && [pushTokenHash length] > 0) {
+        
+        CCMetadataNet *metadataNet = [[CCMetadataNet alloc] initWithAccount:app.activeAccount];
+    
+        NSDictionary *options = [[NSDictionary alloc] initWithObjectsAndKeys:pushToken, @"pushToken", pushTokenHash, @"pushTokenHash", devicePublicKey, @"devicePublicKey", nil];
+        
+        metadataNet.action = actionSubscribingNextcloudServer;
+        metadataNet.options = options;
+        [app addNetworkingOperationQueue:app.netQueue delegate:self metadataNet:metadataNet];
+    }
+    
+#endif
+
 }
 
 - (void)application:(UIApplication *)application didFailToRegisterForRemoteNotificationsWithError:(NSError *)error
@@ -959,8 +982,6 @@
     if ([[CCUtility getBlockCode] length] == 0) return NO;
     // se non c'è attivo un account esci con NON attivare la richiesta password
     if ([self.activeAccount length] == 0) return NO;
-    // se non c'è il passcode esci con NON attivare la richiesta password
-    if ([[CCUtility getKeyChainPasscodeForUUID:[CCUtility getUUID]] length] == 0) return NO;
     // se non è attivo il OnlyLockDir esci con NON attivare la richiesta password
     if ([CCUtility getOnlyLockDir] && ![CCCoreData isBlockZone:serverUrl activeAccount:self.activeAccount]) return NO;
         
@@ -972,7 +993,7 @@
     CCBKPasscode *viewController = [[CCBKPasscode alloc] initWithNibName:nil bundle:nil];
     viewController.type = BKPasscodeViewControllerCheckPasscodeType;
     viewController.delegate = self;
-    viewController.title = _brand_;
+    viewController.title = k_brand;
     viewController.fromType = CCBKPasscodeFromLockScreen;
     viewController.inputViewTitlePassword = YES;
     
@@ -987,7 +1008,7 @@
         viewController.passcodeInputView.maximumLength = 64;
     }
 
-    viewController.touchIDManager = [[BKTouchIDManager alloc] initWithKeychainServiceName:BKPasscodeKeychainServiceName];
+    viewController.touchIDManager = [[BKTouchIDManager alloc] initWithKeychainServiceName: k_serviceShareKeyChain];
     viewController.touchIDManager.promptText = [CCUtility localizableBrand:@"_scan_fingerprint_" table:nil];
 
     UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:viewController];

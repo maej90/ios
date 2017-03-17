@@ -23,13 +23,13 @@
 
 import Foundation
 
-@objc protocol CCActionsDeleteDelegate  {
+@objc protocol CCActionsDeleteDelegate {
     
     func deleteFileOrFolderSuccess(_ metadataNet: CCMetadataNet)
     func deleteFileOrFolderFailure(_ metadataNet: CCMetadataNet, message: NSString, errorCode: NSInteger)
 }
 
-@objc protocol CCActionsRenameDelegate  {
+@objc protocol CCActionsRenameDelegate {
 
     func renameSuccess(_ metadataNet: CCMetadataNet)
     func renameMoveFileOrFolderFailure(_ metadataNet: CCMetadataNet, message: NSString, errorCode: NSInteger)
@@ -38,24 +38,25 @@ import Foundation
     func uploadFileFailure(_ metadataNet: CCMetadataNet, fileID: String, serverUrl: String, selector: String, message: String, errorCode: NSInteger)
 }
 
-@objc protocol CCActionsSearchDelegate  {
+@objc protocol CCActionsSearchDelegate {
     
     func searchSuccess(_ metadataNet: CCMetadataNet, metadatas: [Any])
     func searchFailure(_ metadataNet: CCMetadataNet, message: NSString, errorCode: NSInteger)
 }
 
-@objc protocol CCActionsDownloadThumbnailDelegate  {
+@objc protocol CCActionsDownloadThumbnailDelegate {
     
     func downloadThumbnailSuccess(_ metadataNet: CCMetadataNet)
 }
 
-@objc protocol CCActionsSettingFavoriteDelegate  {
+@objc protocol CCActionsSettingFavoriteDelegate {
     
     func settingFavoriteSuccess(_ metadataNet: CCMetadataNet)
     func settingFavoriteFailure(_ metadataNet: CCMetadataNet, message: NSString, errorCode: NSInteger)
 }
 
-@objc protocol CCActionsListingFavoritesDelegate  {
+@objc protocol CCActionsListingFavoritesDelegate {
+    
     func listingFavoritesSuccess(_ metadataNet: CCMetadataNet, metadatas: [Any])
     func listingFavoritesFailure(_ metadataNet: CCMetadataNet, message: NSString, errorCode: NSInteger)
 }
@@ -151,7 +152,6 @@ class CCActions: NSObject {
     
     func renameFileOrFolder(_ metadata: CCMetadata, fileName: String, delegate: AnyObject) {
 
-        let crypto = CCCrypto.init()
         let metadataNet: CCMetadataNet = CCMetadataNet.init(account: appDelegate.activeAccount)
         
         let fileName = CCUtility.removeForbiddenCharacters(fileName, hasServerForbiddenCharactersSupport: appDelegate.hasServerForbiddenCharactersSupport)!
@@ -167,6 +167,8 @@ class CCActions: NSObject {
         }
         
         if metadata.cryptated {
+            
+            let crypto = CCCrypto.sharedManager() as! CCCrypto
             
             // Encrypted
             
@@ -233,6 +235,25 @@ class CCActions: NSObject {
  
         } else {
  
+            let ocNetworking = OCnetworking.init(delegate: nil, metadataNet: nil, withUser: appDelegate.activeUser, withPassword: appDelegate.activePassword, withUrl: appDelegate.activeUrl, isCryptoCloudMode: false);
+            let error = ocNetworking?.readFileSync("\(serverUrl)/\(fileName)");
+            
+            // Verify if exists the fileName TO
+            if error == nil {
+                
+                let alertController = UIAlertController(title: NSLocalizedString("_error_", comment: ""), message: NSLocalizedString("_file_already_exists_", comment: ""), preferredStyle: UIAlertControllerStyle.alert)
+                
+                let okAction = UIAlertAction(title: "OK", style: UIAlertActionStyle.default) {
+                    (result : UIAlertAction) -> Void in
+                }
+                
+                alertController.addAction(okAction)
+                
+                delegate.present(alertController, animated: true, completion: nil)
+                
+                return;
+            }
+            
             // Plain
             
             metadataNet.action = actionMoveFileOrFolder
@@ -305,36 +326,18 @@ class CCActions: NSObject {
     
     func search(_ serverUrl : String, fileName : String, depth : String, delegate: AnyObject) {
         
-        let versionServer = CCCoreData.getServerVersionActiveAccount(appDelegate.activeAccount)
-        
-        if (versionServer < 12.0) {
+        // Search DAV API
             
-            let metadataNet: CCMetadataNet = CCMetadataNet.init(account: appDelegate.activeAccount)
+        let metadataNet: CCMetadataNet = CCMetadataNet.init(account: appDelegate.activeAccount)
+            
+        metadataNet.action = actionSearch
+        metadataNet.delegate = delegate
+        metadataNet.fileName = fileName
+        metadataNet.options = depth
+        metadataNet.selector = selectorSearch
+        metadataNet.serverUrl = serverUrl
 
-            metadataNet.action = actionReadFolder;
-            metadataNet.directoryID = CCCoreData.getDirectoryID(fromServerUrl: serverUrl, activeAccount: appDelegate.activeUser)
-            metadataNet.delegate = delegate
-            metadataNet.fileName = fileName
-            metadataNet.selector = selectorSearch
-            metadataNet.serverUrl = serverUrl
-
-            appDelegate.addNetworkingOperationQueue(appDelegate.netQueue, delegate: self, metadataNet: metadataNet)
-            
-        } else {
-            
-            // Search DAV API
-            
-            let metadataNet: CCMetadataNet = CCMetadataNet.init(account: appDelegate.activeAccount)
-            
-            metadataNet.action = actionSearch
-            metadataNet.delegate = delegate
-            metadataNet.fileName = fileName
-            metadataNet.options = depth
-            metadataNet.selector = selectorSearch
-            metadataNet.serverUrl = serverUrl
-
-            appDelegate.addNetworkingOperationQueue(appDelegate.netQueue, delegate: self, metadataNet: metadataNet)
-        }
+        appDelegate.addNetworkingOperationQueue(appDelegate.netQueue, delegate: self, metadataNet: metadataNet)
     }
     
     func searchSuccess(_ metadataNet: CCMetadataNet, metadatas: [CCMetadata]) {
@@ -419,7 +422,7 @@ class CCActions: NSObject {
     // MARK: Linsting Favorites
     // --------------------------------------------------------------------------------------------
     
-    func listingFavorites(_ serverUrl : String, delegate: AnyObject) {
+    func listingFavorites(_ serverUrl: String, delegate: AnyObject) {
         
         let metadataNet: CCMetadataNet = CCMetadataNet.init(account: appDelegate.activeAccount)
         

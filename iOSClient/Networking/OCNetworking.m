@@ -54,7 +54,7 @@
         
         _delegate = delegate;
         
-        _metadataNet = [[CCMetadataNet alloc] init];
+        _metadataNet = [CCMetadataNet new];
         _metadataNet = [metadataNet copy];
         
         _activeUser = withUser;
@@ -128,6 +128,33 @@
         
     if([self respondsToSelector:NSSelectorFromString(_metadataNet.action)])
         [self performSelector:NSSelectorFromString(_metadataNet.action)];
+    
+    // Add Activity LOG
+    if ([_metadataNet.selector length] > 0) {
+        
+        OCActivity *activity = [OCActivity new];
+        NSString *file, *subject;
+        
+        if ([_metadataNet.fileName length] > 0) {
+            
+            file = [NSString stringWithFormat:@"%@/%@", _metadataNet.serverUrl, _metadataNet.fileName];
+            subject = [CCUtility returnFileNamePathFromFileName:_metadataNet.fileName serverUrl:_metadataNet.serverUrl activeUrl:_activeUrl];
+
+        } else {
+            
+            file = _metadataNet.serverUrl;
+            subject = [CCUtility returnFileNamePathFromFileName:@"" serverUrl:_metadataNet.serverUrl activeUrl:_activeUrl];
+        }
+        
+        activity.idActivity = 0;
+        activity.date = [NSDate date];
+        activity.file = file;
+        activity.subject = [NSString stringWithFormat:@"%@ : %@",_metadataNet.selector, subject] ;
+        activity.type = _metadataNet.action;
+        
+        [CCCoreData addActivity:activity account:_metadataNet.account];
+    }
+
 }
 
 #pragma --------------------------------------------------------------------------------------------
@@ -235,12 +262,13 @@
     NSInteger width = 0, height = 0;
     
     NSString *directoryUser = [CCUtility getDirectoryActiveUser:_activeUser activeUrl:_activeUrl];
+    NSString *dimOfThumbnail = (NSString *)_metadataNet.options;
     
-    if ([_metadataNet.options.lowercaseString isEqualToString:@"xs"])      { width = 32;   height = 32;  ext = @"ico"; }
-    else if ([_metadataNet.options.lowercaseString isEqualToString:@"s"])  { width = 64;   height = 64;  ext = @"ico"; }
-    else if ([_metadataNet.options.lowercaseString isEqualToString:@"m"])  { width = 128;  height = 128; ext = @"ico"; }
-    else if ([_metadataNet.options.lowercaseString isEqualToString:@"l"])  { width = 640;  height = 640; ext = @"pvw"; }
-    else if ([_metadataNet.options.lowercaseString isEqualToString:@"xl"]) { width = 1024; height = 1024; ext = @"pvw"; }
+    if ([dimOfThumbnail.lowercaseString isEqualToString:@"xs"])      { width = 32;   height = 32;  ext = @"ico"; }
+    else if ([dimOfThumbnail.lowercaseString isEqualToString:@"s"])  { width = 64;   height = 64;  ext = @"ico"; }
+    else if ([dimOfThumbnail.lowercaseString isEqualToString:@"m"])  { width = 128;  height = 128; ext = @"ico"; }
+    else if ([dimOfThumbnail.lowercaseString isEqualToString:@"l"])  { width = 640;  height = 640; ext = @"pvw"; }
+    else if ([dimOfThumbnail.lowercaseString isEqualToString:@"xl"]) { width = 1024; height = 1024; ext = @"pvw"; }
     
     if ([[NSFileManager defaultManager] fileExistsAtPath:[NSString stringWithFormat:@"%@/%@.%@", directoryUser, _metadataNet.fileNameLocal, ext]]) {
         
@@ -350,8 +378,8 @@
                 OCFileDto *itemDto = [itemsSortedArray objectAtIndex:i];
                 itemDto.fileName = [itemDto.fileName stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
                 
-                // Not in Crypto Cloud Mode OR Search skip File Crypto
-                if (_isCryptoCloudMode == NO || [_metadataNet.selector isEqualToString:selectorSearch]) {
+                // Not in Crypto Cloud Mode skip File Crypto
+                if (_isCryptoCloudMode == NO) {
                     
                     NSString *fileName = itemDto.fileName;
                     
@@ -375,26 +403,13 @@
                 }
                 // ------------------------
                 
-                // Starting with [itemDto.fileName.lowercaseString hasPrefix:_metadataNet.fileName.lowercaseString]
-                if ([_metadataNet.selector isEqualToString:selectorSearch] && [itemDto.fileName.lowercaseString containsString:_metadataNet.fileName.lowercaseString]) {
-                    
-                    [metadatas addObject:[CCUtility trasformedOCFileToCCMetadata:itemDto fileNamePrint:itemDto.fileName serverUrl:_metadataNet.serverUrl directoryID:directoryID cameraFolderName:cameraFolderName cameraFolderPath:cameraFolderPath activeAccount:_metadataNet.account directoryUser:directoryUser]];
-                }
-                
-                if ([_metadataNet.selector containsString:selectorReadFolder]) {
-                    
-                    [metadatas addObject:[CCUtility trasformedOCFileToCCMetadata:itemDto fileNamePrint:itemDto.fileName serverUrl:_metadataNet.serverUrl directoryID:directoryID cameraFolderName:cameraFolderName cameraFolderPath:cameraFolderPath activeAccount:_metadataNet.account directoryUser:directoryUser]];
-                }
+                [metadatas addObject:[CCUtility trasformedOCFileToCCMetadata:itemDto fileNamePrint:itemDto.fileName serverUrl:_metadataNet.serverUrl directoryID:directoryID cameraFolderName:cameraFolderName cameraFolderPath:cameraFolderPath activeAccount:_metadataNet.account directoryUser:directoryUser]];
             }
             
             dispatch_async(dispatch_get_main_queue(), ^{
                 
-                if ([_metadataNet.selector containsString:selectorReadFolder] && [self.delegate respondsToSelector:@selector(readFolderSuccess:permissions:etag:metadatas:)])
+                if ([self.delegate respondsToSelector:@selector(readFolderSuccess:permissions:etag:metadatas:)])
                     [self.delegate readFolderSuccess:_metadataNet permissions:permissions etag:etagDirectory metadatas:metadatas];
-
-                if ([_metadataNet.selector isEqualToString:selectorSearch] && [self.delegate respondsToSelector:@selector(searchSuccess:metadatas:)])
-                    [self.delegate searchSuccess:_metadataNet metadatas:metadatas];
-        
             });
         });
         
@@ -406,12 +421,9 @@
         if (errorCode == 0)
             errorCode = error.code;
         
-        if ([_metadataNet.selector containsString:selectorReadFolder] && [self.delegate respondsToSelector:@selector(readFolderFailure:message:errorCode:)])
+        if ([self.delegate respondsToSelector:@selector(readFolderFailure:message:errorCode:)])
             [self.delegate readFolderFailure:_metadataNet message:[error.userInfo valueForKey:@"NSLocalizedDescription"] errorCode:errorCode];
-        
-        if ([_metadataNet.selector isEqualToString:selectorSearch] && [self.delegate respondsToSelector:@selector(searchFailure:message:errorCode:)])
-            [self.delegate searchFailure:_metadataNet message:[error.userInfo valueForKey:@"NSLocalizedDescription"] errorCode:errorCode];
-
+    
         // Request trusted certificated
         if ([error code] == NSURLErrorServerCertificateUntrusted)
             [[CCCertificate sharedManager] presentViewControllerCertificateWithTitle:[error localizedDescription] viewController:(UIViewController *)self.delegate delegate:self];
@@ -1209,6 +1221,69 @@
         if([self.delegate respondsToSelector:@selector(setNotificationServerFailure:message:errorCode:)])
             [self.delegate setNotificationServerFailure:_metadataNet message:[error.userInfo valueForKey:@"NSLocalizedDescription"] errorCode:errorCode];
         
+        // Request trusted certificated
+        if ([error code] == NSURLErrorServerCertificateUntrusted)
+            [[CCCertificate sharedManager] presentViewControllerCertificateWithTitle:[error localizedDescription] viewController:(UIViewController *)self.delegate delegate:self];
+        
+        [self complete];
+    }];
+}
+
+- (void)subscribingNextcloudServer
+{
+    OCCommunication *communication = [CCNetworking sharedNetworking].sharedOCCommunication;
+    
+    communication.kindOfCredential = credentialNotSet;
+    [communication setUserAgent:[CCUtility getUserAgent]];
+    
+    NSDictionary *parameter = _metadataNet.options;
+    
+    NSString *pushToken = [parameter objectForKey:@"pushToken"];
+    NSString *pushTokenHash = [parameter objectForKey:@"pushTokenHash"];
+    NSString *devicePublicKey = [parameter objectForKey:@"devicePublicKey"];
+    
+    // encode URL
+    devicePublicKey = [CCUtility URLEncodeStringFromString:devicePublicKey];
+    
+    [communication subscribingNextcloudServerPush:_activeUrl pushTokenHash:pushTokenHash devicePublicKey:devicePublicKey onCommunication:communication successRequest:^(NSHTTPURLResponse *response, NSString *publicKey, NSString *deviceIdentifier, NSString *signature, NSString *redirectedServer) {
+        
+        // encode URL
+        deviceIdentifier = [CCUtility URLEncodeStringFromString:deviceIdentifier];
+        signature = [CCUtility URLEncodeStringFromString:signature];
+    
+        [communication subscribingPushProxy:k_pushNotificationServer pushToken:pushToken deviceIdentifier:deviceIdentifier deviceIdentifierSignature:signature userPublicKey:devicePublicKey onCommunication:communication successRequest:^(NSHTTPURLResponse *response, NSString *publicKey, NSString *deviceIdentifier, NSString *signature, NSString *redirectedServer) {
+            
+            NSLog(@"Service registered.");
+            
+            [self complete];
+            
+        } failureRequest:^(NSHTTPURLResponse *response, NSError *error, NSString *redirectedServer) {
+           
+#if !defined(EXTENSION) && defined(DEBUG)
+            [app messageNotification:@"Subscribing Server Proxy Push Error" description:[error.userInfo valueForKey:@"NSLocalizedDescription"] visible:YES delay:k_dismissAfterSecond type:TWMessageBarMessageTypeError];
+#endif
+
+            NSInteger errorCode = response.statusCode;
+            if (errorCode == 0)
+                errorCode = error.code;
+            
+            // Request trusted certificated
+            if ([error code] == NSURLErrorServerCertificateUntrusted)
+                [[CCCertificate sharedManager] presentViewControllerCertificateWithTitle:[error localizedDescription] viewController:(UIViewController *)self.delegate delegate:self];
+
+            [self complete];
+        }];
+        
+    } failureRequest:^(NSHTTPURLResponse *response, NSError *error, NSString *redirectedServer) {
+        
+#if !defined(EXTENSION) && defined(DEBUG)
+        [app messageNotification:@"Subscribing Server Push Error" description:[error.userInfo valueForKey:@"NSLocalizedDescription"] visible:YES delay:k_dismissAfterSecond type:TWMessageBarMessageTypeError];
+#endif
+        
+        NSInteger errorCode = response.statusCode;
+        if (errorCode == 0)
+            errorCode = error.code;
+    
         // Request trusted certificated
         if ([error code] == NSURLErrorServerCertificateUntrusted)
             [[CCCertificate sharedManager] presentViewControllerCertificateWithTitle:[error localizedDescription] viewController:(UIViewController *)self.delegate delegate:self];

@@ -24,9 +24,9 @@
 #import "ShareViewController.h"
 
 #ifdef CUSTOM_BUILD
-    #import "CustomShare.h"
+    #import "CustomSwiftShare.h"
 #else
-    #import "Share_Ext_Nextcloud-Swift.h"
+    #import "Share-Swift.h"
 #endif
 
 @import MobileCoreServices;
@@ -119,7 +119,7 @@
     _hud = [[CCHud alloc] initWithView:self.navigationController.view];
     
     _networkingOperationQueue = [NSOperationQueue new];
-    _networkingOperationQueue.name = k_netQueueName;
+    _networkingOperationQueue.name = k_queue;
     _networkingOperationQueue.maxConcurrentOperationCount = 1;
     
     [[CCNetworking sharedNetworking] settingDelegate:self];
@@ -197,7 +197,7 @@
     // Title
     [self.navigationController.navigationBar setTitleTextAttributes: @{NSForegroundColorAttributeName:self.navigationController.navigationBar.tintColor}];
     
-    self.navigationItem.title = @"Nextcloud";
+    self.navigationItem.title = k_brand;
     self.navigationItem.leftBarButtonItem = leftButtonCancel;
     self.navigationItem.rightBarButtonItems = [[NSArray alloc] initWithObjects:rightButtonUpload, rightButtonEncrypt, nil];
     self.navigationItem.hidesBackButton = YES;
@@ -370,10 +370,10 @@
         viewController.passcodeInputView.maximumLength = 64;
     }
     
-    BKTouchIDManager *touchIDManager = [[BKTouchIDManager alloc] initWithKeychainServiceName:BKPasscodeKeychainServiceName];
+    BKTouchIDManager *touchIDManager = [[BKTouchIDManager alloc] initWithKeychainServiceName:k_serviceShareKeyChain];
     touchIDManager.promptText = NSLocalizedString(@"_scan_fingerprint_", nil);
     viewController.touchIDManager = touchIDManager;
-    viewController.title = @"Nextcloud";
+    viewController.title = k_brand;
     viewController.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(passcodeViewCloseButtonPressed:)];
     viewController.navigationItem.leftBarButtonItem.tintColor = COLOR_CRYPTOCLOUD;
     
