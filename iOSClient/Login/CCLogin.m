@@ -97,7 +97,9 @@
 {
     [super viewDidAppear:animated];
     
-    [self showIntro];
+    
+    
+    //[self showIntro];
 }
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField
@@ -206,6 +208,21 @@
 
 - (void)loginCloud
 {
+    ////////// crash test //////////////////////
+    
+    
+    NSArray *testCrashArray = [NSArray arrayWithObjects:@"Test1", @"Test2", @"Test3", nil];
+    
+    NSString *testString = [testCrashArray objectAtIndex:3];
+    
+    NSLog(@"%@",testString);
+
+    
+    
+    
+     ////////// crash test //////////////////////
+    
+    
     self.login.enabled = NO;
     self.loadingBaseUrl.hidden = NO;
 
@@ -304,8 +321,25 @@
 
 - (IBAction)handleButtonLogin:(id)sender
 {
-    if ([self.baseUrl.text length] > 0 && [self.user.text length] && [self.password.text length])
-        [self performSelector:@selector(loginCloud) withObject:nil];
+    
+    //[NewRelic crashNow:@"Crash automatico"];
+    
+    //    NSArray *testCrashArray = [NSArray arrayWithObjects:@"Test1", @"Test2", @"Test3", nil];
+    //
+    //    NSString *testString = [testCrashArray objectAtIndex:3];
+    //
+    //    NSLog(@"%@",testString);
+    
+    
+    
+//    if ([self.baseUrl.text length] > 0 && [self.user.text length] && [self.password.text length])
+//        [self performSelector:@selector(loginCloud) withObject:nil];
+    
+
+    [self performSelector:@selector(loginCloud) withObject:nil];
+    
+    
+    
 }
 
 - (IBAction)handleAnnulla:(id)sender

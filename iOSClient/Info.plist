@@ -7,7 +7,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleDisplayName</key>
-	<string>Nextcloud</string>
+	<string>Clarosync</string>
 	<key>CFBundleDocumentTypes</key>
 	<array>
 		<dict>
@@ -70,6 +70,20 @@
 	</array>
 	<key>CFBundleVersion</key>
 	<string>00025</string>
+	<key>Fabric</key>
+	<dict>
+		<key>APIKey</key>
+		<string>6c931cfafe724fffc6f48017b7f64f45ca3d88be</string>
+		<key>Kits</key>
+		<array>
+			<dict>
+				<key>KitInfo</key>
+				<dict/>
+				<key>KitName</key>
+				<string>Crashlytics</string>
+			</dict>
+		</array>
+	</dict>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<true/>
 	<key>ITSEncryptionExportComplianceCode</key>

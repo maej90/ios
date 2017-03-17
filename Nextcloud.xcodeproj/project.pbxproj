@@ -7,6 +7,38 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		50765AE51E79CB01006682B5 /* NewRelicAgent.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 50765AE41E79CB01006682B5 /* NewRelicAgent.framework */; };
+		50765AE61E79CB01006682B5 /* NewRelicAgent.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 50765AE41E79CB01006682B5 /* NewRelicAgent.framework */; };
+		50765AE71E79CB01006682B5 /* NewRelicAgent.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 50765AE41E79CB01006682B5 /* NewRelicAgent.framework */; };
+		50765AE81E79CB01006682B5 /* NewRelicAgent.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 50765AE41E79CB01006682B5 /* NewRelicAgent.framework */; };
+		50765AEA1E79CB1E006682B5 /* CoreTelephony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 50765AE91E79CB1E006682B5 /* CoreTelephony.framework */; };
+		50765AEC1E79CB28006682B5 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 50765AEB1E79CB28006682B5 /* SystemConfiguration.framework */; };
+		50765AEE1E79CB33006682B5 /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 50765AED1E79CB33006682B5 /* libc++.tbd */; };
+		50765AF01E79DF8C006682B5 /* CoreTelephony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 50765AE91E79CB1E006682B5 /* CoreTelephony.framework */; };
+		50765AF11E79DF93006682B5 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 50765AEB1E79CB28006682B5 /* SystemConfiguration.framework */; };
+		50765AF21E79DF9C006682B5 /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 50765AED1E79CB33006682B5 /* libc++.tbd */; };
+		50765AF31E79DFA4006682B5 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = F7FC7D551DC1F93800BB2C6A /* libz.tbd */; };
+		50765AF41E79DFAF006682B5 /* CoreTelephony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 50765AE91E79CB1E006682B5 /* CoreTelephony.framework */; };
+		50765AF51E79DFB9006682B5 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 50765AEB1E79CB28006682B5 /* SystemConfiguration.framework */; };
+		50765AF61E79DFC4006682B5 /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 50765AED1E79CB33006682B5 /* libc++.tbd */; };
+		50765AF71E79DFD1006682B5 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = F7FC7D551DC1F93800BB2C6A /* libz.tbd */; };
+		50765AF81E79DFF9006682B5 /* CoreTelephony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 50765AE91E79CB1E006682B5 /* CoreTelephony.framework */; };
+		50765AF91E79DFFE006682B5 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 50765AEB1E79CB28006682B5 /* SystemConfiguration.framework */; };
+		50765AFA1E79E006006682B5 /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 50765AED1E79CB33006682B5 /* libc++.tbd */; };
+		50765AFB1E79E00C006682B5 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = F7FC7D551DC1F93800BB2C6A /* libz.tbd */; };
+		50765AFD1E79E58E006682B5 /* libxml2.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 50765AFC1E79E58E006682B5 /* libxml2.tbd */; };
+		50765AFF1E79E599006682B5 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 50765AFE1E79E599006682B5 /* CoreLocation.framework */; };
+		50765B011E79E59F006682B5 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 50765B001E79E59F006682B5 /* CFNetwork.framework */; };
+		50765B031E79E5AF006682B5 /* UserNotifications.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 50765B021E79E5AF006682B5 /* UserNotifications.framework */; };
+		50765B061E79E7D0006682B5 /* Fabric.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 50765B041E79E7D0006682B5 /* Fabric.framework */; };
+		50765B071E79E7D0006682B5 /* Crashlytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 50765B051E79E7D0006682B5 /* Crashlytics.framework */; };
+		50765B151E79E8B4006682B5 /* AEIdfaProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = 50765B0B1E79E8B4006682B5 /* AEIdfaProvider.m */; };
+		50765B161E79E8B4006682B5 /* libengagement.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 50765B141E79E8B4006682B5 /* libengagement.a */; };
+		50AD32D81E7B162E00963AFB /* libreach.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 50AD32D21E7B162E00963AFB /* libreach.a */; };
+		50AD32D91E7B162E00963AFB /* AEDefaultAnnouncementView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 50AD32D41E7B162E00963AFB /* AEDefaultAnnouncementView.xib */; };
+		50AD32DA1E7B162E00963AFB /* AEDefaultPollView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 50AD32D51E7B162E00963AFB /* AEDefaultPollView.xib */; };
+		50AD32DB1E7B162E00963AFB /* AENotificationView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 50AD32D61E7B162E00963AFB /* AENotificationView.xib */; };
+		50AD32DC1E7B162E00963AFB /* close.png in Resources */ = {isa = PBXBuildFile; fileRef = 50AD32D71E7B162E00963AFB /* close.png */; };
 		F708CF6D1E56E8CC00271D8B /* TableMetadata+CoreDataClass.m in Sources */ = {isa = PBXBuildFile; fileRef = F708CF4E1E56E8CB00271D8B /* TableMetadata+CoreDataClass.m */; };
 		F708CF6E1E56E8CC00271D8B /* TableMetadata+CoreDataClass.m in Sources */ = {isa = PBXBuildFile; fileRef = F708CF4E1E56E8CB00271D8B /* TableMetadata+CoreDataClass.m */; };
 		F708CF6F1E56E8CC00271D8B /* TableMetadata+CoreDataClass.m in Sources */ = {isa = PBXBuildFile; fileRef = F708CF4E1E56E8CB00271D8B /* TableMetadata+CoreDataClass.m */; };
@@ -727,6 +759,52 @@
 		08EA97451E6554FC004C83FA /* FirebaseCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FirebaseCore.framework; sourceTree = "<group>"; };
 		08EA97461E6554FC004C83FA /* FirebaseInstanceID.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FirebaseInstanceID.framework; sourceTree = "<group>"; };
 		08EA97471E6554FC004C83FA /* GoogleToolboxForMac.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = GoogleToolboxForMac.framework; sourceTree = "<group>"; };
+		50765AE41E79CB01006682B5 /* NewRelicAgent.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = NewRelicAgent.framework; sourceTree = "<group>"; };
+		50765AE91E79CB1E006682B5 /* CoreTelephony.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreTelephony.framework; path = System/Library/Frameworks/CoreTelephony.framework; sourceTree = SDKROOT; };
+		50765AEB1E79CB28006682B5 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
+		50765AED1E79CB33006682B5 /* libc++.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++.tbd"; path = "usr/lib/libc++.tbd"; sourceTree = SDKROOT; };
+		50765AFC1E79E58E006682B5 /* libxml2.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libxml2.tbd; path = usr/lib/libxml2.tbd; sourceTree = SDKROOT; };
+		50765AFE1E79E599006682B5 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
+		50765B001E79E59F006682B5 /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
+		50765B021E79E5AF006682B5 /* UserNotifications.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UserNotifications.framework; path = System/Library/Frameworks/UserNotifications.framework; sourceTree = SDKROOT; };
+		50765B041E79E7D0006682B5 /* Fabric.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Fabric.framework; sourceTree = "<group>"; };
+		50765B051E79E7D0006682B5 /* Crashlytics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Crashlytics.framework; sourceTree = "<group>"; };
+		50765B0A1E79E8B4006682B5 /* AEIdfaProvider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AEIdfaProvider.h; sourceTree = "<group>"; };
+		50765B0B1E79E8B4006682B5 /* AEIdfaProvider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AEIdfaProvider.m; sourceTree = "<group>"; };
+		50765B0D1E79E8B4006682B5 /* AEModule.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AEModule.h; sourceTree = "<group>"; };
+		50765B0E1E79E8B4006682B5 /* AEPushMessage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AEPushMessage.h; sourceTree = "<group>"; };
+		50765B0F1E79E8B4006682B5 /* AEStorage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AEStorage.h; sourceTree = "<group>"; };
+		50765B101E79E8B4006682B5 /* AEUserNotificationHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AEUserNotificationHandler.h; sourceTree = "<group>"; };
+		50765B111E79E8B4006682B5 /* EngagementAgent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EngagementAgent.h; sourceTree = "<group>"; };
+		50765B121E79E8B4006682B5 /* EngagementTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EngagementTableViewController.h; sourceTree = "<group>"; };
+		50765B131E79E8B4006682B5 /* EngagementViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EngagementViewController.h; sourceTree = "<group>"; };
+		50765B141E79E8B4006682B5 /* libengagement.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libengagement.a; sourceTree = "<group>"; };
+		50AD32BD1E7B162E00963AFB /* AEAnnouncementViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AEAnnouncementViewController.h; sourceTree = "<group>"; };
+		50AD32BE1E7B162E00963AFB /* AEAutorotateView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AEAutorotateView.h; sourceTree = "<group>"; };
+		50AD32BF1E7B162E00963AFB /* AEContentViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AEContentViewController.h; sourceTree = "<group>"; };
+		50AD32C01E7B162E00963AFB /* AEDefaultAnnouncementViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AEDefaultAnnouncementViewController.h; sourceTree = "<group>"; };
+		50AD32C11E7B162E00963AFB /* AEDefaultNotifier.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AEDefaultNotifier.h; sourceTree = "<group>"; };
+		50AD32C21E7B162E00963AFB /* AEDefaultPollViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AEDefaultPollViewController.h; sourceTree = "<group>"; };
+		50AD32C31E7B162E00963AFB /* AEInteractiveContent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AEInteractiveContent.h; sourceTree = "<group>"; };
+		50AD32C41E7B162E00963AFB /* AENotificationView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AENotificationView.h; sourceTree = "<group>"; };
+		50AD32C51E7B162E00963AFB /* AENotifier.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AENotifier.h; sourceTree = "<group>"; };
+		50AD32C61E7B162E00963AFB /* AEPollViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AEPollViewController.h; sourceTree = "<group>"; };
+		50AD32C71E7B162E00963AFB /* AEReachAbstractAnnouncement.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AEReachAbstractAnnouncement.h; sourceTree = "<group>"; };
+		50AD32C81E7B162E00963AFB /* AEReachAnnouncement.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AEReachAnnouncement.h; sourceTree = "<group>"; };
+		50AD32C91E7B162E00963AFB /* AEReachContent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AEReachContent.h; sourceTree = "<group>"; };
+		50AD32CA1E7B162E00963AFB /* AEReachDataPush.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AEReachDataPush.h; sourceTree = "<group>"; };
+		50AD32CB1E7B162E00963AFB /* AEReachDataPushDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AEReachDataPushDelegate.h; sourceTree = "<group>"; };
+		50AD32CC1E7B162E00963AFB /* AEReachModule.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AEReachModule.h; sourceTree = "<group>"; };
+		50AD32CD1E7B162E00963AFB /* AEReachNotifAnnouncement.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AEReachNotifAnnouncement.h; sourceTree = "<group>"; };
+		50AD32CE1E7B162E00963AFB /* AEReachPoll.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AEReachPoll.h; sourceTree = "<group>"; };
+		50AD32CF1E7B162E00963AFB /* AEReachPollQuestion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AEReachPollQuestion.h; sourceTree = "<group>"; };
+		50AD32D01E7B162E00963AFB /* AEViewControllerUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AEViewControllerUtil.h; sourceTree = "<group>"; };
+		50AD32D11E7B162E00963AFB /* AEWebAnnouncementJsBridge.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AEWebAnnouncementJsBridge.h; sourceTree = "<group>"; };
+		50AD32D21E7B162E00963AFB /* libreach.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libreach.a; sourceTree = "<group>"; };
+		50AD32D41E7B162E00963AFB /* AEDefaultAnnouncementView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AEDefaultAnnouncementView.xib; sourceTree = "<group>"; };
+		50AD32D51E7B162E00963AFB /* AEDefaultPollView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AEDefaultPollView.xib; sourceTree = "<group>"; };
+		50AD32D61E7B162E00963AFB /* AENotificationView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AENotificationView.xib; sourceTree = "<group>"; };
+		50AD32D71E7B162E00963AFB /* close.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = close.png; sourceTree = "<group>"; };
 		F70211F41BAC56E9003FC03E /* CCCellMain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCCellMain.h; sourceTree = "<group>"; };
 		F70211F51BAC56E9003FC03E /* CCCellMain.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCCellMain.m; sourceTree = "<group>"; };
 		F70211F61BAC56E9003FC03E /* CCCellMain.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CCCellMain.xib; sourceTree = "<group>"; };
@@ -1633,8 +1711,13 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				50765AF31E79DFA4006682B5 /* libz.tbd in Frameworks */,
+				50765AF21E79DF9C006682B5 /* libc++.tbd in Frameworks */,
+				50765AF11E79DF93006682B5 /* SystemConfiguration.framework in Frameworks */,
+				50765AF01E79DF8C006682B5 /* CoreTelephony.framework in Frameworks */,
 				F71E68021DC1F79D003BA52B /* libownCloudiOS.a in Frameworks */,
 				F72C63891DC14B0400FA5ED5 /* libMagicalRecord.a in Frameworks */,
+				50765AE61E79CB01006682B5 /* NewRelicAgent.framework in Frameworks */,
 				F70A630F1D5B3467004E2AA5 /* libssl.a in Frameworks */,
 				F70A630B1D5B3467004E2AA5 /* libcrypto.a in Frameworks */,
 			);
@@ -1644,8 +1727,13 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				50765AF71E79DFD1006682B5 /* libz.tbd in Frameworks */,
+				50765AF61E79DFC4006682B5 /* libc++.tbd in Frameworks */,
+				50765AF51E79DFB9006682B5 /* SystemConfiguration.framework in Frameworks */,
+				50765AF41E79DFAF006682B5 /* CoreTelephony.framework in Frameworks */,
 				F74344541E1277D8001CC831 /* libownCloudiOS.a in Frameworks */,
 				F74344551E1277E2001CC831 /* libMagicalRecord.a in Frameworks */,
+				50765AE71E79CB01006682B5 /* NewRelicAgent.framework in Frameworks */,
 				F74344591E12786C001CC831 /* libssl.a in Frameworks */,
 				F74344561E12784A001CC831 /* libcrypto.a in Frameworks */,
 			);
@@ -1655,6 +1743,11 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				50765AFB1E79E00C006682B5 /* libz.tbd in Frameworks */,
+				50765AFA1E79E006006682B5 /* libc++.tbd in Frameworks */,
+				50765AF91E79DFFE006682B5 /* SystemConfiguration.framework in Frameworks */,
+				50765AF81E79DFF9006682B5 /* CoreTelephony.framework in Frameworks */,
+				50765AE81E79CB01006682B5 /* NewRelicAgent.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1662,9 +1755,21 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F7FC7D561DC1F93800BB2C6A /* libz.tbd in Frameworks */,
+				50AD32D81E7B162E00963AFB /* libreach.a in Frameworks */,
+				50765AEE1E79CB33006682B5 /* libc++.tbd in Frameworks */,
+				50765B031E79E5AF006682B5 /* UserNotifications.framework in Frameworks */,
+				50765AE51E79CB01006682B5 /* NewRelicAgent.framework in Frameworks */,
+				50765AEC1E79CB28006682B5 /* SystemConfiguration.framework in Frameworks */,
+				50765AEA1E79CB1E006682B5 /* CoreTelephony.framework in Frameworks */,
+				50765B011E79E59F006682B5 /* CFNetwork.framework in Frameworks */,
+				50765AFD1E79E58E006682B5 /* libxml2.tbd in Frameworks */,
+				50765AFF1E79E599006682B5 /* CoreLocation.framework in Frameworks */,
+				50765B161E79E8B4006682B5 /* libengagement.a in Frameworks */,
+				50765B071E79E7D0006682B5 /* Crashlytics.framework in Frameworks */,
+				50765B061E79E7D0006682B5 /* Fabric.framework in Frameworks */,
 				F71E68001DC1F792003BA52B /* libownCloudiOS.a in Frameworks */,
 				F714526D1DC1523B0006A5D4 /* libMagicalRecord.a in Frameworks */,
-				F7FC7D561DC1F93800BB2C6A /* libz.tbd in Frameworks */,
 				F7BB14961D5B62C000ECEE68 /* libcrypto.a in Frameworks */,
 				F7BB14971D5B62C000ECEE68 /* libssl.a in Frameworks */,
 			);
@@ -1673,6 +1778,88 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		50765B081E79E8B4006682B5 /* EngagementSDK */ = {
+			isa = PBXGroup;
+			children = (
+				50765B091E79E8B4006682B5 /* Classes */,
+				50765B0C1E79E8B4006682B5 /* Headers */,
+				50765B141E79E8B4006682B5 /* libengagement.a */,
+			);
+			path = EngagementSDK;
+			sourceTree = "<group>";
+		};
+		50765B091E79E8B4006682B5 /* Classes */ = {
+			isa = PBXGroup;
+			children = (
+				50765B0A1E79E8B4006682B5 /* AEIdfaProvider.h */,
+				50765B0B1E79E8B4006682B5 /* AEIdfaProvider.m */,
+			);
+			path = Classes;
+			sourceTree = "<group>";
+		};
+		50765B0C1E79E8B4006682B5 /* Headers */ = {
+			isa = PBXGroup;
+			children = (
+				50765B0D1E79E8B4006682B5 /* AEModule.h */,
+				50765B0E1E79E8B4006682B5 /* AEPushMessage.h */,
+				50765B0F1E79E8B4006682B5 /* AEStorage.h */,
+				50765B101E79E8B4006682B5 /* AEUserNotificationHandler.h */,
+				50765B111E79E8B4006682B5 /* EngagementAgent.h */,
+				50765B121E79E8B4006682B5 /* EngagementTableViewController.h */,
+				50765B131E79E8B4006682B5 /* EngagementViewController.h */,
+			);
+			path = Headers;
+			sourceTree = "<group>";
+		};
+		50AD32BB1E7B162E00963AFB /* EngagementReach */ = {
+			isa = PBXGroup;
+			children = (
+				50AD32BC1E7B162E00963AFB /* Headers */,
+				50AD32D21E7B162E00963AFB /* libreach.a */,
+				50AD32D31E7B162E00963AFB /* res */,
+			);
+			path = EngagementReach;
+			sourceTree = "<group>";
+		};
+		50AD32BC1E7B162E00963AFB /* Headers */ = {
+			isa = PBXGroup;
+			children = (
+				50AD32BD1E7B162E00963AFB /* AEAnnouncementViewController.h */,
+				50AD32BE1E7B162E00963AFB /* AEAutorotateView.h */,
+				50AD32BF1E7B162E00963AFB /* AEContentViewController.h */,
+				50AD32C01E7B162E00963AFB /* AEDefaultAnnouncementViewController.h */,
+				50AD32C11E7B162E00963AFB /* AEDefaultNotifier.h */,
+				50AD32C21E7B162E00963AFB /* AEDefaultPollViewController.h */,
+				50AD32C31E7B162E00963AFB /* AEInteractiveContent.h */,
+				50AD32C41E7B162E00963AFB /* AENotificationView.h */,
+				50AD32C51E7B162E00963AFB /* AENotifier.h */,
+				50AD32C61E7B162E00963AFB /* AEPollViewController.h */,
+				50AD32C71E7B162E00963AFB /* AEReachAbstractAnnouncement.h */,
+				50AD32C81E7B162E00963AFB /* AEReachAnnouncement.h */,
+				50AD32C91E7B162E00963AFB /* AEReachContent.h */,
+				50AD32CA1E7B162E00963AFB /* AEReachDataPush.h */,
+				50AD32CB1E7B162E00963AFB /* AEReachDataPushDelegate.h */,
+				50AD32CC1E7B162E00963AFB /* AEReachModule.h */,
+				50AD32CD1E7B162E00963AFB /* AEReachNotifAnnouncement.h */,
+				50AD32CE1E7B162E00963AFB /* AEReachPoll.h */,
+				50AD32CF1E7B162E00963AFB /* AEReachPollQuestion.h */,
+				50AD32D01E7B162E00963AFB /* AEViewControllerUtil.h */,
+				50AD32D11E7B162E00963AFB /* AEWebAnnouncementJsBridge.h */,
+			);
+			path = Headers;
+			sourceTree = "<group>";
+		};
+		50AD32D31E7B162E00963AFB /* res */ = {
+			isa = PBXGroup;
+			children = (
+				50AD32D41E7B162E00963AFB /* AEDefaultAnnouncementView.xib */,
+				50AD32D51E7B162E00963AFB /* AEDefaultPollView.xib */,
+				50AD32D61E7B162E00963AFB /* AENotificationView.xib */,
+				50AD32D71E7B162E00963AFB /* close.png */,
+			);
+			path = res;
+			sourceTree = "<group>";
+		};
 		F70211F31BAC56E9003FC03E /* Main */ = {
 			isa = PBXGroup;
 			children = (
@@ -1708,6 +1895,8 @@
 		F70F02A81C889183008DAB36 /* Libraries external */ = {
 			isa = PBXGroup;
 			children = (
+				50AD32BB1E7B162E00963AFB /* EngagementReach */,
+				50765B081E79E8B4006682B5 /* EngagementSDK */,
 				F70F02A91C889183008DAB36 /* AESCrypt-ObjC */,
 				F70F02B21C889183008DAB36 /* AFViewShaker */,
 				F744FA7B1E57333C00BFAB34 /* APAvatarImageView */,
@@ -3299,6 +3488,16 @@
 		F7FC7D541DC1F93700BB2C6A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				50765B041E79E7D0006682B5 /* Fabric.framework */,
+				50765B051E79E7D0006682B5 /* Crashlytics.framework */,
+				50765B021E79E5AF006682B5 /* UserNotifications.framework */,
+				50765B001E79E59F006682B5 /* CFNetwork.framework */,
+				50765AFE1E79E599006682B5 /* CoreLocation.framework */,
+				50765AFC1E79E58E006682B5 /* libxml2.tbd */,
+				50765AED1E79CB33006682B5 /* libc++.tbd */,
+				50765AEB1E79CB28006682B5 /* SystemConfiguration.framework */,
+				50765AE91E79CB1E006682B5 /* CoreTelephony.framework */,
+				50765AE41E79CB01006682B5 /* NewRelicAgent.framework */,
 				08EA97441E6554FC004C83FA /* FirebaseAnalytics.framework */,
 				08EA97451E6554FC004C83FA /* FirebaseCore.framework */,
 				08EA97461E6554FC004C83FA /* FirebaseInstanceID.framework */,
@@ -3414,6 +3613,7 @@
 				F77B0EE91D118A16002130FE /* Resources */,
 				F77B0F981D118A16002130FE /* Embed App Extensions */,
 				F73B02C01DC0F1C900EC2C33 /* ShellScript */,
+				50765AEF1E79CBBB006682B5 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -3438,8 +3638,12 @@
 				ORGANIZATIONNAME = TWS;
 				TargetAttributes = {
 					F71459B41D12E3B700CAFEEC = {
-						DevelopmentTeam = 6JLRKY9ZV7;
+						DevelopmentTeam = 6GD9JZZRM4;
+						ProvisioningStyle = Manual;
 						SystemCapabilities = {
+							com.apple.ApplicationGroups.iOS = {
+								enabled = 1;
+							};
 							com.apple.iCloud = {
 								enabled = 0;
 							};
@@ -3447,33 +3651,39 @@
 					};
 					F74344111E1264ED001CC831 = {
 						CreatedOnToolsVersion = 8.2.1;
-						DevelopmentTeam = 6JLRKY9ZV7;
-						ProvisioningStyle = Automatic;
+						DevelopmentTeam = 6GD9JZZRM4;
+						ProvisioningStyle = Manual;
 						SystemCapabilities = {
 							com.apple.ApplicationGroups.iOS = {
 								enabled = 1;
 							};
 							com.apple.Keychain = {
-								enabled = 1;
+								enabled = 0;
 							};
 						};
 					};
 					F743441F1E1264EE001CC831 = {
 						CreatedOnToolsVersion = 8.2.1;
-						DevelopmentTeam = 6JLRKY9ZV7;
+						DevelopmentTeam = 6GD9JZZRM4;
 						LastSwiftMigration = 0820;
-						ProvisioningStyle = Automatic;
+						ProvisioningStyle = Manual;
 						SystemCapabilities = {
-							com.apple.Keychain = {
+							com.apple.ApplicationGroups.iOS = {
 								enabled = 1;
+							};
+							com.apple.Keychain = {
+								enabled = 0;
 							};
 						};
 					};
 					F77B0DEB1D118A16002130FE = {
-						DevelopmentTeam = 6JLRKY9ZV7;
+						DevelopmentTeam = 6GD9JZZRM4;
 						LastSwiftMigration = 0820;
-						ProvisioningStyle = Automatic;
+						ProvisioningStyle = Manual;
 						SystemCapabilities = {
+							com.apple.ApplicationGroups.iOS = {
+								enabled = 1;
+							};
 							com.apple.Push = {
 								enabled = 1;
 							};
@@ -3685,6 +3895,7 @@
 				F7F06ED11DBFACC600099AE9 /* CTAssetsPicker.strings in Resources */,
 				F77B0F1C1D118A16002130FE /* Reader-Email@2x.png in Resources */,
 				F7F54CF61E5B14C700E19C62 /* PlayButtonOverlayLarge@3x.png in Resources */,
+				50AD32DC1E7B162E00963AFB /* close.png in Resources */,
 				F77B0F1D1D118A16002130FE /* ZSSh2@2x.png in Resources */,
 				F77B0F1E1D118A16002130FE /* ZSSstrikethrough.png in Resources */,
 				F77B0F211D118A16002130FE /* ZSSh6.png in Resources */,
@@ -3711,6 +3922,7 @@
 				F77B0F361D118A16002130FE /* editor.html in Resources */,
 				F7676A7F1D5CB2A400DF734C /* icon-info@2x.png in Resources */,
 				F77B0F381D118A16002130FE /* ZSSkeyboard.png in Resources */,
+				50AD32D91E7B162E00963AFB /* AEDefaultAnnouncementView.xib in Resources */,
 				F7676A791D5CB2A400DF734C /* icon-error.png in Resources */,
 				F77B0F391D118A16002130FE /* ZSStable@2x.png in Resources */,
 				F77B0F3B1D118A16002130FE /* ZSSredo@2x.png in Resources */,
@@ -3775,11 +3987,13 @@
 				F77B0F791D118A16002130FE /* ZSSunlink.png in Resources */,
 				F77B0F7A1D118A16002130FE /* ZSSredo.png in Resources */,
 				F7F54CE51E5B14C700E19C62 /* ImageError.png in Resources */,
+				50AD32DA1E7B162E00963AFB /* AEDefaultPollView.xib in Resources */,
 				F77B0F7B1D118A16002130FE /* ZSSrightjustify.png in Resources */,
 				F7F54CFC1E5B14C700E19C62 /* UIBarButtonItemArrowLeft@3x.png in Resources */,
 				F77B0F7C1D118A16002130FE /* ZSSviewsource@2x.png in Resources */,
 				F77B0F7D1D118A16002130FE /* Images.xcassets in Resources */,
 				F77B0F7F1D118A16002130FE /* ZSScenterjustify@2x.png in Resources */,
+				50AD32DB1E7B162E00963AFB /* AENotificationView.xib in Resources */,
 				F77B0F811D118A16002130FE /* ZSSparagraph@2x.png in Resources */,
 				F77B0F821D118A16002130FE /* ZSSsuperscript.png in Resources */,
 				F77B0F831D118A16002130FE /* ZSSh5@2x.png in Resources */,
@@ -3801,6 +4015,19 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		50765AEF1E79CBBB006682B5 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "./Fabric.framework/run 6c931cfafe724fffc6f48017b7f64f45ca3d88be 60172168e4c2b218e442b73c10253c0546e525965fe82f401a52b3432fefbbdd\n";
+		};
 		F73B02C01DC0F1C900EC2C33 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -3812,7 +4039,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "#!/bin/bash\n# buildNumber=$(/usr/libexec/PlistBuddy -c \"Print CFBundleVersion\" \"$INFOPLIST_FILE\")\n# buildNumber=$(echo $buildNumber | sed 's/0*//')\n# buildNumber=$(($buildNumber + 1))\n# buildNumber=$(printf \"%04d\" $buildNumber)\n# /usr/libexec/PlistBuddy -c \"Set :CFBundleVersion $buildNumber\" \"$INFOPLIST_FILE\"";
+			shellScript = "#!/bin/bash\n# buildNumber=$(/usr/libexec/PlistBuddy -c \"Print CFBundleVersion\" \"$INFOPLIST_FILE\")\n# buildNumber=$(echo $buildNumber | sed 's/0*//')\n# buildNumber=$(($buildNumber + 1))\n# buildNumber=$(printf \"%04d\" $buildNumber)\n# /usr/libexec/PlistBuddy -c \"Set :CFBundleVersion $buildNumber\" \"$INFOPLIST_FILE\"\n\nSCRIPT=`/usr/bin/find \"${SRCROOT}\" -name newrelic_postbuild.sh | head -n 1`\n\n/bin/sh \"${SCRIPT}\" \"AAd95c3cc006e37599ddbd23c8013536ebf196a6ed\"";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -4171,6 +4398,7 @@
 				F77B0E951D118A16002130FE /* CCManageAsset.m in Sources */,
 				F7659A391DC0B737004860C4 /* iRate.m in Sources */,
 				F77B0E961D118A16002130FE /* ReaderContentView.m in Sources */,
+				50765B151E79E8B4006682B5 /* AEIdfaProvider.m in Sources */,
 				F77B0E971D118A16002130FE /* LMMediaItemQueueManager.m in Sources */,
 				F73CCE0D1DC13776007E38D8 /* NSString+XLFormAdditions.m in Sources */,
 				F73CCE0F1DC13776007E38D8 /* UIView+XLFormAdditions.m in Sources */,
@@ -4402,8 +4630,11 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEBUG_INFORMATION_FORMAT = dwarf;
-				DEVELOPMENT_TEAM = 6JLRKY9ZV7;
-				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
+				DEVELOPMENT_TEAM = 6GD9JZZRM4;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_PREFIX_HEADER = iOSClient/CryptoCloud.pch;
 				GCC_PREPROCESSOR_DEFINITIONS = (
@@ -4420,8 +4651,10 @@
 					"-Obj-C",
 					"-all_load",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "it.twsweb.Nextcloud.Share-Ext-Nextcloud";
+				PRODUCT_BUNDLE_IDENTIFIER = "mx.com.amco.clarodrive.Share-Ext-ClaroDrive";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "25b5f15f-dc3d-432b-93fa-1631e8296812";
+				PROVISIONING_PROFILE_SPECIFIER = "Claro Drive Share Ext";
 				SKIP_INSTALL = YES;
 				SWIFT_OBJC_BRIDGING_HEADER = "Share Ext/Share Ext-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -4442,8 +4675,11 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				DEVELOPMENT_TEAM = 6JLRKY9ZV7;
-				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
+				DEVELOPMENT_TEAM = 6GD9JZZRM4;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_PREFIX_HEADER = iOSClient/CryptoCloud.pch;
 				GCC_PREPROCESSOR_DEFINITIONS = (
@@ -4460,8 +4696,10 @@
 					"-Obj-C",
 					"-all_load",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "it.twsweb.Nextcloud.Share-Ext-Nextcloud";
+				PRODUCT_BUNDLE_IDENTIFIER = "mx.com.amco.clarodrive.Share-Ext-ClaroDrive";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "25b5f15f-dc3d-432b-93fa-1631e8296812";
+				PROVISIONING_PROFILE_SPECIFIER = "Claro Drive Share Ext";
 				SKIP_INSTALL = YES;
 				SWIFT_OBJC_BRIDGING_HEADER = "Share Ext/Share Ext-Bridging-Header.h";
 				SWIFT_VERSION = 3.0;
@@ -4480,7 +4718,11 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEBUG_INFORMATION_FORMAT = dwarf;
-				DEVELOPMENT_TEAM = 6JLRKY9ZV7;
+				DEVELOPMENT_TEAM = 6GD9JZZRM4;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				GCC_PREFIX_HEADER = iOSClient/CryptoCloud.pch;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"EXTENSION=1",
@@ -4492,8 +4734,10 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
 				LIBRARY_SEARCH_PATHS = "\"Libraries external\"/**";
-				PRODUCT_BUNDLE_IDENTIFIER = it.twsweb.Nextcloud.Picker;
+				PRODUCT_BUNDLE_IDENTIFIER = mx.com.amco.clarodrive.picker;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "c1e0f628-6516-48d3-a404-87cd1ebf1fcc";
+				PROVISIONING_PROFILE_SPECIFIER = "Claro Drive Picker";
 				SKIP_INSTALL = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG NC";
 				SWIFT_OBJC_BRIDGING_HEADER = "Picker/Picker-Bridging-Header.h";
@@ -4513,7 +4757,11 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				DEVELOPMENT_TEAM = 6JLRKY9ZV7;
+				DEVELOPMENT_TEAM = 6GD9JZZRM4;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				GCC_PREFIX_HEADER = iOSClient/CryptoCloud.pch;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"EXTENSION=1",
@@ -4524,8 +4772,10 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
 				LIBRARY_SEARCH_PATHS = "\"Libraries external\"/**";
-				PRODUCT_BUNDLE_IDENTIFIER = it.twsweb.Nextcloud.Picker;
+				PRODUCT_BUNDLE_IDENTIFIER = mx.com.amco.clarodrive.picker;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "c1e0f628-6516-48d3-a404-87cd1ebf1fcc";
+				PROVISIONING_PROFILE_SPECIFIER = "Claro Drive Picker";
 				SKIP_INSTALL = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = NC;
 				SWIFT_OBJC_BRIDGING_HEADER = "Picker/Picker-Bridging-Header.h";
@@ -4545,7 +4795,11 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEBUG_INFORMATION_FORMAT = dwarf;
-				DEVELOPMENT_TEAM = 6JLRKY9ZV7;
+				DEVELOPMENT_TEAM = 6GD9JZZRM4;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"EXTENSION=1",
@@ -4555,8 +4809,10 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
-				PRODUCT_BUNDLE_IDENTIFIER = it.twsweb.Nextcloud.PickerFileProvider;
+				PRODUCT_BUNDLE_IDENTIFIER = mx.com.amco.clarodrive.pickerfileprovider;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "de9079bf-1dbc-4f23-bda1-432e8c7b25cb";
+				PROVISIONING_PROFILE_SPECIFIER = "Claro Drive Picker File Provider";
 				SKIP_INSTALL = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG NC";
 				SWIFT_OBJC_BRIDGING_HEADER = "PickerFileProvider/PickerFileProvider-Bridging-Header.h";
@@ -4577,7 +4833,11 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				DEVELOPMENT_TEAM = 6JLRKY9ZV7;
+				DEVELOPMENT_TEAM = 6GD9JZZRM4;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"NC=1",
 					"EXTENSION=1",
@@ -4586,8 +4846,10 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
-				PRODUCT_BUNDLE_IDENTIFIER = it.twsweb.Nextcloud.PickerFileProvider;
+				PRODUCT_BUNDLE_IDENTIFIER = mx.com.amco.clarodrive.pickerfileprovider;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "de9079bf-1dbc-4f23-bda1-432e8c7b25cb";
+				PROVISIONING_PROFILE_SPECIFIER = "Claro Drive Picker File Provider";
 				SKIP_INSTALL = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = NC;
 				SWIFT_OBJC_BRIDGING_HEADER = "PickerFileProvider/PickerFileProvider-Bridging-Header.h";
@@ -4604,12 +4866,15 @@
 				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = YES;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = iOSClient/Nextcloud.entitlements;
-				CODE_SIGN_IDENTITY = "Apple Development IOS Push Services: it.twsweb.Nextcloud";
+				CODE_SIGN_IDENTITY = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CURRENT_PROJECT_VERSION = "";
-				DEVELOPMENT_TEAM = 6JLRKY9ZV7;
+				DEVELOPMENT_TEAM = 6GD9JZZRM4;
 				ENABLE_BITCODE = YES;
-				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = iOSClient/CryptoCloud.pch;
 				GCC_PREPROCESSOR_DEFINITIONS = (
@@ -4620,15 +4885,19 @@
 				INFOPLIST_FILE = iOSClient/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
-				LIBRARY_SEARCH_PATHS = "\"Libraries external\"/**";
+				LIBRARY_SEARCH_PATHS = (
+					Libraries,
+					"external/**",
+					"$(PROJECT_DIR)/Libraries\\ external/EngagementReach",
+				);
 				OTHER_LDFLAGS = (
 					"-Obj-C",
 					"-all_load",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "it.twsweb.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_BUNDLE_IDENTIFIER = mx.com.amco.clarodrive;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "";
-				PROVISIONING_PROFILE_SPECIFIER = "";
+				PROVISIONING_PROFILE = "4dfb106a-8a76-4794-8659-e11c020be068";
+				PROVISIONING_PROFILE_SPECIFIER = "Clarodrive Dev";
 				SWIFT_OBJC_BRIDGING_HEADER = "iOSClient/Nextcloud-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 3.0;
@@ -4646,13 +4915,16 @@
 				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = YES;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = iOSClient/Nextcloud.entitlements;
-				CODE_SIGN_IDENTITY = "Apple Development IOS Push Services: it.twsweb.Nextcloud";
+				CODE_SIGN_IDENTITY = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = "";
-				DEVELOPMENT_TEAM = 6JLRKY9ZV7;
+				DEVELOPMENT_TEAM = 6GD9JZZRM4;
 				ENABLE_BITCODE = YES;
-				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = iOSClient/CryptoCloud.pch;
 				GCC_PREPROCESSOR_DEFINITIONS = (
@@ -4663,15 +4935,19 @@
 				INFOPLIST_FILE = iOSClient/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
-				LIBRARY_SEARCH_PATHS = "\"Libraries external\"/**";
+				LIBRARY_SEARCH_PATHS = (
+					Libraries,
+					"external/**",
+					"$(PROJECT_DIR)/Libraries\\ external/EngagementReach",
+				);
 				OTHER_LDFLAGS = (
 					"-Obj-C",
 					"-all_load",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "it.twsweb.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_BUNDLE_IDENTIFIER = mx.com.amco.clarodrive;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "";
-				PROVISIONING_PROFILE_SPECIFIER = "";
+				PROVISIONING_PROFILE = "4dfb106a-8a76-4794-8659-e11c020be068";
+				PROVISIONING_PROFILE_SPECIFIER = "Clarodrive Dev";
 				SWIFT_OBJC_BRIDGING_HEADER = "iOSClient/Nextcloud-Bridging-Header.h";
 				SWIFT_VERSION = 3.0;
 				TARGETED_DEVICE_FAMILY = "1,2";

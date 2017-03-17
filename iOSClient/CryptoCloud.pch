@@ -27,13 +27,15 @@
 // Include any system framework and library headers here that should be included in all compilation units.
 // You will also need to set the Prefix Header build setting of one or more of your targets to reference this file.
 
+
 #endif /* CryptoCloud_pch */
 
 #ifdef __OBJC__
-
+#import <NewRelicAgent/NewRelic.h>
 #import <UIKit/UIKit.h>
 #import <Foundation/Foundation.h>
 #import <QuartzCore/QuartzCore.h>
 #import "CCGlobal.h"
+
 
 #endif

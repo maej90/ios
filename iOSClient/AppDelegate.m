@@ -35,6 +35,12 @@
 #import "CCSynchronize.h"
 #import "CCMain.h"
 #import "CCDetail.h"
+#import <Fabric/Fabric.h>
+#import <Crashlytics/Crashlytics.h>
+#import "EngagementAgent.h"
+#import "AEReachModule.h"
+#import <UserNotifications/UserNotifications.h>
+
 
 #ifdef CUSTOM_BUILD
     #import "Firebase.h"
@@ -73,6 +79,8 @@
             NSLog(@"[LOG] Something went wrong while configuring Firebase");
         }
     #endif
+    
+
 
     NSString *dir;
     NSURL *dirGroup = [[NSFileManager defaultManager] containerURLForSecurityApplicationGroupIdentifier:k_capabilitiesGroups];
@@ -271,6 +279,28 @@
     UIUserNotificationSettings *notificationSettings = [UIUserNotificationSettings settingsForTypes:types categories:nil];
     [application registerUserNotificationSettings:notificationSettings];
     
+    
+    //Azure Mobile Engagement
+    
+    AEReachModule * reach = [AEReachModule moduleWithNotificationIcon:[UIImage imageNamed:@"AppIconNextcloud.png"]];
+    
+    [EngagementAgent init:@"Endpoint=NextcloudCollectionTest.device.mobileengagement.windows.net;SdkKey=c9586bb794c9d9ebebdf903787e961da;AppId=cuc000306" modules:reach,nil];
+    [EngagementAgent setTestLogEnabled:YES];
+    
+    
+
+    
+    //New Relic
+//    [NRLogger setLogLevels:NRLogLevelError];
+//    [NewRelic enableCrashReporting:YES];
+//    [NewRelicAgent startWithApplicationToken:@"AAd95c3cc006e37599ddbd23c8013536ebf196a6ed"];
+    
+    
+    //Crashlytics
+    //[Fabric with:@[[Crashlytics class]]];
+    
+    
+    
     return YES;
 }
 
@@ -433,6 +463,8 @@
 
 - (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
 {
+    
+    [[EngagementAgent shared] registerDeviceToken:deviceToken];
     NSLog(@"DEVICE TOKEN = %@", deviceToken);
 }
 
@@ -458,6 +490,8 @@
 - (void) application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler
 {
     UIApplicationState state = [application applicationState];
+    
+    [[EngagementAgent shared] applicationDidReceiveRemoteNotification:userInfo fetchCompletionHandler:completionHandler];
     
     if (state == UIApplicationStateBackground || (state == UIApplicationStateInactive)) {
         

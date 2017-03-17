@@ -20,7 +20,7 @@
 	<string>$(TeamIdentifierPrefix)$(CFBundleIdentifier)</string>
 	<key>com.apple.security.application-groups</key>
 	<array>
-		<string>group.it.twsweb.Crypto-Cloud</string>
+		<string>group.mx.com.amco.clarodrive</string>
 	</array>
 	<key>keychain-access-groups</key>
 	<array>

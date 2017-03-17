@@ -27,6 +27,7 @@
 #import "CCCertificate.h"
 #import "OCNetworking.h"
 #import "CCIntro.h"
+#import "EngagementViewController.h"
 
 @protocol CCLoginDelegate <NSObject>
 
@@ -34,7 +35,7 @@
 
 @end
 
-@interface CCLogin : UIViewController <UITextFieldDelegate, NSURLSessionTaskDelegate, NSURLSessionDelegate, CCCertificateDelegate, OCNetworkingDelegate, CCIntroDelegate>
+@interface CCLogin : EngagementViewController <UITextFieldDelegate, NSURLSessionTaskDelegate, NSURLSessionDelegate, CCCertificateDelegate, OCNetworkingDelegate, CCIntroDelegate>
 
 typedef enum {
     loginAdd = 0,
