@@ -630,7 +630,6 @@
 		F7F54D0D1E5B14C800E19C62 /* MWZoomingScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = F7F54CE21E5B14C700E19C62 /* MWZoomingScrollView.m */; };
 		F7F54D0E1E5B14C800E19C62 /* UIImage+MWPhotoBrowser.m in Sources */ = {isa = PBXBuildFile; fileRef = F7F54CE41E5B14C700E19C62 /* UIImage+MWPhotoBrowser.m */; };
 		F7F6AC4E1E525AD300E8EB45 /* CCManageCryptoCloud.m in Sources */ = {isa = PBXBuildFile; fileRef = F7F6AC4D1E525AD300E8EB45 /* CCManageCryptoCloud.m */; };
-		F7F7638C1E783EF6009FED20 /* DevicePushKey-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = F7F7638B1E783EF6009FED20 /* DevicePushKey-Info.plist */; };
 		F7F801031D98205A007537BC /* CCCertificate.m in Sources */ = {isa = PBXBuildFile; fileRef = F7F801011D98205A007537BC /* CCCertificate.m */; };
 		F7F801051D98205A007537BC /* CCCertificate.m in Sources */ = {isa = PBXBuildFile; fileRef = F7F801011D98205A007537BC /* CCCertificate.m */; };
 		F7FB5F131E66CDCB00389481 /* CCOfflineContainer.m in Sources */ = {isa = PBXBuildFile; fileRef = F7FB5F121E66CDCB00389481 /* CCOfflineContainer.m */; };
@@ -1710,7 +1709,6 @@
 		F7F67BB81A24D27800EE80DA /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		F7F6AC4C1E525AD300E8EB45 /* CCManageCryptoCloud.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCManageCryptoCloud.h; sourceTree = "<group>"; };
 		F7F6AC4D1E525AD300E8EB45 /* CCManageCryptoCloud.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCManageCryptoCloud.m; sourceTree = "<group>"; };
-		F7F7638B1E783EF6009FED20 /* DevicePushKey-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "DevicePushKey-Info.plist"; sourceTree = "<group>"; };
 		F7F801001D98205A007537BC /* CCCertificate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCCertificate.h; sourceTree = "<group>"; };
 		F7F801011D98205A007537BC /* CCCertificate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCCertificate.m; sourceTree = "<group>"; };
 		F7FB5F111E66CDCB00389481 /* CCOfflineContainer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCOfflineContainer.h; sourceTree = "<group>"; };
@@ -3187,7 +3185,6 @@
 			isa = PBXGroup;
 			children = (
 				F7C742D31E7BD36600D9C973 /* Supporting Files */,
-				F7F7638B1E783EF6009FED20 /* DevicePushKey-Info.plist */,
 				F7274FEC1E6EB6F400C241B6 /* Constant.swift */,
 				F7C1CDDA1E6DFC6F005D92BE /* CCNextcloudConstant.h */,
 				F7C1CDDB1E6DFC6F005D92BE /* CCNextcloudImages.h */,
@@ -4044,7 +4041,6 @@
 				F77B0F8C1D118A16002130FE /* CCCellMainTransfer.xib in Resources */,
 				F77B0F8E1D118A16002130FE /* LMMediaPlayerView.xib in Resources */,
 				F77B0F8F1D118A16002130FE /* ZSSunlink@2x.png in Resources */,
-				F7F7638C1E783EF6009FED20 /* DevicePushKey-Info.plist in Resources */,
 				F77B0F901D118A16002130FE /* ZSSpicker@2x.png in Resources */,
 				F77B0F941D118A16002130FE /* ZSSh6@2x.png in Resources */,
 				F7F54CFD1E5B14C700E19C62 /* UIBarButtonItemArrowRight.png in Resources */,
@@ -4711,7 +4707,6 @@
 					"-all_load",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "mx.com.amco.clarodrive.Share-Ext-ClaroDrive";
-				PRODUCT_BUNDLE_IDENTIFIER = it.twsweb.Nextcloud.Share;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "25b5f15f-dc3d-432b-93fa-1631e8296812";
 				PROVISIONING_PROFILE_SPECIFIER = "Claro Drive Share Ext";
@@ -4757,7 +4752,6 @@
 					"-all_load",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "mx.com.amco.clarodrive.Share-Ext-ClaroDrive";
-				PRODUCT_BUNDLE_IDENTIFIER = it.twsweb.Nextcloud.Share;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "25b5f15f-dc3d-432b-93fa-1631e8296812";
 				PROVISIONING_PROFILE_SPECIFIER = "Claro Drive Share Ext";
@@ -4926,8 +4920,6 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIconNextcloud;
 				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = YES;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_ENTITLEMENTS = iOSClient/Nextcloud.entitlements;
-				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_ENTITLEMENTS = iOSClient/Brand/iOSClient.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development IOS Push Services: it.twsweb.Nextcloud";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
@@ -4948,11 +4940,7 @@
 				INFOPLIST_FILE = "$(SRCROOT)/iOSClient/Brand/iOSClient.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
-				LIBRARY_SEARCH_PATHS = (
-					Libraries,
-					"external/**",
-					"$(PROJECT_DIR)/Libraries\\ external/EngagementReach",
-				);
+				LIBRARY_SEARCH_PATHS = "\"Libraries external\"/**";
 				OTHER_LDFLAGS = (
 					"-Obj-C",
 					"-all_load",
@@ -4977,8 +4965,6 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIconNextcloud;
 				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = YES;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_ENTITLEMENTS = iOSClient/Nextcloud.entitlements;
-				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_ENTITLEMENTS = iOSClient/Brand/iOSClient.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development IOS Push Services: it.twsweb.Nextcloud";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
@@ -5000,11 +4986,7 @@
 				INFOPLIST_FILE = "$(SRCROOT)/iOSClient/Brand/iOSClient.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
-				LIBRARY_SEARCH_PATHS = (
-					Libraries,
-					"external/**",
-					"$(PROJECT_DIR)/Libraries\\ external/EngagementReach",
-				);
+				LIBRARY_SEARCH_PATHS = "\"Libraries external\"/**";
 				OTHER_LDFLAGS = (
 					"-Obj-C",
 					"-all_load",
