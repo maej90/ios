@@ -11,8 +11,11 @@
 @interface CCControlCenterActivity : UICollectionViewController <UICollectionViewDataSource, UICollectionViewDelegate>
 
 @property NSUInteger pageIndex;
+
+@property (nonatomic, strong) NSDate *storeDateFirstActivity;
 @property (nonatomic, strong) NSString *pageType;
 
 - (void)reloadDatasource;
++ (CGFloat)getLabelHeight:(UILabel*)label width:(int)width;
 
 @end

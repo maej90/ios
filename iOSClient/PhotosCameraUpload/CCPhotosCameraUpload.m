@@ -61,6 +61,8 @@
         
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(setupCameraUploadFull) name:@"setupCameraUploadFull" object:nil];
         
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(triggerProgressTask:) name:@"NotificationProgressTask" object:nil];
+        
         app.activePhotosCameraUpload = self;
     }
     
@@ -82,6 +84,8 @@
     // empty Data Source
     self.collectionView.emptyDataSetDelegate = self;
     self.collectionView.emptyDataSetSource = self;
+    
+    [self reloadDatasource];
 }
 
 // Apparirà
@@ -95,8 +99,6 @@
     
     // Plus Button
     [app plusButtonVisibile:true];
-    
-    [self reloadDatasource];
 }
 
 // E' arrivato
@@ -104,7 +106,7 @@
 {
     [super viewDidAppear:animated];
     
-    [self.navigationController cancelCCProgress];
+    [self reloadDatasource];
 }
 
 - (void)didReceiveMemoryWarning
@@ -130,10 +132,15 @@
     UIImage *icon = [UIImage imageNamed:image_seleziona];
     UIBarButtonItem *buttonSelect = [[UIBarButtonItem alloc] initWithImage:icon style:UIBarButtonItemStylePlain target:self action:@selector(collectionSelectYES)];
     
-    if ([_sectionDataSource.allRecordsDataSource count] > 0) buttonSelect.enabled = true;
-    else buttonSelect.enabled = false;
+    if ([_sectionDataSource.allRecordsDataSource count] > 0) {
+        
+        self.navigationItem.rightBarButtonItems = [[NSArray alloc] initWithObjects:buttonSelect, nil];
+        
+    } else {
+        
+        self.navigationItem.rightBarButtonItems = nil;
+    }
     
-    self.navigationItem.rightBarButtonItems = [[NSArray alloc] initWithObjects:buttonSelect, nil];
     self.navigationItem.leftBarButtonItem = nil;
     
     // Title
@@ -309,12 +316,6 @@
 {
     if ([CCCoreData getCameraUploadActiveAccount:app.activeAccount] == NO) {
     
-        /*
-        NSString *language = [[[NSBundle mainBundle] preferredLocalizations] objectAtIndex:0];
-    
-        if ([language isEqualToString:@"it"]) return [UIImage imageNamed:image_activeCameraUpload_it];
-        else return [UIImage imageNamed:image_activeCameraUpload_en];
-        */
         UIImage *imageButton = [UIImage imageNamed:image_activeCameraUpload];
         UIImage *image = [CCUtility drawText:NSLocalizedString(@"_activate_camera_upload_", nil) inImage:imageButton];
         
@@ -528,6 +529,17 @@
         [self.collectionView reloadItemsAtIndexPaths:@[indexPath]];
 }
 
+- (void)triggerProgressTask:(NSNotification *)notification
+{
+    NSDictionary *dict = notification.userInfo;
+    float progress = [[dict valueForKey:@"progress"] floatValue];
+    
+    if (progress == 0)
+        [self.navigationController cancelCCProgress];
+    else
+        [self.navigationController setCCProgressPercentage:progress*100 andTintColor:COLOR_NAVIGATIONBAR_PROGRESS];
+}
+
 #pragma --------------------------------------------------------------------------------------------
 #pragma mark ==== Collection ====
 #pragma --------------------------------------------------------------------------------------------
@@ -660,7 +672,7 @@
     } else {
         
         // Thumbnail not present
-        imageView.image = [UIImage imageNamed:image_photosDownload];
+        imageView.image = [UIImage imageNamed:image_file_photo];
         
         if (metadata.thumbnailExists)
             [[CCActions sharedInstance] downloadTumbnail:metadata delegate:self];
@@ -766,10 +778,6 @@
     
     [self.detailViewController setTitle:_metadata.fileNamePrint];
 }
-
-#pragma --------------------------------------------------------------------------------------------
-#pragma mark ====== --- Camera Upload --- ======
-#pragma --------------------------------------------------------------------------------------------
 
 #pragma --------------------------------------------------------------------------------------------
 #pragma mark === initStateCameraUpload ===
@@ -1093,6 +1101,9 @@
     if ([newItemsToUpload count] == 0)
         return;
     
+    // Activity
+    [CCCoreData addActivityClient:@"" fileID:@"" action:k_activityDebugActionAutomaticUpload selector:@"" note:[NSString stringWithFormat:@"Number: %lu", (unsigned long)[newItemsToUpload count]] type:k_activityTypeInfo verbose:k_activityVerboseHigh account:app.activeAccount];
+    
     // STOP new request : initStateCameraUpload
     //_AutomaticCameraUploadInProgress = YES;
     
@@ -1144,12 +1155,17 @@
     // verify/create folder Camera Upload, if error exit
     if(![self automaticCreateFolder:folderPhotos]) {
         
+        NSString *description = NSLocalizedStringFromTable(@"_not_possible_create_folder_", @"Error", nil);
+        
         // Full Upload ?
         if (assetsFull)
-            [app messageNotification:@"_error_" description:NSLocalizedStringFromTable(@"_not_possible_create_folder_", @"Error", nil) visible:YES delay:k_dismissAfterSecond type:TWMessageBarMessageTypeInfo];
+            [app messageNotification:@"_error_" description:description visible:YES delay:k_dismissAfterSecond type:TWMessageBarMessageTypeInfo];
         
         // START new request : initStateCameraUpload
         //_AutomaticCameraUploadInProgress = NO;
+        
+        // Activity
+        [CCCoreData addActivityClient:@"" fileID:@"" action:k_activityDebugActionAutomaticUpload selector:@"" note:description type:k_activityTypeFailure verbose:k_activityVerboseDefault account:app.activeAccount];
         
         return;
     }
@@ -1165,6 +1181,9 @@
                 
                 if (assetsFull)
                     [app messageNotification:@"_error_" description:@"_error_createsubfolders_upload_" visible:YES delay:k_dismissAfterSecond type:TWMessageBarMessageTypeInfo];
+                
+                // Activity
+                [CCCoreData addActivityClient:@"" fileID:@"" action:k_activityDebugActionAutomaticUpload selector:@"" note:NSLocalizedString(@"_error_createsubfolders_upload_",nil) type:k_activityTypeFailure verbose:k_activityVerboseDefault account:app.activeAccount];
                 
                 return;
             }
@@ -1217,7 +1236,13 @@
         metadataNet.session = session;
         metadataNet.taskStatus = k_taskStatusResume;
         
-        [CCCoreData addTableAutomaticUpload:metadataNet account:app.activeAccount context:nil];
+        [CCCoreData addTableAutomaticUpload:metadataNet account:app.activeAccount];
+        
+        // Activity
+        NSString *media = @"";
+        if (assetMediaType == PHAssetMediaTypeImage) media = @"Image";
+        if (assetMediaType == PHAssetMediaTypeVideo) media = @"Video";
+        [CCCoreData addActivityClient:fileName fileID:@"" action:k_activityDebugActionAutomaticUpload selector:@"" note:[NSString stringWithFormat:@"Add TableAutomaticUpload on Session: %@, Set Data asset %@", session, media] type:k_activityTypeInfo verbose:k_activityVerboseHigh account:app.activeAccount];
         
         // Upldate Camera Upload data  
         if ([metadataNet.selector isEqualToString:selectorUploadAutomatic])

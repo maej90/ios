@@ -51,7 +51,6 @@
 
 @interface CCMain () <CCActionsDeleteDelegate, CCActionsRenameDelegate, CCActionsSearchDelegate, CCActionsDownloadThumbnailDelegate, CCActionsSettingFavoriteDelegate>
 {
-    CCMetadata *_metadataSegue;
     CCMetadata *_metadata;
         
     BOOL _isRoot;
@@ -109,8 +108,8 @@
         
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(initializeMain:) name:@"initializeMain" object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(clearDateReadDataSource:) name:@"clearDateReadDataSource" object:nil];
-        
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(setTitle) name:@"setTitleMain" object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(triggerProgressTask:) name:@"NotificationProgressTask" object:nil];
     }
     
     return self;
@@ -126,7 +125,6 @@
     
     // init object
     _metadata = [CCMetadata new];
-    _metadataSegue = [CCMetadata new];
     _hud = [[CCHud alloc] initWithView:[[[UIApplication sharedApplication] delegate] window]];
     _hudDeterminate = [[CCHud alloc] initWithView:[[[UIApplication sharedApplication] delegate] window]];
     _selectedMetadatas = [NSMutableArray new];
@@ -214,6 +212,10 @@
         
         self.searchController.searchBar.scopeButtonTitles = nil;
     }
+    
+    // Hide Search Filed on Load
+    [self.tableView setContentOffset:CGPointMake(0, self.searchController.searchBar.frame.size.height - self.tableView.contentOffset.y)];
+    
 }
 
 // Apparirà
@@ -274,24 +276,13 @@
 
     // Title
     [self setTitle];
-    
-    // cancell Progress
-    [self.navigationController cancelCCProgress];
 }
 
 - (void)viewWillDisappear:(BOOL)animated
 {
     [super viewWillDisappear:animated];
     
-    // Close MainMenu & SelectMenu
-    if (app.reMainMenu.isOpen || app.reSelectMenu.isOpen) {
-        
-        [app.reMainMenu close];
-        [app.reSelectMenu close];
-    }
-    
-    // Close Menu Logo
-    [CCMenu dismissMenu];
+    [self closeAllMenu];
 }
 
 - (void)didReceiveMemoryWarning
@@ -594,10 +585,6 @@
         self.navigationItem.rightBarButtonItems = [[NSArray alloc] initWithObjects:buttonMore, nil];
 
     self.navigationItem.leftBarButtonItem = nil;
-    
-    // close Menu
-    [app.reSelectMenu close];
-    [app.reMainMenu close];
 }
 
 - (void)setUINavigationBarSelected
@@ -615,12 +602,7 @@
 
 - (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator
 {
-    // close the menus
-    if (app.reMainMenu.isOpen)
-        [app.reMainMenu close];
-    
-    if (app.reSelectMenu.isOpen)
-        [app.reSelectMenu close];
+    [self closeAllMenu];
     
     [coordinator animateAlongsideTransition:nil completion:^(id<UIViewControllerTransitionCoordinatorContext> context) {
         
@@ -632,6 +614,16 @@
 - (void)cancelSelect
 {
     [self tableViewSelect:NO];
+}
+
+- (void)closeAllMenu
+{
+    // close Menu
+    [app.reSelectMenu close];
+    [app.reMainMenu close];
+    
+    // Close Menu Logo
+    [CCMenu dismissMenu];
 }
 
 #pragma --------------------------------------------------------------------------------------------
@@ -1042,13 +1034,30 @@
 #pragma mark -
 
 #pragma --------------------------------------------------------------------------------------------
+#pragma mark ==== External Sites ====
+#pragma --------------------------------------------------------------------------------------------
+
+- (void)getExternalSitesServerSuccess:(NSArray *)listOfExternalSites
+{
+    [CCCoreData deleteAllExternalSitesForAccount:app.activeAccount];
+    
+    for (OCExternalSites *tableExternalSites in listOfExternalSites)
+        [CCCoreData addExternalSites:tableExternalSites account:app.activeAccount];
+}
+
+- (void)getExternalSitesServerFailure:(CCMetadataNet *)metadataNet message:(NSString *)message errorCode:(NSInteger)errorCode
+{
+    NSLog(@"[LOG] No External Sites found");
+}
+
+#pragma --------------------------------------------------------------------------------------------
 #pragma mark ==== Activity ====
 #pragma --------------------------------------------------------------------------------------------
 
 - (void)getActivityServerSuccess:(NSArray *)listOfActivity
 {
     for (OCActivity *activity in listOfActivity) {
-        [CCCoreData addActivity:activity account:app.activeAccount];
+        [CCCoreData addActivityServer:activity account:app.activeAccount];
     }
     
     // Reload Activity Data Source
@@ -1057,6 +1066,7 @@
 
 - (void)getActivityServerFailure:(CCMetadataNet *)metadataNet message:(NSString *)message errorCode:(NSInteger)errorCode
 {
+    NSLog(@"[LOG] No Activity found");
 }
 
 #pragma --------------------------------------------------------------------------------------------
@@ -1168,6 +1178,14 @@
         });
     }
     
+    if (app.capabilities.isExternalSitesServerEnabled) {
+        
+        CCMetadataNet *metadataNet = [[CCMetadataNet alloc] initWithAccount:app.activeAccount];
+
+        metadataNet.action = actionGetExternalSitesServer;
+        [app addNetworkingOperationQueue:app.netQueue delegate:self metadataNet:metadataNet];
+    }
+    
     [CCCoreData setServerVersionActiveAccount:app.activeAccount versionMajor:capabilities.versionMajor versionMinor:capabilities.versionMinor versionMicro:capabilities.versionMicro];
     app.serverVersion = capabilities.versionMajor;
 }
@@ -1207,7 +1225,7 @@
         
     metadataNet.action = actionGetCapabilities;
     [app addNetworkingOperationQueue:app.netQueue delegate:self metadataNet:metadataNet];
-        
+
     metadataNet.action = actionGetNotificationServer;
     [app addNetworkingOperationQueue:app.netQueue delegate:self metadataNet:metadataNet];
 
@@ -1286,9 +1304,9 @@
     CCMetadata *metadata = [CCCoreData getMetadataWithPreficate:[NSPredicate predicateWithFormat:@"(fileID == %@) AND (account == %@)", fileID, app.activeAccount] context:nil];
     
     if (metadata == nil) return;
-
-    // reload
-    if ([selector isEqualToString:selectorReload]) {
+    
+    // Download
+    if ([selector isEqualToString:selectorDownloadFile]) {
         [self reloadDatasource:serverUrl fileID:metadata.fileID selector:selector];
     }
     
@@ -1335,10 +1353,9 @@
            
         } else {
             
-            _metadataSegue = metadata;
-            _metadataSegue.sessionSelector = selector;
+            _metadata = metadata;
     
-            if ([self shouldPerformSegue:serverUrl])
+            if ([self shouldPerformSegue])
                 [self performSegueWithIdentifier:@"segueDetail" sender:self];
         }
     }
@@ -1484,7 +1501,7 @@
                 
                 NSString *serverUrl = [CCCoreData getServerUrlFromDirectoryID:metadata.directoryID activeAccount:metadata.account];
                 
-                [[CCNetworking sharedNetworking] downloadFile:metadata serverUrl:serverUrl downloadData:YES downloadPlist:NO selector:selectorReload selectorPost:nil session:k_download_session taskStatus: k_taskStatusResume delegate:self];
+                [[CCNetworking sharedNetworking] downloadFile:metadata serverUrl:serverUrl downloadData:YES downloadPlist:NO selector:selectorDownloadFile selectorPost:nil session:k_download_session taskStatus: k_taskStatusResume delegate:self];
             }
         }
         
@@ -1936,6 +1953,8 @@
         if (app.serverVersion >= 12 && ![_depth isEqualToString:@"0"]) {
             
             [[CCActions sharedInstance] search:_serverUrl fileName:_searchFileName depth:_depth delegate:self];
+            
+            [self setTitleBackgroundTableView:NSLocalizedString(@"_search_in_progress_", nil)];
             
         } else {
             
@@ -2609,17 +2628,23 @@
 #pragma mark ===== Progress & Task Button =====
 #pragma --------------------------------------------------------------------------------------------
 
-- (void)progressTask:(NSString *)fileID serverUrl:(NSString *)serverUrl cryptated:(BOOL)cryptated progress:(float)progress;
+- (void)triggerProgressTask:(NSNotification *)notification
 {
+    NSDictionary *dict = notification.userInfo;
+    NSString *fileID = [dict valueForKey:@"fileID"];
+    NSString *serverUrl = [dict valueForKey:@"serverUrl"];
+    BOOL cryptated = [[dict valueForKey:@"cryptated"] boolValue];
+    float progress = [[dict valueForKey:@"progress"] floatValue];
+    
     // Check
     if (!fileID)
         return;
     
     [app.listProgressMetadata setObject:[NSNumber numberWithFloat:progress] forKey:fileID];
-
+    
     if (![serverUrl isEqualToString:_serverUrl])
         return;
-
+    
     NSIndexPath *indexPath = [_sectionDataSource.fileIDIndexPath objectForKey:fileID];
     
     if (indexPath) {
@@ -3124,19 +3149,6 @@
     if (indexPath) [self.tableView reloadRowsAtIndexPaths:[NSArray arrayWithObjects:indexPath, nil] withRowAnimation:UITableViewRowAnimationAutomatic];
 }
 
-/*
-#pragma --------------------------------------------------------------------------------------------
-#pragma mark ===== Reload =====
-#pragma --------------------------------------------------------------------------------------------
-
-- (void)reloadFile:(CCMetadata *)metadata
-{
-    NSString *serverUrl = [CCCoreData getServerUrlFromDirectoryID:metadata.directoryID activeAccount:metadata.account];
-
-    [[CCNetworking sharedNetworking] downloadFile:metadata serverUrl:serverUrl downloadData:YES downloadPlist:NO selector:selectorReload selectorPost:nil session:k_download_session taskStatus:k_taskStatusResume delegate:self];
-}
-*/
-
 #pragma --------------------------------------------------------------------------------------------
 #pragma mark ===== Open in... =====
 #pragma --------------------------------------------------------------------------------------------
@@ -3225,6 +3237,70 @@
     
     NSMutableArray *menuArray = [NSMutableArray new];
     
+    NSArray *externalSites = [CCCoreData getAllTableExternalSitesWithPredicate:[NSPredicate predicateWithFormat:@"(account == %@)", app.activeAccount]];
+    
+    // External Sites Present
+    
+    if([externalSites count] > 0) {
+        
+        CCMenuItem *item;
+        
+        for (TableExternalSites *tableExternalSites in externalSites) {
+            
+            // NSString *currentLanguageiOS = [[NSLocale preferredLanguages] objectAtIndex:0];
+            
+            // Verify lang
+            //if ([tableExternalSites.lang isEqualToString:@""] || [tableExternalSites.lang isEqualToString:currentLanguageiOS]) {
+            
+                item = [CCMenuItem new];
+                
+                item.title = tableExternalSites.name;
+                item.image = [UIImage imageNamed:image_MenuExternalSites];
+                item.target = self;
+                item.action = @selector(goToWebVC:);
+                item.argument = tableExternalSites.url;
+                [menuArray addObject:item];
+            //}
+        }
+        
+        if ([menuArray count] > 0) {
+            
+            OptionalConfiguration options;
+            Color textColor, backgroundColor;
+            
+            textColor.R = 0;
+            textColor.G = 0;
+            textColor.B = 0;
+            
+            backgroundColor.R = 1;
+            backgroundColor.G = 1;
+            backgroundColor.B = 1;
+            
+            NSInteger originY = 60;
+            
+            options.arrowSize = 9;
+            options.marginXSpacing = 7;
+            options.marginYSpacing = 10;
+            options.intervalSpacing = 20;
+            options.menuCornerRadius = 6.5;
+            options.maskToBackground = NO;
+            options.shadowOfMenu = YES;
+            options.hasSeperatorLine = YES;
+            options.seperatorLineHasInsets = YES;
+            options.textColor = textColor;
+            options.menuBackgroundColor = backgroundColor;
+            
+            CGRect rect = self.view.frame;
+            rect.origin.y = rect.origin.y + originY;
+            rect.size.height = rect.size.height - originY;
+            
+            [CCMenu setTitleFont:[UIFont systemFontOfSize:12.0]];
+            [CCMenu showMenuInView:self.navigationController.view fromRect:rect menuItems:menuArray withOptions:options];
+        }
+        
+        return;
+    }
+
 #ifndef OPTION_MULTIUSER_DISABLE
     
     if ([app.netQueue operationCount] > 0 || [app.netQueueDownload operationCount] > 0 || [app.netQueueDownloadWWan operationCount] > 0 || [app.netQueueUpload operationCount] > 0 || [app.netQueueUploadWWan operationCount] > 0 || [CCCoreData countTableAutomaticUploadForAccount:app.activeAccount selector:nil] > 0) {
@@ -3287,69 +3363,6 @@
     [CCMenu showMenuInView:self.navigationController.view fromRect:rect menuItems:menuArray withOptions:options];
     
 #endif
-    
-#if defined(MENU_BRAND_ENABLE) && defined(OPTION_MULTIUSER_DISABLE)
-    
-    CCMenuItem *item;
-    
-    item = [CCMenuItem new];
-    item.title = @"Example title ... N. 1";
-    item.image = [UIImage imageNamed:image_notification];
-    item.target = self;
-    item.action = @selector(goToWebVC:);
-    item.argument = @"https://www.nextcloud.com";
-    [menuArray addObject:item];
-
-    item = [CCMenuItem new];
-    item.title = @"Example title ... N. 2";
-    item.image = [UIImage imageNamed:image_notification];
-    item.target = self;
-    item.action = @selector(goToWebVC:);
-    item.argument = @"https://www.nextcloud.com";
-    [menuArray addObject:item];
-    
-    item = [CCMenuItem new];
-    item.title = @"Example title ... N. 3";
-    item.image = [UIImage imageNamed:image_notification];
-    item.target = self;
-    item.action = @selector(goToWebVC:);
-    item.argument = @"https://www.nextcloud.com";
-    [menuArray addObject:item];
-    
-    OptionalConfiguration options;
-    Color textColor, backgroundColor;
-    
-    textColor.R = 0;
-    textColor.G = 0;
-    textColor.B = 0;
-    
-    backgroundColor.R = 1;
-    backgroundColor.G = 1;
-    backgroundColor.B = 1;
-    
-    NSInteger originY = 60;
-    
-    options.arrowSize = 9;
-    options.marginXSpacing = 7;
-    options.marginYSpacing = 10;
-    options.intervalSpacing = 20;
-    options.menuCornerRadius = 6.5;
-    options.maskToBackground = NO;
-    options.shadowOfMenu = YES;
-    options.hasSeperatorLine = YES;
-    options.seperatorLineHasInsets = YES;
-    options.textColor = textColor;
-    options.menuBackgroundColor = backgroundColor;
-    
-    CGRect rect = self.view.frame;
-    rect.origin.y = rect.origin.y + originY;
-    rect.size.height = rect.size.height - originY;
-    
-    [CCMenu setTitleFont:[UIFont systemFontOfSize:12.0]];
-    [CCMenu showMenuInView:self.navigationController.view fromRect:rect menuItems:menuArray withOptions:options];
-    
-#endif
-    
 }
 
 - (void)changeDefaultAccount:(CCMenuItem *)sender
@@ -4596,20 +4609,6 @@
                                     
                                     [self moveOpenWindow:[[NSArray alloc] initWithObjects:indexPath, nil]];
                                 }];
-        /*
-        [actionSheet addButtonWithTitle:NSLocalizedString(@"_reload_", nil)
-                                  image:[UIImage imageNamed:image_actionSheetReload]
-                        backgroundColor:[UIColor whiteColor]
-                                 height: 50.0
-                                   type:AHKActionSheetButtonTypeDefault
-                                handler:^(AHKActionSheet *as) {
-                                    
-                                    // close swipe
-                                    [self setEditing:NO animated:YES];
-                                    
-                                    [self performSelector:@selector(reloadFile:) withObject:_metadata];
-                                }];
-        */
         
         [actionSheet addButtonWithTitle:NSLocalizedString(@"_open_in_", nil)
                                   image:[UIImage imageNamed:image_actionSheetOpenIn]
@@ -4656,7 +4655,7 @@
                                     }];
         }
         
-        if (recordLocalFile) {
+        if (recordLocalFile || [[NSFileManager defaultManager] fileExistsAtPath:[NSString stringWithFormat:@"%@/%@", app.directoryUser, _metadata.fileID]]) {
         
             [actionSheet addButtonWithTitle:NSLocalizedString(@"_remove_local_file_", nil)
                                       image:[UIImage imageNamed:image_actionSheetRemoveLocal]
@@ -4886,8 +4885,15 @@
         
         [self tableViewReload];
         
-        [self setTitleBackgroundTableView:nil];
+        if ([_sectionDataSource.allRecordsDataSource count] == 0 && [_searchFileName length] >= k_minCharsSearch)
+            [self setTitleBackgroundTableView:NSLocalizedString(@"_search_no_record_found_", nil)];
         
+        if ([_sectionDataSource.allRecordsDataSource count] == 0 && [_searchFileName length] < k_minCharsSearch)
+            [self setTitleBackgroundTableView:NSLocalizedString(@"_search_instruction_", nil)];
+        
+        if ([_sectionDataSource.allRecordsDataSource count] > 0 && [_searchFileName length] >= k_minCharsSearch)
+            [self setTitleBackgroundTableView:nil];
+            
         [app updateApplicationIconBadgeNumber];
         
         return;
@@ -5249,18 +5255,21 @@
     // è una directory
     if (metadata.directory) {
         
+        NSString *directoryServerUrl = [CCUtility stringAppendServerUrl:serverUrl addFileName:metadata.fileNameData];
+
         cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
         cell.labelInfoFile.text = [CCUtility dateDiff:metadata.date];
         
         lunghezzaFile = @" ";
         
+#ifndef OPTION_OFFLINE_DISABLE
+
         // ----------------------------------------------------------------------------------------------------------
         // Offline Folder
         // ----------------------------------------------------------------------------------------------------------
         
-        NSString *directoryServerUrl = [CCUtility stringAppendServerUrl:serverUrl addFileName:metadata.fileNameData];
         BOOL isOfflineDirectory = [CCCoreData isOfflineDirectoryServerUrl:directoryServerUrl activeAccount:app.activeAccount];
-        
+
         // Verify Offline
         if (_isOfflineServerUrl == YES && isOfflineDirectory == NO) {
             [CCCoreData setOfflineDirectoryServerUrl:directoryServerUrl offline:YES activeAccount:app.activeAccount];
@@ -5271,6 +5280,7 @@
             
             cell.offlineImageView.image = [UIImage imageNamed:image_offline];
         }
+#endif
         
         // ----------------------------------------------------------------------------------------------------------
         // Favorite Folder
@@ -5289,13 +5299,12 @@
             if (metadata.cryptated) myURL = [[NSBundle mainBundle] URLForResource: @"synchronizedcrypto" withExtension:@"gif"];
             else myURL = [[NSBundle mainBundle] URLForResource: @"synchronized" withExtension:@"gif"];
             
-            cell.synchronizedImageView.image = [UIImage animatedImageWithAnimatedGIFURL:myURL];
+            //cell.synchronizedImageView.image = [UIImage animatedImageWithAnimatedGIFURL:myURL];
         }
 
     } else {
     
-        // è un file
-                
+        // File                
         dataFile = [CCUtility dateDiff:metadata.date];
         lunghezzaFile = [CCUtility transformedSize:metadata.size];
         
@@ -5412,33 +5421,59 @@
     
         if (isShare) {
        
-            cell.sharedImageView.image = [UIImage imageNamed:image_shareConnect];
+            if (metadata.directory) {
+                
+                cell.fileImageView.image = [UIImage imageNamed:image_folder_shared_with_me];
+                cell.sharedImageView.userInteractionEnabled = NO;
+                
+            } else {
             
-            UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapActionConnectionMounted:)];
-            [tap setNumberOfTapsRequired:1];
-            cell.sharedImageView.userInteractionEnabled = YES;
-            [cell.sharedImageView addGestureRecognizer:tap];
+                cell.sharedImageView.image = [UIImage imageNamed:image_shareUser];
+            
+                UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapActionConnectionMounted:)];
+                [tap setNumberOfTapsRequired:1];
+                cell.sharedImageView.userInteractionEnabled = YES;
+                [cell.sharedImageView addGestureRecognizer:tap];
+            }
         }
         
         if (isMounted) {
             
-            cell.sharedImageView.image = [UIImage imageNamed:image_shareMounted];
-            
-            UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapActionConnectionMounted:)];
-            [tap setNumberOfTapsRequired:1];
-            cell.sharedImageView.userInteractionEnabled = YES;
-            [cell.sharedImageView addGestureRecognizer:tap];
+            if (metadata.directory) {
+                
+                cell.fileImageView.image = [UIImage imageNamed:image_folder_external];
+                cell.sharedImageView.userInteractionEnabled = NO;
+                
+            } else {
+                
+                cell.sharedImageView.image = [UIImage imageNamed:image_shareMounted];
+                
+                UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapActionConnectionMounted:)];
+                [tap setNumberOfTapsRequired:1];
+                cell.sharedImageView.userInteractionEnabled = YES;
+                [cell.sharedImageView addGestureRecognizer:tap];
+            }
         }
         
         if ([shareLink length] > 0 || [shareUserAndGroup length] > 0) {
         
-            if ([shareLink length] > 0) cell.sharedImageView.image = [UIImage imageNamed:image_shareLink];
-            if ([shareUserAndGroup length] > 0) cell.sharedImageView.image = [UIImage imageNamed:image_shareUser];
-        
-            UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapActionShared:)];
-            [tap setNumberOfTapsRequired:1];
-            cell.sharedImageView.userInteractionEnabled = YES;
-            [cell.sharedImageView addGestureRecognizer:tap];
+            if (metadata.directory) {
+                
+                if ([shareLink length] > 0) cell.fileImageView.image = [UIImage imageNamed:image_folder_public];
+                if ([shareUserAndGroup length] > 0) cell.fileImageView.image = [UIImage imageNamed:image_folder_shared_with_me];
+                
+                cell.sharedImageView.userInteractionEnabled = NO;
+                
+            } else {
+                
+                if ([shareLink length] > 0) cell.sharedImageView.image = [UIImage imageNamed:image_shareLink];
+                if ([shareUserAndGroup length] > 0) cell.sharedImageView.image = [UIImage imageNamed:image_shareUser];
+                
+                UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapActionShared:)];
+                [tap setNumberOfTapsRequired:1];
+                cell.sharedImageView.userInteractionEnabled = YES;
+                [cell.sharedImageView addGestureRecognizer:tap];
+            }
         }
         
     } else {
@@ -5785,7 +5820,7 @@
         else
             myURL = [[NSBundle mainBundle] URLForResource: @"synchronized" withExtension:@"gif"];
         
-        cell.synchronizedImageView.image = [UIImage animatedImageWithAnimatedGIFURL:myURL];
+        //cell.synchronizedImageView.image = [UIImage animatedImageWithAnimatedGIFURL:myURL];
         
     } else {
         
@@ -5797,7 +5832,7 @@
 #pragma mark ===== Navigation ====
 #pragma --------------------------------------------------------------------------------------------
 
-- (BOOL)shouldPerformSegue:(NSString *)serverUrl
+- (BOOL)shouldPerformSegue
 {
     // if background return
     if ([[UIApplication sharedApplication] applicationState] == UIApplicationStateBackground) return NO;
@@ -5818,6 +5853,8 @@
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
     id viewController = segue.destinationViewController;
+    NSMutableArray *allRecordsDataSourceImagesVideos = [NSMutableArray new];
+    CCMetadata *metadata;
     
     if ([viewController isKindOfClass:[UINavigationController class]]) {
         
@@ -5829,19 +5866,28 @@
         _detailViewController = segue.destinationViewController;
     }
     
-    NSMutableArray *allRecordsDataSourceImagesVideos = [[NSMutableArray alloc] init];
-    for (NSString *fileID in _sectionDataSource.allFileID) {
-        CCMetadata *metadata = [_sectionDataSource.allRecordsDataSource objectForKey:fileID];
-        if ([metadata.typeFile isEqualToString: k_metadataTypeFile_image] || [metadata.typeFile isEqualToString: k_metadataTypeFile_video])
-            [allRecordsDataSourceImagesVideos addObject:metadata];
+    if ([sender isKindOfClass:[CCMetadata class]]) {
+    
+        metadata = sender;
+        [allRecordsDataSourceImagesVideos addObject:sender];
+        
+    } else {
+        
+        metadata = _metadata;
+        
+        for (NSString *fileID in _sectionDataSource.allFileID) {
+            CCMetadata *metadata = [_sectionDataSource.allRecordsDataSource objectForKey:fileID];
+            if ([metadata.typeFile isEqualToString: k_metadataTypeFile_image] || [metadata.typeFile isEqualToString: k_metadataTypeFile_video])
+                [allRecordsDataSourceImagesVideos addObject:metadata];
+        }
     }
-
+    
+    _detailViewController.metadataDetail = metadata;
     _detailViewController.dataSourceImagesVideos = allRecordsDataSourceImagesVideos;
-    _detailViewController.metadataDetail = _metadataSegue;
     _detailViewController.dateFilterQuery = nil;
     _detailViewController.isCameraUpload = NO;
     
-    [_detailViewController setTitle:_metadata.fileNamePrint];
+    [_detailViewController setTitle:metadata.fileNamePrint];
 }
 
 // can i go to next viewcontroller

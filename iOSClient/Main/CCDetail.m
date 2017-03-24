@@ -60,6 +60,8 @@
     if (self = [super initWithCoder:aDecoder])  {
         
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(insertGeocoderLocation:) name:@"insertGeocoderLocation" object:nil];
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(triggerProgressTask:) name:@"NotificationProgressTask" object:nil];
 
         self.metadataDetail = [[CCMetadata alloc] init];
         self.photos = [[NSMutableArray alloc] init];
@@ -118,9 +120,7 @@
     
     // remove all
     if (self.isMovingFromParentViewController)
-        [self removeAllView];
-    
-    [self.navigationController cancelCCProgress];
+        [self removeAllView];    
 }
 
 - (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator
@@ -711,8 +711,11 @@
     [self.parentViewController presentViewController:alertController animated:YES completion:NULL];
 }
 
-- (void)progressTask:(NSString *)fileID serverUrl:(NSString *)serverUrl cryptated:(BOOL)cryptated progress:(float)progress
+- (void)triggerProgressTask:(NSNotification *)notification
 {
+    NSDictionary *dict = notification.userInfo;
+    float progress = [[dict valueForKey:@"progress"] floatValue];
+    
     if (progress == 0)
         [self.navigationController cancelCCProgress];
     else
@@ -724,8 +727,6 @@
     [app messageNotification:@"_download_selected_files_" description:@"_error_download_photobrowser_" visible:YES delay:k_dismissAfterSecond type:TWMessageBarMessageTypeError];
     
     [self.photoBrowser reloadData];
-    
-    [self.navigationController cancelCCProgress];
 }
 
 - (void)downloadPhotoBrowserSuccess:(CCMetadata *)metadataVar selector:(NSString *)selector
@@ -762,9 +763,7 @@
     } else {
         
         _reload = YES;
-    }
-    
-    [self.navigationController cancelCCProgress];
+    }    
 }
 
 - (void)downloadPhotoBrowser:(CCMetadata *)metadata

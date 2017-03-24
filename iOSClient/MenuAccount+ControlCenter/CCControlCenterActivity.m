@@ -11,11 +11,16 @@
 #import "AppDelegate.h"
 #import "CCSection.h"
 
-#define fontSizeData    [UIFont systemFontOfSize:16]
-#define fontSizeSubject [UIFont systemFontOfSize:14]
+#define fontSizeData    [UIFont boldSystemFontOfSize:15]
+#define fontSizeAction  [UIFont systemFontOfSize:14]
+#define fontSizeNote    [UIFont systemFontOfSize:14]
+
+#define daysOfActivity  7
 
 @interface CCControlCenterActivity ()
 {
+    BOOL _verbose;
+
     // Datasource
     NSArray *_sectionDataSource;
 }
@@ -50,6 +55,8 @@
 {
     [super viewWillAppear:animated];
     
+    _verbose = [CCUtility getActivityVerboseHigh];
+    
     app.controlCenter.labelMessageNoRecord.hidden = YES;
 }
 
@@ -78,27 +85,42 @@
     
     if (app.controlCenter.isOpen) {
         
-         _sectionDataSource = [CCCoreData getAllTableActivityWithPredicate:[NSPredicate predicateWithFormat:@"(account == %@) AND (idActivity != 0)", app.activeAccount]];
+        NSPredicate *predicate;
         
-        //_sectionDataSource = [CCSectionActivity creataDataSourseSectionActivity:records activeAccount:app.activeAccount];
+        NSDate *sixDaysAgo = [[NSCalendar currentCalendar] dateByAddingUnit:NSCalendarUnitDay value:-daysOfActivity toDate:[NSDate date] options:0];
         
-        if ([[app.controlCenter getActivePage] isEqualToString:k_pageControlCenterActivity]) {
-            
-            if ([_sectionDataSource count] == 0) {
-                
-                app.controlCenter.labelMessageNoRecord.text = NSLocalizedString(@"_no_activity_",nil);
-                app.controlCenter.labelMessageNoRecord.hidden = NO;
-            
-            } else {
-            
-                app.controlCenter.labelMessageNoRecord.hidden = YES;
-            }
-        }
+        if ([CCUtility getActivityVerboseHigh])
+            predicate = [NSPredicate predicateWithFormat:@"((account == %@) || (account == '')) AND (date > %@)", app.activeAccount, sixDaysAgo];
+        else
+            predicate = [NSPredicate predicateWithFormat:@"(account == %@) AND (verbose == %lu) AND (date > %@)", app.activeAccount, k_activityVerboseDefault, sixDaysAgo];
+
+        _sectionDataSource = [CCCoreData getAllTableActivityWithPredicate: predicate];
+
+        [self reloadCollection];
     }
-    
-    [self.collectionView reloadData];    
 }
 
+- (void)reloadCollection
+{
+    NSDate *dateActivity;
+    
+    if ([_sectionDataSource count] == 0) {
+            
+        app.controlCenter.labelMessageNoRecord.text = NSLocalizedString(@"_no_activity_",nil);
+        app.controlCenter.labelMessageNoRecord.hidden = NO;
+            
+    } else {
+            
+        app.controlCenter.labelMessageNoRecord.hidden = YES;
+        dateActivity = ((TableActivity *)[_sectionDataSource objectAtIndex:0]).date;
+    }
+
+    if ([dateActivity compare:_storeDateFirstActivity] == NSOrderedDescending || _storeDateFirstActivity == nil) {
+        _storeDateFirstActivity = dateActivity;
+        [self.collectionView reloadData];
+    }
+}
+    
 #pragma --------------------------------------------------------------------------------------------
 #pragma mark - ==== Table ====
 #pragma --------------------------------------------------------------------------------------------
@@ -108,16 +130,18 @@
     return [_sectionDataSource count];
 }
 
+
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
 {
-    /*
     TableActivity *activity = [_sectionDataSource objectAtIndex:section];
-    
-    if ([activity.file length] > 0)
-        return 1;
-    else
-        return 0;
-    */
+        
+    if ([activity.action isEqual: k_activityDebugActionDownload] || [activity.action isEqual: k_activityDebugActionUpload]) {
+        
+        if ([[NSFileManager defaultManager] fileExistsAtPath:[NSString stringWithFormat:@"%@/%@.ico", app.directoryUser, activity.fileID]])
+            return 1;
+        else
+            return 0;
+    }
     
     return 0;
 }
@@ -126,82 +150,153 @@
 {
     TableActivity *activity = [_sectionDataSource objectAtIndex:section];
     
-    UILabel *subjectLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, collectionView.frame.size.width , CGFLOAT_MAX)];
-    subjectLabel.numberOfLines = 0;
-    [subjectLabel setFont:fontSizeSubject];
-    subjectLabel.text = activity.subject;
-    subjectLabel.lineBreakMode = NSLineBreakByWordWrapping;
+    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, collectionView.frame.size.width - 40, CGFLOAT_MAX)];
+    label.numberOfLines = 0;
+    label.lineBreakMode = NSLineBreakByWordWrapping;
+    [label sizeToFit];
     
-    int heightView = 50 + [self getLabelHeight:subjectLabel];
+    // Action
+    [label setFont:fontSizeAction];
+    label.text = [NSString stringWithFormat:@"%@ %@", activity.action, activity.file];
+    int heightAction = [[self class] getLabelHeight:label width:self.collectionView.frame.size.width];
     
-    if (heightView < 60)
-        heightView = 60;
+    // Note
+    [label setFont:fontSizeNote];
+    
+    if (_verbose && activity.idActivity == 0)
+        label.text = [NSString stringWithFormat:@"%@ Selector: %@", activity.note, activity.selector];
+    else
+        label.text = activity.note;
+    
+    int heightNote = [[self class] getLabelHeight:label width:self.collectionView.frame.size.width];
+    
+    int heightView = 40 + heightAction + heightNote;
     
     return CGSizeMake(collectionView.frame.size.width, heightView);
 }
 
 - (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath
 {
-    UICollectionReusableView *headerView = [collectionView dequeueReusableSupplementaryViewOfKind:kind withReuseIdentifier:@"header" forIndexPath:indexPath];
-        
-    TableActivity *activity = [_sectionDataSource objectAtIndex:indexPath.section];
-        
-    NSDateComponents* comps = [[NSCalendar currentCalendar] components:NSCalendarUnitYear | NSCalendarUnitMonth | NSCalendarUnitDay fromDate:activity.date];
-    NSDate *date = [[NSCalendar currentCalendar] dateFromComponents:comps];
-        
-    UILabel *dataLabel = (UILabel *)[headerView viewWithTag:100];
-    UILabel *subjectLabel = (UILabel *)[headerView viewWithTag:101];
-    UIImageView *typeImage = (UIImageView *) [headerView viewWithTag:102];
-        
-    dataLabel.textColor = [UIColor colorWithRed:130.0/255.0 green:130.0/255.0 blue:130.0/255.0 alpha:1.0];
-    dataLabel.text =  [CCUtility getTitleSectionDate:date];
-    [dataLabel setFont:fontSizeData];
-        
-    if ([activity.type length] == 0 )
-        typeImage.image = [UIImage imageNamed:image_user];
-        
-    subjectLabel.textColor = COLOR_TEXT_ANTHRACITE;
-    subjectLabel.numberOfLines = 0;
-    [subjectLabel setFont:fontSizeSubject];
-    subjectLabel.text = activity.subject;
-    subjectLabel.lineBreakMode = NSLineBreakByWordWrapping;
+    UICollectionReusableView *reusableview;
     
-    //headerView.backgroundColor = [UIColor blueColor];
+    if (kind == UICollectionElementKindSectionHeader) {
+    
+        reusableview = [collectionView dequeueReusableSupplementaryViewOfKind:kind withReuseIdentifier:@"header" forIndexPath:indexPath];
         
-    return headerView;
+        TableActivity *activity = [_sectionDataSource objectAtIndex:indexPath.section];
+    
+        UILabel *dateLabel = (UILabel *)[reusableview viewWithTag:100];
+        UILabel *actionLabel = (UILabel *)[reusableview viewWithTag:101];
+        UILabel *noteLabel = (UILabel *)[reusableview viewWithTag:102];
+        UIImageView *typeImage = (UIImageView *) [reusableview viewWithTag:103];
+    
+        [dateLabel setFont:fontSizeData];
+        dateLabel.textColor = [UIColor colorWithRed:100.0/255.0 green:100.0/255.0 blue:100.0/255.0 alpha:1.0];
+    
+        if ([CCUtility getActivityVerboseHigh]) {
+        
+            dateLabel.text = [NSDateFormatter localizedStringFromDate:activity.date dateStyle:NSDateFormatterFullStyle timeStyle:NSDateFormatterMediumStyle];
+        
+        } else {
+        
+            NSDateComponents* comps = [[NSCalendar currentCalendar] components:NSCalendarUnitYear | NSCalendarUnitMonth | NSCalendarUnitDay fromDate:activity.date];
+            dateLabel.text = [CCUtility getTitleSectionDate:[[NSCalendar currentCalendar] dateFromComponents:comps]];
+        }
+    
+        [actionLabel setFont:fontSizeAction];
+        [actionLabel sizeToFit];
+        actionLabel.text = [NSString stringWithFormat:@"%@ %@", activity.action, activity.file];
+
+        if ([activity.type isEqualToString:k_activityTypeInfo]) {
+        
+            actionLabel.textColor = COLOR_BRAND;
+        
+            if (activity.idActivity == 0)
+                typeImage.image = [UIImage imageNamed:@"activityTypeInfo"];
+            else
+                typeImage.image = [UIImage imageNamed:@"activityTypeInfoServer"];
+        }
+    
+        if ([activity.type isEqualToString:k_activityTypeSuccess]) {
+        
+            actionLabel.textColor = [UIColor colorWithRed:87.0/255.0 green:187.0/255.0 blue:57.0/255.0 alpha:1.0];;
+            typeImage.image = [UIImage imageNamed:@"activityTypeSuccess"];
+        }
+    
+        if ([activity.type isEqualToString:k_activityTypeFailure]) {
+        
+            actionLabel.textColor = [UIColor redColor];
+            typeImage.image = [UIImage imageNamed:@"activityTypeFailure"];
+        }
+    
+        [noteLabel setFont:fontSizeNote];
+        [noteLabel sizeToFit];
+        noteLabel.textColor = COLOR_TEXT_ANTHRACITE;
+        noteLabel.numberOfLines = 0;
+        noteLabel.lineBreakMode = NSLineBreakByWordWrapping;
+    
+        if ([CCUtility getActivityVerboseHigh] && activity.idActivity == 0) noteLabel.text = [NSString stringWithFormat:@"%@ Selector: %@", activity.note, activity.selector];
+        else noteLabel.text = activity.note;
+    }
+    
+    if (kind == UICollectionElementKindSectionFooter) {
+        
+         reusableview = [collectionView dequeueReusableSupplementaryViewOfKind:kind withReuseIdentifier:@"footer" forIndexPath:indexPath];
+    }
+    
+    return reusableview;
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
     UICollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"cell" forIndexPath:indexPath];
     cell.backgroundColor = [UIColor clearColor];
-    
+    UIImageView *imageView = (UIImageView *)[cell viewWithTag:104];
+
     TableActivity *activity = [_sectionDataSource objectAtIndex:indexPath.section];
     
-    NSString *dir = [activity.file stringByDeletingLastPathComponent];
-    NSString *fileName = [activity.file lastPathComponent];
-    
-    if ([dir length] > 0 && [fileName length] > 0) {
-        
-    }
+    imageView.image = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/%@.ico", app.directoryUser, activity.fileID]];
     
     return cell;
+}
+
+- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
+{
+    TableActivity *activity = [_sectionDataSource objectAtIndex:indexPath.section];
+    
+    CCMetadata *metadata = [CCCoreData getMetadataWithPreficate:[NSPredicate predicateWithFormat:@"(account == %@) AND (fileID == %@)", activity.account, activity.fileID] context:nil];
+    
+    if (metadata) {
+        
+        if (!self.splitViewController.isCollapsed && app.activeMain.detailViewController.isViewLoaded && app.activeMain.detailViewController.view.window)
+            [app.activeMain.navigationController popToRootViewControllerAnimated:NO];
+        
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.1 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+            
+            [app.activeMain performSegueWithIdentifier:@"segueDetail" sender:metadata];
+            
+            [app.controlCenter closeControlCenter];
+        });
+        
+    } else {
+        
+        [app messageNotification:@"_info_" description:@"_activity_file_not_present_" visible:YES delay:k_dismissAfterSecond type:TWMessageBarMessageTypeInfo];
+    }
 }
 
 #pragma --------------------------------------------------------------------------------------------
 #pragma mark - ==== Utility ====
 #pragma --------------------------------------------------------------------------------------------
 
-
-- (CGFloat)getLabelHeight:(UILabel*)label
++ (CGFloat)getLabelHeight:(UILabel*)label width:(int)width
 {
-    CGSize constraint = CGSizeMake(self.collectionView.frame.size.width, CGFLOAT_MAX);
+    CGSize constraint = CGSizeMake(width, CGFLOAT_MAX);
     
-    NSMutableParagraphStyle *paragraph = [[NSMutableParagraphStyle alloc] init];
+    NSMutableParagraphStyle *paragraph = [NSMutableParagraphStyle new];
     paragraph.lineBreakMode = NSLineBreakByWordWrapping;
     NSDictionary *attributes = @{NSFontAttributeName : label.font, NSParagraphStyleAttributeName: paragraph};
     
-    NSStringDrawingContext *context = [[NSStringDrawingContext alloc] init];
+    NSStringDrawingContext *context = [NSStringDrawingContext new];
     CGSize boundingBox = [label.text boundingRectWithSize:constraint options:NSStringDrawingUsesLineFragmentOrigin attributes:attributes context:context].size;
     
     CGSize size = CGSizeMake(ceil(boundingBox.width), ceil(boundingBox.height));

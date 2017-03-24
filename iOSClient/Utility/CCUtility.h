@@ -82,7 +82,9 @@
 
 + (void)setCreateMenuEncrypted:(BOOL)encrypted;
 
-+ (void)setFavoriteOffline:(BOOL)encrypted;
++ (void)setFavoriteOffline:(BOOL)offline;
+
++ (void)setActivityVerboseHigh:(BOOL)debug;
 
 // GET
 
@@ -123,6 +125,8 @@
 
 + (BOOL)getFavoriteOffline;
 
++ (BOOL)getActivityVerboseHigh;
+
 // ===== Varius =====
 
 + (NSString *)getUserAgent;
@@ -133,7 +137,7 @@
 + (NSString *)removeForbiddenCharacters:(NSString *)fileName hasServerForbiddenCharactersSupport:(BOOL)hasServerForbiddenCharactersSupport;
 + (NSString *)stringAppendServerUrl:(NSString *)serverUrl addFileName:(NSString *)addFileName;
 
-+ (NSString *)createID;
++ (NSString *)createRandomString:(int)numChars;
 + (NSString *)createFileNameFromAsset:(PHAsset *)asset key:(NSString *)key;
 
 + (NSString *)getHomeServerUrlActiveUrl:(NSString *)activeUrl;

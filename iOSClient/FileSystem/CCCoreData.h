@@ -34,6 +34,7 @@
 #import "CCGraphics.h"
 #import "OCUserProfile.h"
 #import "OCActivity.h"
+#import "OCExternalSites.h"
 
 #import "TableAccount+CoreDataClass.h"
 #import "TableActivity+CoreDataClass.h"
@@ -44,6 +45,7 @@
 #import "TableGPS+CoreDataClass.h"
 #import "TableShare+CoreDataClass.h"
 #import "TableAutomaticUpload+CoreDataClass.h"
+#import "TableExternalSites+CoreDataClass.h"
 
 @interface CCCoreData : NSObject
 
@@ -187,7 +189,7 @@
 
 // ===== Automatic Upload =====
 
-+ (void)addTableAutomaticUpload:(CCMetadataNet *)metadataNet account:(NSString *)account context:(NSManagedObjectContext *)context;
++ (void)addTableAutomaticUpload:(CCMetadataNet *)metadataNet account:(NSString *)account;
 + (CCMetadataNet *)getTableAutomaticUploadForAccount:(NSString *)account selector:(NSString *)selector context:(NSManagedObjectContext *)context;
 + (NSUInteger)countTableAutomaticUploadForAccount:(NSString *)account selector:(NSString *)selector;
 
@@ -210,8 +212,15 @@
 
 // ===== Activity =====
 
-+ (void)addActivity:(OCActivity *)activity account:(NSString *)account;
++ (void)addActivityServer:(OCActivity *)activity account:(NSString *)account;
++ (void)addActivityClient:(NSString *)file fileID:(NSString *)fileID action:(NSString *)action selector:(NSString *)selector note:(NSString *)note type:(NSString *)type verbose:(NSInteger)verbose account:(NSString *)account;
 + (NSArray *)getAllTableActivityWithPredicate:(NSPredicate *)predicate;
+
+// ===== External Sites =====
+
++ (void)addExternalSites:(OCExternalSites *)externalSites account:(NSString *)account;
++ (void)deleteAllExternalSitesForAccount:(NSString *)account;
++ (NSArray *)getAllTableExternalSitesWithPredicate:(NSPredicate *)predicate;
 
 // ===== File System =====
 

@@ -477,7 +477,7 @@ class DocumentPickerViewController: UIDocumentPickerExtensionViewController, CCN
     func uploadFileSuccess(_ metadataNet: CCMetadataNet, fileID: String, serverUrl: String, selector: String, selectorPost: String) {
         
         hud.hideHud()
-        
+                
         dismissGrantingAccess(to: self.destinationURL)
     }
 }

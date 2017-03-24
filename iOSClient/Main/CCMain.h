@@ -74,6 +74,7 @@
 @property (nonatomic, weak) CCDetail *detailViewController;
 @property (nonatomic, strong) UISearchController *searchController;
 
+- (void)closeAllMenu;
 - (void)returnCreate:(NSInteger)type;
 
 - (void)createFolderCameraUpload;
@@ -81,8 +82,6 @@
 - (void)readFolderWithForced:(BOOL)forced serverUrl:(NSString *)serverUrl;
 
 - (void)uploadFileAsset:(NSMutableArray *)assets serverUrl:(NSString *)serverUrl cryptated:(BOOL)cryptated useSubFolder:(BOOL)useSubFolder session:(NSString *)session;
-
-- (void)progressTask:(NSString *)fileID serverUrl:(NSString *)serverUrl cryptated:(BOOL)cryptated progress:(float)progress;
 
 - (void)reloadTaskButton:(CCMetadata *)metadata;
 - (void)cancelTaskButton:(CCMetadata *)metadata reloadTable:(BOOL)reloadTable;
@@ -99,6 +98,8 @@
 - (void)clearDateReadDataSource:(NSNotification *)notification;
 
 - (void)cancelSearchBar;
+
+- (BOOL)shouldPerformSegue;
 
 @end
 

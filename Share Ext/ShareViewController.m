@@ -114,6 +114,8 @@
         }
     }
 
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(triggerProgressTask:) name:@"NotificationProgressTask" object:nil];
+    
     _filesName = [[NSMutableArray alloc] init];
     _filesSendCryptated = [[NSMutableArray alloc] init];
     _hud = [[CCHud alloc] initWithView:self.navigationController.view];
@@ -294,8 +296,11 @@
 #pragma mark ======================= NetWorking ==================================
 #pragma --------------------------------------------------------------------------------------------
 
-- (void)progressTask:(NSString *)fileID serverUrl:(NSString *)serverUrl cryptated:(BOOL)cryptated progress:(float)progress
+- (void)triggerProgressTask:(NSNotification *)notification
 {
+    NSDictionary *dict = notification.userInfo;
+    float progress = [[dict valueForKey:@"progress"] floatValue];
+
     [self.hud progress:progress];
 }
 
@@ -330,7 +335,7 @@
     [self.hud hideHud];
     
     CCMetadata *metadata = [CCCoreData getMetadataWithPreficate:[NSPredicate predicateWithFormat:@"(fileID == %@) AND (account == %@)", fileID, _activeAccount] context:nil];
-    
+        
     [self.filesName removeObject:metadata.fileNamePrint];
     [self.shareTable performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO];
     
@@ -500,8 +505,8 @@
     CFStringRef fileExtension = (__bridge CFStringRef)[fileName pathExtension];
     CFStringRef fileUTI = UTTypeCreatePreferredIdentifierForTag(kUTTagClassFilenameExtension, fileExtension, NULL);
 
-    if (UTTypeConformsTo(fileUTI, kUTTypeZipArchive) && [(__bridge NSString *)fileUTI containsString:@"org.openxmlformats"] == NO) image = [UIImage imageNamed:image_typeFileCompress];
-    else if (UTTypeConformsTo(fileUTI, kUTTypeAudio)) image = [UIImage imageNamed:image_audio];
+    if (UTTypeConformsTo(fileUTI, kUTTypeZipArchive) && [(__bridge NSString *)fileUTI containsString:@"org.openxmlformats"] == NO) image = [UIImage imageNamed:image_file_compress];
+    else if (UTTypeConformsTo(fileUTI, kUTTypeAudio)) image = [UIImage imageNamed:image_file_audio];
     else if ((UTTypeConformsTo(fileUTI, kUTTypeImage)) || (UTTypeConformsTo(fileUTI, kUTTypeMovie))) {
         
         image = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/%@.ico", self.directoryUser, fileName]];
@@ -513,9 +518,9 @@
         
         NSString *typeFile = (__bridge NSString *)fileUTI;
         
-        if ([typeFile isEqualToString:@"com.adobe.pdf"]) image = [UIImage imageNamed:image_pdf];
-        if ([typeFile isEqualToString:@"org.openxmlformats.spreadsheetml.sheet"]) image = [UIImage imageNamed:image_xls];
-        if ([typeFile isEqualToString:@"public.plain-text"]) image = [UIImage imageNamed:image_txt];
+        if ([typeFile isEqualToString:@"com.adobe.pdf"]) image = [UIImage imageNamed:image_file_pdf];
+        if ([typeFile isEqualToString:@"org.openxmlformats.spreadsheetml.sheet"]) image = [UIImage imageNamed:image_file_xls];
+        if ([typeFile isEqualToString:@"public.plain-text"]) image = [UIImage imageNamed:image_file_txt];
     }
     else image = [UIImage imageNamed:image_file];
     

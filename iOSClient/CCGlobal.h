@@ -139,6 +139,7 @@ extern NSString *const urlBaseUploadDB;
 #define selectorDelete                                  @"delete"
 #define selectorDeleteCrypto                            @"deleteCrypto"
 #define selectorDeletePlist                             @"deletePlist"
+#define selectorDownloadFile                            @"downloadFile"
 #define selectorDownloadThumbnail                       @"downloadThumbnail"
 #define selectorDownloadSynchronize                     @"downloadSynchronize"
 #define selectorEncryptFile                             @"encryptFile"
@@ -160,7 +161,6 @@ extern NSString *const urlBaseUploadDB;
 #define selectorReadFolderForced                        @"readFolderForced"
 #define selectorReadFolderWithDownload                  @"readFolderWithDownload"
 #define selectorReadShare                               @"readShare"
-#define selectorReload                                  @"reload"
 #define selectorRename                                  @"rename"
 #define selectorSave                                    @"save"
 #define selectorShare                                   @"share"
@@ -186,6 +186,7 @@ extern NSString *const urlBaseUploadDB;
 #define actionGetUserProfile                            @"getUserProfile"
 #define actionGetNotificationServer                     @"getNotificationServer"
 #define actionSetNotificationServer                     @"setNotificationServer"
+#define actionGetExternalSitesServer                    @"getExternalSitesServer"
 #define actionListingFavorites                          @"listingFavorites"
 #define actionMoveFileOrFolder                          @"moveFileOrFolder"
 #define actionReadFile                                  @"readFile"
@@ -242,6 +243,30 @@ extern NSString *const urlBaseUploadDB;
 
 // Search
 #define k_minCharsSearch                                2
+
+// Activity
+#define k_activityVerboseDefault                        0
+#define k_activityVerboseHigh                           1
+#define k_activityTypeInfo                              @"info"
+#define k_activityTypeSuccess                           @"success"
+#define k_activityTypeFailure                           @"error"
+
+#define k_activityDebugActionDownload                   @"Download"
+#define k_activityDebugActionDownloadPicker             @"Download Picker"
+#define k_activityDebugActionDownloadThumbnail          @"Download Thumbnail"
+#define k_activityDebugActionUpload                     @"Upload"
+#define k_activityDebugActionUploadPicker               @"Upload Picker"
+#define k_activityDebugActionUploadShare                @"Upload Share"
+#define k_activityDebugActionAutomaticUpload            @"Automatic Upload"
+#define k_activityDebugActionReadFolder                 @"Read Folder"
+#define k_activityDebugActionGetNotification            @"Get Notification Server"
+#define k_activityDebugActionPushProxy                  @"Subscribing Push Proxy"
+#define k_activityDebugActionServerPush                 @"Subscribing Server Push"
+#define k_activityDebugActionFeatures                   @"Features Supported By Server"
+#define k_activityDebugActionCapabilities               @"Capabilities Of Server"
+
+
+
 
 // -----------------------------------------------------------------------------------------------------------
 // -----------------------------------------------------------------------------------------------------------

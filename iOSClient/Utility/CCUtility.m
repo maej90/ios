@@ -189,12 +189,17 @@
     [UICKeyChainStore setString:sEncrypted forKey:@"createMenuEncrypted" service:k_serviceShareKeyChain];
 }
 
-+ (void)setFavoriteOffline:(BOOL)encrypted
++ (void)setFavoriteOffline:(BOOL)offline
 {
-    NSString *sFavoriteOffline = (encrypted) ? @"true" : @"false";
+    NSString *sFavoriteOffline = (offline) ? @"true" : @"false";
     [UICKeyChainStore setString:sFavoriteOffline forKey:@"favoriteOffline" service:k_serviceShareKeyChain];
 }
 
++ (void)setActivityVerboseHigh:(BOOL)high
+{
+    NSString *sHigh = (high) ? @"true" : @"false";
+    [UICKeyChainStore setString:sHigh forKey:@"activityVerboseHigh" service:k_serviceShareKeyChain];
+}
 
 #pragma ------------------------------ GET
 
@@ -375,6 +380,11 @@
     return [[UICKeyChainStore stringForKey:@"favoriteOffline" service:k_serviceShareKeyChain] boolValue];
 }
 
++ (BOOL)getActivityVerboseHigh
+{
+    return [[UICKeyChainStore stringForKey:@"activityVerboseHigh" service:k_serviceShareKeyChain] boolValue];
+}
+
 #pragma --------------------------------------------------------------------------------------------
 #pragma mark ===== Varius =====
 #pragma --------------------------------------------------------------------------------------------
@@ -456,14 +466,12 @@
     return result;
 }
 
-+ (NSString *)createID
++ (NSString *)createRandomString:(int)numChars
 {
-    int numeroCaratteri = 16;
-    
     NSString *letters = @"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-    NSMutableString *randomString = [NSMutableString stringWithCapacity: numeroCaratteri];
+    NSMutableString *randomString = [NSMutableString stringWithCapacity: numChars];
     
-    for (int i=0; i < numeroCaratteri; i++) {
+    for (int i=0; i < numChars; i++) {
         [randomString appendFormat: @"%C", [letters characterAtIndex: arc4random_uniform((unsigned int)[letters length]) % [letters length]]];
     }
     
@@ -844,59 +852,49 @@
         // Type compress
         if (UTTypeConformsTo(fileUTI, kUTTypeZipArchive) && [(__bridge NSString *)fileUTI containsString:@"org.openxmlformats"] == NO && [(__bridge NSString *)fileUTI containsString:@"oasis"] == NO) {
             metadata.typeFile = k_metadataTypeFile_compress;
-            if (metadata.cryptated) metadata.iconName = image_typeFileCompress;
-            else metadata.iconName = image_typeFileCompress;
+            metadata.iconName = image_file_compress;
         }
         // Type image
         else if (UTTypeConformsTo(fileUTI, kUTTypeImage)) {
             metadata.typeFile = k_metadataTypeFile_image;
-            if (metadata.cryptated) metadata.iconName = image_photocrypto;
-            else metadata.iconName = image_photo;
+            metadata.iconName = image_file_photo;
         }
         // Type Video
         else if (UTTypeConformsTo(fileUTI, kUTTypeMovie)) {
             metadata.typeFile = k_metadataTypeFile_video;
-            if (metadata.cryptated) metadata.iconName = image_moviecrypto;
-            else metadata.iconName = image_movie;
+            metadata.iconName = image_file_movie;
         }
         // Type Audio
         else if (UTTypeConformsTo(fileUTI, kUTTypeAudio)) {
             metadata.typeFile = k_metadataTypeFile_audio;
-            if (metadata.cryptated) metadata.iconName = image_audiocrypto;
-            else metadata.iconName = image_audio;
+            metadata.iconName = image_file_audio;
         }
         // Type Document [DOC] [PDF] [XLS] [TXT] (RTF = "public.rtf" - ODT = "org.oasis-open.opendocument.text") [MD]
         else if (UTTypeConformsTo(fileUTI, kUTTypeContent) || [ext isEqualToString:@"MD"]) {
             
             metadata.typeFile = k_metadataTypeFile_document;
-            if (metadata.cryptated) metadata.iconName = image_documentcrypto;
-            else metadata.iconName = image_document;
+            metadata.iconName = image_document;
             
             NSString *typeFile = (__bridge NSString *)fileUTI;
             
             if ([typeFile isEqualToString:@"com.adobe.pdf"]) {
-                if (metadata.cryptated) metadata.iconName = image_pdfcrypto;
-                else metadata.iconName = image_pdf;
+                metadata.iconName = image_file_pdf;
             }
             
             if ([typeFile isEqualToString:@"org.openxmlformats.spreadsheetml.sheet"]) {
-                if (metadata.cryptated) metadata.iconName = image_xlscrypto;
-                else metadata.iconName = image_xls;
+                metadata.iconName = image_file_xls;
             }
             
             if ([typeFile isEqualToString:@"com.microsoft.excel.xls"]) {
-                if (metadata.cryptated) metadata.iconName = image_xlscrypto;
-                else metadata.iconName = image_xls;
+                metadata.iconName = image_file_xls;
             }
             
             if ([typeFile isEqualToString:@"public.plain-text"] || [ext isEqualToString:@"MD"]) {
-                if (metadata.cryptated) metadata.iconName = image_txtcrypto;
-                else metadata.iconName = image_txt;
+                metadata.iconName = image_file_txt;
             }
             
             if ([typeFile isEqualToString:@"public.html"]) {
-                if (metadata.cryptated) metadata.iconName = image_filetype_htlm_crypto;
-                else metadata.iconName = image_filetype_htlm;
+                metadata.iconName = image_file_code;
             }
             
         } else {
@@ -907,8 +905,8 @@
             // icon uTorrent
             if ([(__bridge NSString *)fileExtension isEqualToString:@"torrent"]) {
                 
-                if (metadata.cryptated) metadata.iconName = image_utorrentcrypto;
-                else metadata.iconName = image_utorrent;
+                metadata.iconName = image_utorrent;
+                
             } else {
             
                 if (metadata.cryptated) metadata.iconName = image_plist;
@@ -1255,18 +1253,21 @@
 
 + (UIImage*)drawText:(NSString*)text inImage:(UIImage*)image
 {
-    NSDictionary* attributes = @{NSFontAttributeName: [UIFont boldSystemFontOfSize:12], NSForegroundColorAttributeName:[UIColor whiteColor]};
+    NSDictionary* attributes = @{NSFontAttributeName: [UIFont systemFontOfSize:26], NSForegroundColorAttributeName:[UIColor whiteColor]};
     NSAttributedString* attributedString = [[NSAttributedString alloc] initWithString:text attributes:attributes];
     
     int x = image.size.width/2 - attributedString.size.width/2;
-    int y = image.size.height/2-8;
+    int y = image.size.height/2 - attributedString.size.height/2;
     
     UIGraphicsBeginImageContext(image.size);
+    
     [image drawInRect:CGRectMake(0,0,image.size.width,image.size.height)];
     CGRect rect = CGRectMake(x, y, image.size.width, image.size.height);
     [[UIColor whiteColor] set];
     [text drawInRect:CGRectIntegral(rect) withAttributes:attributes];
     UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
+    newImage = [UIImage imageWithCGImage:newImage.CGImage scale:2 orientation:UIImageOrientationUp];
+
     UIGraphicsEndImageContext();
     
     return newImage;

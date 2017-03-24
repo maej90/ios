@@ -30,17 +30,12 @@
 #import "CCMain.h"
 #import "CCDetail.h"
 
-
-#define BORDER_TOUCH_UPDOWN 50.0f
-#define TOOLBAR_ADD_BORDER 20.0f
 #define SIZE_FONT_NORECORD 18.0f
 #define ANIMATION_GESTURE 0.50f
-
 
 @interface CCControlCenter ()
 {
     UIVisualEffectView *_mainView;
-    UIImageView *_imageDrag;
     UIView *_endLine;
     
     CGFloat start, stop;
@@ -48,7 +43,7 @@
     UIPanGestureRecognizer *panNavigationBar, *panImageDrag;
     UITapGestureRecognizer *_singleFingerTap;
     
-    UIPageControl *pageControl;
+    UIPageControl *_pageControl;
 }
 @end
 
@@ -109,15 +104,6 @@
 
     [_mainView addSubview:_labelMessageNoRecord];
     
-    
-    _imageDrag = [[UIImageView alloc] init];
-    [_imageDrag setFrame:CGRectMake(0, 0, self.navigationBar.frame.size.width, 0)];
-    _imageDrag.image = [UIImage imageNamed:image_drag];
-    _imageDrag.contentMode =  UIViewContentModeCenter;
-    _imageDrag.userInteractionEnabled = YES;
-
-    [_mainView addSubview:_imageDrag];
-    
     _endLine = [[UIView alloc] init];
     [_endLine setFrame:CGRectMake(0, 0, self.navigationBar.frame.size.width, 0)];
     _endLine.backgroundColor = COLOR_CONTROL_CENTER;
@@ -132,8 +118,15 @@
     panImageDrag = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handlePanGesture:)];
     panImageDrag.maximumNumberOfTouches = panImageDrag.minimumNumberOfTouches = 1;
     
-    [_imageDrag addGestureRecognizer:panImageDrag];
-   
+    // Add Gesture on _pageControl
+    NSArray *subviews = self.pageViewController.view.subviews;
+    for (int i=0; i<[subviews count]; i++) {
+        if ([[subviews objectAtIndex:i] isKindOfClass:[UIPageControl class]]) {
+            _pageControl = (UIPageControl *)[subviews objectAtIndex:i];
+            [_pageControl addGestureRecognizer:panImageDrag];
+        }
+    }
+
     panNavigationBar = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handlePanGesture:)];
     panNavigationBar.maximumNumberOfTouches = panNavigationBar.minimumNumberOfTouches = 1;
     
@@ -148,7 +141,7 @@
     CGFloat navigationBarH = self.navigationBar.frame.size.height + [UIApplication sharedApplication].statusBarFrame.size.height;
     CGFloat navigationBarW = self.navigationBar.frame.size.width;
     CGFloat heightScreen = [UIScreen mainScreen].bounds.size.height - self.tabBarController.tabBar.frame.size.height;
-    CGFloat heightTableView = [UIScreen mainScreen].bounds.size.height - self.tabBarController.tabBar.frame.size.height - self.navigationBar.frame.size.height - BORDER_TOUCH_UPDOWN - TOOLBAR_ADD_BORDER;
+    CGFloat heightTableView = heightScreen - navigationBarH;
 
     float centerMaxH = [self getMaxH] / 2;
     float step = [self getMaxH] / 10;
@@ -228,9 +221,8 @@
             _mainView.frame = CGRectMake(0, 0, navigationBarW, currentPoint.y);
             _pageViewController.view.frame = CGRectMake(0, currentPoint.y - heightScreen + navigationBarH, navigationBarW, heightTableView);
             _labelMessageNoRecord.frame = CGRectMake(0, currentPoint.y - centerMaxH, navigationBarW, SIZE_FONT_NORECORD+10);
-            _imageDrag.frame = CGRectMake(0, currentPoint.y - BORDER_TOUCH_UPDOWN, navigationBarW, BORDER_TOUCH_UPDOWN);
-            _endLine.frame = CGRectMake(0, currentPoint.y - BORDER_TOUCH_UPDOWN, navigationBarW, 1);
-        
+            _endLine.frame = CGRectMake(0, currentPoint.y - _pageControl.frame.size.height, navigationBarW, 1);
+            
         } completion:^ (BOOL completed) {
             
             if (_mainView.frame.size.height == [self getMaxH]) {
@@ -264,6 +256,7 @@
 {
     if (_isOpen) {
     
+        /*
         [self setControlCenterHidden:YES];
     
         [coordinator animateAlongsideTransition:nil completion:^(id<UIViewControllerTransitionCoordinatorContext> context) {
@@ -272,8 +265,9 @@
         
             [self setControlCenterHidden: self.navigationBarHidden];
         }];
+        */
         
-        //[self closeControlCenter];
+        [self closeControlCenter];
     }
     
     [super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
@@ -291,32 +285,16 @@
     return [UIScreen mainScreen].bounds.size.height - self.tabBarController.tabBar.frame.size.height;
 }
 
-- (void)openControlCenterToSize
+- (void)closeControlCenter
 {
-    CGFloat navigationBarH = self.navigationBar.frame.size.height + [UIApplication sharedApplication].statusBarFrame.size.height;
-    
-    _mainView.frame = CGRectMake(0, 0, self.navigationBar.frame.size.width, [self getMaxH]);
-    _pageViewController.view.frame = CGRectMake(0, navigationBarH, _mainView.frame.size.width, _mainView.frame.size.height - self.navigationBar.frame.size.height - BORDER_TOUCH_UPDOWN - TOOLBAR_ADD_BORDER);
-    _labelMessageNoRecord.frame = CGRectMake(0, _mainView.frame.size.height / 2, _mainView.frame.size.width, SIZE_FONT_NORECORD+10);
-    _imageDrag.frame = CGRectMake(0, _mainView.frame.size.height - BORDER_TOUCH_UPDOWN, _mainView.frame.size.width, BORDER_TOUCH_UPDOWN);
-    _endLine.frame = CGRectMake(0, _mainView.frame.size.height - BORDER_TOUCH_UPDOWN, _mainView.frame.size.width, 1);
-    
-    panNavigationBar.enabled = NO;
-    [self setIsOpen:YES];
-}
-
-/*
- - (void)closeControlCenterToSize:(CGSize)size
- {
- _mainView.frame = CGRectMake(0, 0, size.width, 0);
- _tableView.frame = CGRectMake(0, 0, _mainView.frame.size.width, 0);
- _noRecord.frame = CGRectMake(0, 0, _mainView.frame.size.width, 0);
- _imageDrag.frame = CGRectMake(0, 0, _mainView.frame.size.width, 0);
- _endLine.frame = CGRectMake(0, 0, _mainView.frame.size.width, 0);
+    _mainView.frame = CGRectMake(0, 0, self.navigationBar.frame.size.width, 0);
+    _pageViewController.view.frame = CGRectMake(0, 0, _mainView.frame.size.width, 0);
+    _labelMessageNoRecord.frame = CGRectMake(0, 0, _mainView.frame.size.width, 0);
+    _endLine.frame = CGRectMake(0, 0, _mainView.frame.size.width, 0);
  
- panNavigationBar.enabled = YES;
- }
- */
+    panNavigationBar.enabled = YES;
+    [self setIsOpen:NO];
+}
 
 - (void)setIsOpen:(BOOL)setOpen
 {
@@ -424,12 +402,6 @@
     return 0;
 }
 
-/*
- - (void)pageViewController:(UIPageViewController *)pageViewController willTransitionToViewControllers:(NSArray<UIViewController *> *)pendingViewControllers
- {
- }
- */
-
 - (void)pageViewController:(UIPageViewController *)pageViewController didFinishAnimating:(BOOL)finished previousViewControllers:(NSArray<UIViewController *> *)previousViewControllers transitionCompleted:(BOOL)completed
 {
     [self changeTabBarApplicationFileImage];
@@ -443,8 +415,8 @@
         self.title = NSLocalizedString(@"_home_", nil);
 
         UITabBarItem *item = [self.tabBarController.tabBar.items objectAtIndex: k_tabBarApplicationIndexFile];
-        item.selectedImage = [UIImage imageNamed:image_tabBarFile];
-        item.image = [UIImage imageNamed:image_tabBarFile];
+        item.selectedImage = [UIImage imageNamed:image_tabBarFiles];
+        item.image = [UIImage imageNamed:image_tabBarFiles];
         
         return;
     }

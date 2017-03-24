@@ -128,33 +128,6 @@
         
     if([self respondsToSelector:NSSelectorFromString(_metadataNet.action)])
         [self performSelector:NSSelectorFromString(_metadataNet.action)];
-    
-    // Add Activity LOG
-    if ([_metadataNet.selector length] > 0) {
-        
-        OCActivity *activity = [OCActivity new];
-        NSString *file, *subject;
-        
-        if ([_metadataNet.fileName length] > 0) {
-            
-            file = [NSString stringWithFormat:@"%@/%@", _metadataNet.serverUrl, _metadataNet.fileName];
-            subject = [CCUtility returnFileNamePathFromFileName:_metadataNet.fileName serverUrl:_metadataNet.serverUrl activeUrl:_activeUrl];
-
-        } else {
-            
-            file = _metadataNet.serverUrl;
-            subject = [CCUtility returnFileNamePathFromFileName:@"" serverUrl:_metadataNet.serverUrl activeUrl:_activeUrl];
-        }
-        
-        activity.idActivity = 0;
-        activity.date = [NSDate date];
-        activity.file = file;
-        activity.subject = [NSString stringWithFormat:@"%@ : %@",_metadataNet.selector, subject] ;
-        activity.type = _metadataNet.action;
-        
-        [CCCoreData addActivity:activity account:_metadataNet.account];
-    }
-
 }
 
 #pragma --------------------------------------------------------------------------------------------
@@ -427,6 +400,9 @@
         // Request trusted certificated
         if ([error code] == NSURLErrorServerCertificateUntrusted)
             [[CCCertificate sharedManager] presentViewControllerCertificateWithTitle:[error localizedDescription] viewController:(UIViewController *)self.delegate delegate:self];
+        
+        // Activity
+        [CCCoreData addActivityClient:_metadataNet.serverUrl fileID:@"" action:k_activityDebugActionReadFolder selector:@"" note:[error.userInfo valueForKey:@"NSLocalizedDescription"] type:k_activityTypeFailure verbose:k_activityVerboseHigh account:_metadataNet.account];
         
         [self complete];
     }];
@@ -1162,6 +1138,42 @@
 }
 
 #pragma --------------------------------------------------------------------------------------------
+#pragma mark ===== External Sites =====
+#pragma --------------------------------------------------------------------------------------------
+
+- (void)getExternalSitesServer
+{
+    OCCommunication *communication = [CCNetworking sharedNetworking].sharedOCCommunication;
+    
+    [communication setCredentialsWithUser:_activeUser andPassword:_activePassword];
+    [communication setUserAgent:[CCUtility getUserAgent]];
+    
+    [communication getExternalSitesServer:[_activeUrl stringByAppendingString:@"/"] onCommunication:communication successRequest:^(NSHTTPURLResponse *response, NSArray *listOfExternalSites, NSString *redirectedServer) {
+        
+        if ([self.delegate respondsToSelector:@selector(getExternalSitesServerSuccess:)])
+            [self.delegate getExternalSitesServerSuccess:listOfExternalSites];
+        
+        [self complete];
+        
+    } failureRequest:^(NSHTTPURLResponse *response, NSError *error, NSString *redirectedServer) {
+        
+        NSInteger errorCode = response.statusCode;
+        if (errorCode == 0)
+            errorCode = error.code;
+        
+        if([self.delegate respondsToSelector:@selector(getExternalSitesServerFailure:message:errorCode:)])
+            [self.delegate getExternalSitesServerFailure:_metadataNet message:[error.userInfo valueForKey:@"NSLocalizedDescription"] errorCode:errorCode];
+        
+        // Request trusted certificated
+        if ([error code] == NSURLErrorServerCertificateUntrusted)
+            [[CCCertificate sharedManager] presentViewControllerCertificateWithTitle:[error localizedDescription] viewController:(UIViewController *)self.delegate delegate:self];
+        
+        [self complete];
+    }];
+
+}
+
+#pragma --------------------------------------------------------------------------------------------
 #pragma mark ===== Notification =====
 #pragma --------------------------------------------------------------------------------------------
 
@@ -1191,6 +1203,9 @@
         // Request trusted certificated
         if ([error code] == NSURLErrorServerCertificateUntrusted)
             [[CCCertificate sharedManager] presentViewControllerCertificateWithTitle:[error localizedDescription] viewController:(UIViewController *)self.delegate delegate:self];
+        
+        // Activity
+        [CCCoreData addActivityClient:_activeUrl fileID:@"" action:k_activityDebugActionGetNotification selector:@"" note:[error.userInfo valueForKey:@"NSLocalizedDescription"] type:k_activityTypeFailure verbose:k_activityVerboseHigh account:_metadataNet.account];
         
         [self complete];
     }];
@@ -1253,16 +1268,13 @@
     
         [communication subscribingPushProxy:k_pushNotificationServer pushToken:pushToken deviceIdentifier:deviceIdentifier deviceIdentifierSignature:signature userPublicKey:devicePublicKey onCommunication:communication successRequest:^(NSHTTPURLResponse *response, NSString *publicKey, NSString *deviceIdentifier, NSString *signature, NSString *redirectedServer) {
             
-            NSLog(@"Service registered.");
+            // Activity
+            [CCCoreData addActivityClient:k_pushNotificationServer fileID:@"" action:k_activityDebugActionPushProxy selector:@"" note:@"Service registered." type:k_activityTypeSuccess verbose:k_activityVerboseHigh account:_metadataNet.account];
             
             [self complete];
             
         } failureRequest:^(NSHTTPURLResponse *response, NSError *error, NSString *redirectedServer) {
            
-#if !defined(EXTENSION) && defined(DEBUG)
-            [app messageNotification:@"Subscribing Server Proxy Push Error" description:[error.userInfo valueForKey:@"NSLocalizedDescription"] visible:YES delay:k_dismissAfterSecond type:TWMessageBarMessageTypeError];
-#endif
-
             NSInteger errorCode = response.statusCode;
             if (errorCode == 0)
                 errorCode = error.code;
@@ -1271,14 +1283,13 @@
             if ([error code] == NSURLErrorServerCertificateUntrusted)
                 [[CCCertificate sharedManager] presentViewControllerCertificateWithTitle:[error localizedDescription] viewController:(UIViewController *)self.delegate delegate:self];
 
+            // Activity
+            [CCCoreData addActivityClient:k_pushNotificationServer fileID:@"" action:k_activityDebugActionPushProxy selector:@"" note:[error.userInfo valueForKey:@"NSLocalizedDescription"] type:k_activityTypeFailure verbose:k_activityVerboseHigh account:_metadataNet.account];
+
             [self complete];
         }];
         
     } failureRequest:^(NSHTTPURLResponse *response, NSError *error, NSString *redirectedServer) {
-        
-#if !defined(EXTENSION) && defined(DEBUG)
-        [app messageNotification:@"Subscribing Server Push Error" description:[error.userInfo valueForKey:@"NSLocalizedDescription"] visible:YES delay:k_dismissAfterSecond type:TWMessageBarMessageTypeError];
-#endif
         
         NSInteger errorCode = response.statusCode;
         if (errorCode == 0)
@@ -1288,6 +1299,9 @@
         if ([error code] == NSURLErrorServerCertificateUntrusted)
             [[CCCertificate sharedManager] presentViewControllerCertificateWithTitle:[error localizedDescription] viewController:(UIViewController *)self.delegate delegate:self];
         
+        // Activity
+        [CCCoreData addActivityClient:_activeUrl fileID:@"" action:k_activityDebugActionServerPush selector:@"" note:[error.userInfo valueForKey:@"NSLocalizedDescription"] type:k_activityTypeFailure verbose:k_activityVerboseHigh account:_metadataNet.account];
+
         [self complete];
     }];
 }
@@ -1392,6 +1406,9 @@
         if ([error code] == NSURLErrorServerCertificateUntrusted)
             [[CCCertificate sharedManager] presentViewControllerCertificateWithTitle:[error localizedDescription] viewController:(UIViewController *)self.delegate delegate:self];
         
+        // Activity
+        [CCCoreData addActivityClient:_activeUrl fileID:@"" action:k_activityDebugActionFeatures selector:@"" note:[error.userInfo valueForKey:@"NSLocalizedDescription"] type:k_activityTypeFailure verbose:k_activityVerboseHigh account:_metadataNet.account];
+
         [self complete];
     }];
 }
@@ -1425,6 +1442,9 @@
         if ([error code] == NSURLErrorServerCertificateUntrusted)
             [[CCCertificate sharedManager] presentViewControllerCertificateWithTitle:[error localizedDescription] viewController:(UIViewController *)self.delegate delegate:self];
 
+        // Activity
+        [CCCoreData addActivityClient:_activeUrl fileID:@"" action:k_activityDebugActionCapabilities selector:@"" note:[error.userInfo valueForKey:@"NSLocalizedDescription"] type:k_activityTypeFailure verbose:k_activityVerboseHigh account:_metadataNet.account];
+        
         [self complete];
     }];
 }

@@ -882,7 +882,7 @@
         TableDirectory *record = [TableDirectory MR_createEntityInContext:context];
         
         record.account = activeAccount;
-        record.directoryID = [CCUtility createID];
+        record.directoryID = [CCUtility createRandomString:16];
         directoryID = record.directoryID;
         if (permissions) record.permissions = permissions;
         record.serverUrl = serverUrl;
@@ -1501,10 +1501,9 @@
 #pragma mark ===== Automatic Upload =====
 #pragma --------------------------------------------------------------------------------------------
 
-+ (void)addTableAutomaticUpload:(CCMetadataNet *)metadataNet account:(NSString *)account context:(NSManagedObjectContext *)context
++ (void)addTableAutomaticUpload:(CCMetadataNet *)metadataNet account:(NSString *)account
 {
-    if (context == nil)
-        context = [NSManagedObjectContext MR_context];
+    NSManagedObjectContext *context = [NSManagedObjectContext MR_context];
     
     // Delete record if exists
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(account == %@) AND (fileName == %@) AND (serverUrl == %@) AND (selector == %@)", account, metadataNet.fileName, metadataNet.serverUrl, metadataNet.selector];
@@ -1544,7 +1543,7 @@
         metadataNet.selectorPost = record.selectorPost;
         metadataNet.serverUrl = record.serverUrl;
         metadataNet.session = record.session;
-        metadataNet.taskStatus = k_taskStatusResume;                          // Default
+        metadataNet.taskStatus = k_taskStatusResume;                        // Default
         
         [record MR_deleteEntityInContext:context];                          // Remove record
         [context MR_saveToPersistentStoreAndWait];
@@ -1850,7 +1849,7 @@
 #pragma mark ===== Activity =====
 #pragma --------------------------------------------------------------------------------------------
 
-+ (void)addActivity:(OCActivity *)activity account:(NSString *)account
++ (void)addActivityServer:(OCActivity *)activity account:(NSString *)account
 {
     [MagicalRecord saveWithBlockAndWait:^(NSManagedObjectContext *localContext) {
         
@@ -1860,14 +1859,39 @@
         TableActivity *record = [TableActivity MR_createEntityInContext:localContext];
 
         record.account = account;
-        record.idActivity = [NSNumber numberWithInteger:activity.idActivity];
+        record.action = @"Activity";
         record.date = activity.date;
         record.file = activity.file;
+        record.fileID = @"";
+        record.idActivity = [NSNumber numberWithInteger:activity.idActivity];
         record.link = activity.link;
-        record.message = activity.message;
-        record.subject = activity.subject;
-        record.verbose = [NSNumber numberWithInteger:activity.verbose];
+        record.note = activity.subject;
+        record.selector = @"";
+        record.type = k_activityTypeInfo;
+        record.verbose = [NSNumber numberWithInteger:k_activityVerboseDefault];
     }];
+}
+
++ (void)addActivityClient:(NSString *)file fileID:(NSString *)fileID action:(NSString *)action selector:(NSString *)selector note:(NSString *)note type:(NSString *)type verbose:(NSInteger)verbose account:(NSString *)account
+{
+    [MagicalRecord saveWithBlockAndWait:^(NSManagedObjectContext *localContext) {
+        
+        TableActivity *record = [TableActivity MR_createEntityInContext:localContext];
+        
+        if (!account) record.account = @"";
+        else record.account = account;
+        
+        record.action = action;
+        record.date = [NSDate date];
+        record.file = file;
+        record.fileID = fileID;
+        record.idActivity = 0;
+        record.link = @"";
+        record.note = note;
+        record.selector = selector;
+        record.type = type;
+        record.verbose = [NSNumber numberWithInteger:verbose];
+   }];
 }
 
 + (NSArray *)getAllTableActivityWithPredicate:(NSPredicate *)predicate
@@ -1880,6 +1904,48 @@
     
     NSSortDescriptor *descriptor = [[NSSortDescriptor alloc] initWithKey:@"date" ascending:NO selector:nil];
 
+    return [records sortedArrayUsingDescriptors:[NSArray arrayWithObjects:descriptor, nil]];
+}
+
+#pragma --------------------------------------------------------------------------------------------
+#pragma mark ===== External Sites =====
+#pragma --------------------------------------------------------------------------------------------
+
++ (void)addExternalSites:(OCExternalSites *)externalSites account:(NSString *)account
+{
+    [MagicalRecord saveWithBlockAndWait:^(NSManagedObjectContext *localContext) {
+        
+        TableExternalSites *record = [TableExternalSites MR_createEntityInContext:localContext];
+        
+        record.account = account;
+        
+        record.idExternalSite = [NSNumber numberWithInteger:externalSites.idExternalSite];
+        record.icon = externalSites.icon;
+        record.lang = externalSites.lang;
+        record.name = externalSites.name;
+        record.url = externalSites.url;
+    }];
+}
+
++ (void)deleteAllExternalSitesForAccount:(NSString *)account
+{
+    NSManagedObjectContext *context = [NSManagedObjectContext MR_defaultContext];
+    
+    [TableExternalSites MR_deleteAllMatchingPredicate:[NSPredicate predicateWithFormat:@"(account == %@)", account] inContext:context];
+    
+    [context MR_saveToPersistentStoreAndWait];
+}
+
++ (NSArray *)getAllTableExternalSitesWithPredicate:(NSPredicate *)predicate
+{
+    NSManagedObjectContext *context = [NSManagedObjectContext MR_defaultContext];
+    
+    NSArray *records = [TableExternalSites MR_findAllWithPredicate:predicate inContext:context];
+    
+    if ([records count] == 0) return nil;
+    
+    NSSortDescriptor *descriptor = [[NSSortDescriptor alloc] initWithKey:@"idExternalSite" ascending:YES selector:nil];
+    
     return [records sortedArrayUsingDescriptors:[NSArray arrayWithObjects:descriptor, nil]];
 }
 

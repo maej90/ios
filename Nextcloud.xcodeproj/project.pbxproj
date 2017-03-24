@@ -108,15 +108,11 @@
 		F71459CC1D12E3B700CAFEEC /* RNCryptorEngine.m in Sources */ = {isa = PBXBuildFile; fileRef = F70F05371C889184008DAB36 /* RNCryptorEngine.m */; };
 		F71459CD1D12E3B700CAFEEC /* AFViewShaker.m in Sources */ = {isa = PBXBuildFile; fileRef = F70F02B41C889183008DAB36 /* AFViewShaker.m */; };
 		F71459CE1D12E3B700CAFEEC /* NSData+CommonCrypto.m in Sources */ = {isa = PBXBuildFile; fileRef = F70F02AF1C889183008DAB36 /* NSData+CommonCrypto.m */; };
-		F71459CF1D12E3B700CAFEEC /* BKPasscodeLockScreenManager.m in Sources */ = {isa = PBXBuildFile; fileRef = F70F02C61C889183008DAB36 /* BKPasscodeLockScreenManager.m */; };
-		F71459D11D12E3B700CAFEEC /* BKPasscodeInputView.m in Sources */ = {isa = PBXBuildFile; fileRef = F70F02C41C889183008DAB36 /* BKPasscodeInputView.m */; };
 		F71459D21D12E3B700CAFEEC /* CCUtility.m in Sources */ = {isa = PBXBuildFile; fileRef = F7053E3D1C639DF500741EA5 /* CCUtility.m */; };
 		F71459D31D12E3B700CAFEEC /* CCBKPasscode.m in Sources */ = {isa = PBXBuildFile; fileRef = F7FE125D1BAC03FB0041924B /* CCBKPasscode.m */; };
 		F71459D51D12E3B700CAFEEC /* MBProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = F70F04841C889183008DAB36 /* MBProgressHUD.m */; };
-		F71459D71D12E3B700CAFEEC /* BKPasscodeDummyViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F70F02C01C889183008DAB36 /* BKPasscodeDummyViewController.m */; };
 		F71459D91D12E3B700CAFEEC /* CCCrypto.m in Sources */ = {isa = PBXBuildFile; fileRef = F7FE125F1BAC03FB0041924B /* CCCrypto.m */; };
 		F71459DD1D12E3B700CAFEEC /* CCCoreData.m in Sources */ = {isa = PBXBuildFile; fileRef = F7B81D801C64E77F006D02DF /* CCCoreData.m */; };
-		F71459DE1D12E3B700CAFEEC /* BKPasscodeField.m in Sources */ = {isa = PBXBuildFile; fileRef = F70F02C21C889183008DAB36 /* BKPasscodeField.m */; };
 		F71459E11D12E3B700CAFEEC /* CCHud.m in Sources */ = {isa = PBXBuildFile; fileRef = F7514EDB1C7B1336008F3338 /* CCHud.m */; };
 		F71459E41D12E3B700CAFEEC /* RNDecryptor.m in Sources */ = {isa = PBXBuildFile; fileRef = F70F05391C889184008DAB36 /* RNDecryptor.m */; };
 		F71459E61D12E3B700CAFEEC /* NYXImagesHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = F70F04D41C889184008DAB36 /* NYXImagesHelper.m */; };
@@ -126,16 +122,12 @@
 		F71459F01D12E3B700CAFEEC /* NSString+Base64.m in Sources */ = {isa = PBXBuildFile; fileRef = F70F02B11C889183008DAB36 /* NSString+Base64.m */; };
 		F71459F11D12E3B700CAFEEC /* CCMove.m in Sources */ = {isa = PBXBuildFile; fileRef = F7D02A471C5F9E4400D6F972 /* CCMove.m */; };
 		F71459F31D12E3B700CAFEEC /* UIImage+Resizing.m in Sources */ = {isa = PBXBuildFile; fileRef = F70F04CA1C889184008DAB36 /* UIImage+Resizing.m */; };
-		F71459F41D12E3B700CAFEEC /* BKPasscodeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F70F02C91C889183008DAB36 /* BKPasscodeViewController.m */; };
-		F71459F51D12E3B700CAFEEC /* BKShiftingView.m in Sources */ = {isa = PBXBuildFile; fileRef = F70F02CB1C889183008DAB36 /* BKShiftingView.m */; };
 		F71459F71D12E3B700CAFEEC /* CCGraphics.m in Sources */ = {isa = PBXBuildFile; fileRef = F76C3B841C6388BC00DC4301 /* CCGraphics.m */; };
-		F71459F81D12E3B700CAFEEC /* BKTouchIDSwitchView.m in Sources */ = {isa = PBXBuildFile; fileRef = F70F02CF1C889183008DAB36 /* BKTouchIDSwitchView.m */; };
 		F71459FB1D12E3B700CAFEEC /* PPImageScrollingCellView.m in Sources */ = {isa = PBXBuildFile; fileRef = F70F05211C889184008DAB36 /* PPImageScrollingCellView.m */; };
 		F71459FE1D12E3B700CAFEEC /* CCExifGeo.m in Sources */ = {isa = PBXBuildFile; fileRef = F7A54C351C6267B500E2C8BF /* CCExifGeo.m */; };
 		F71459FF1D12E3B700CAFEEC /* RNCryptor.m in Sources */ = {isa = PBXBuildFile; fileRef = F70F05351C889184008DAB36 /* RNCryptor.m */; };
 		F7145A001D12E3B700CAFEEC /* CCGlobal.m in Sources */ = {isa = PBXBuildFile; fileRef = F7C8C1911B482CEA0048180E /* CCGlobal.m */; };
 		F7145A011D12E3B700CAFEEC /* UIImage+Blurring.m in Sources */ = {isa = PBXBuildFile; fileRef = F70F04C01C889184008DAB36 /* UIImage+Blurring.m */; };
-		F7145A021D12E3B700CAFEEC /* BKTouchIDManager.m in Sources */ = {isa = PBXBuildFile; fileRef = F70F02CD1C889183008DAB36 /* BKTouchIDManager.m */; };
 		F7145A041D12E3B700CAFEEC /* CCloadItemData.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7296A661C8880ED001A7809 /* CCloadItemData.swift */; };
 		F7145A081D12E3B700CAFEEC /* PPCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F70F051F1C889184008DAB36 /* PPCollectionViewCell.m */; };
 		F7145A0D1D12E3B700CAFEEC /* NSData+Base64.m in Sources */ = {isa = PBXBuildFile; fileRef = F70F02AD1C889183008DAB36 /* NSData+Base64.m */; };
@@ -162,9 +154,40 @@
 		F72AAECD1E5C60C700BB17E1 /* UIWindow+AHKAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = F72AAEC91E5C60C700BB17E1 /* UIWindow+AHKAdditions.m */; };
 		F72AE40B1E67246200B3E477 /* ControlCenter.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F72AE40A1E67246200B3E477 /* ControlCenter.storyboard */; };
 		F72C63891DC14B0400FA5ED5 /* libMagicalRecord.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F7B61E9B1DC13C20009E938F /* libMagicalRecord.a */; };
+		F732B3371E8045A1002B7D75 /* SwiftWebVC.strings in Resources */ = {isa = PBXBuildFile; fileRef = F732B3351E8045A1002B7D75 /* SwiftWebVC.strings */; };
 		F732BA061D76CE1500E9878B /* CCNetworking.m in Sources */ = {isa = PBXBuildFile; fileRef = F732BA041D76CE1500E9878B /* CCNetworking.m */; };
 		F732BA0B1D76DBA500E9878B /* CCNetworking.m in Sources */ = {isa = PBXBuildFile; fileRef = F732BA041D76CE1500E9878B /* CCNetworking.m */; };
 		F73C002F1E55D7DF00EEEFA7 /* CCManageCryptoCloudSecurity.m in Sources */ = {isa = PBXBuildFile; fileRef = F73C002E1E55D7DF00EEEFA7 /* CCManageCryptoCloudSecurity.m */; };
+		F73C41501E82E51F000137C0 /* TableExternalSites+CoreDataClass.m in Sources */ = {isa = PBXBuildFile; fileRef = F73C414D1E82E51F000137C0 /* TableExternalSites+CoreDataClass.m */; };
+		F73C41511E82E51F000137C0 /* TableExternalSites+CoreDataClass.m in Sources */ = {isa = PBXBuildFile; fileRef = F73C414D1E82E51F000137C0 /* TableExternalSites+CoreDataClass.m */; };
+		F73C41521E82E51F000137C0 /* TableExternalSites+CoreDataClass.m in Sources */ = {isa = PBXBuildFile; fileRef = F73C414D1E82E51F000137C0 /* TableExternalSites+CoreDataClass.m */; };
+		F73C41531E82E51F000137C0 /* TableExternalSites+CoreDataProperties.m in Sources */ = {isa = PBXBuildFile; fileRef = F73C414F1E82E51F000137C0 /* TableExternalSites+CoreDataProperties.m */; };
+		F73C41541E82E51F000137C0 /* TableExternalSites+CoreDataProperties.m in Sources */ = {isa = PBXBuildFile; fileRef = F73C414F1E82E51F000137C0 /* TableExternalSites+CoreDataProperties.m */; };
+		F73C41551E82E51F000137C0 /* TableExternalSites+CoreDataProperties.m in Sources */ = {isa = PBXBuildFile; fileRef = F73C414F1E82E51F000137C0 /* TableExternalSites+CoreDataProperties.m */; };
+		F73CC0691E813DFF006E3047 /* BKPasscodeDummyViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F73CC0591E813DFF006E3047 /* BKPasscodeDummyViewController.m */; };
+		F73CC06A1E813DFF006E3047 /* BKPasscodeDummyViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F73CC0591E813DFF006E3047 /* BKPasscodeDummyViewController.m */; };
+		F73CC06B1E813DFF006E3047 /* BKPasscodeDummyViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F73CC0591E813DFF006E3047 /* BKPasscodeDummyViewController.m */; };
+		F73CC06C1E813DFF006E3047 /* BKPasscodeField.m in Sources */ = {isa = PBXBuildFile; fileRef = F73CC05B1E813DFF006E3047 /* BKPasscodeField.m */; };
+		F73CC06D1E813DFF006E3047 /* BKPasscodeField.m in Sources */ = {isa = PBXBuildFile; fileRef = F73CC05B1E813DFF006E3047 /* BKPasscodeField.m */; };
+		F73CC06E1E813DFF006E3047 /* BKPasscodeField.m in Sources */ = {isa = PBXBuildFile; fileRef = F73CC05B1E813DFF006E3047 /* BKPasscodeField.m */; };
+		F73CC06F1E813DFF006E3047 /* BKPasscodeInputView.m in Sources */ = {isa = PBXBuildFile; fileRef = F73CC05D1E813DFF006E3047 /* BKPasscodeInputView.m */; };
+		F73CC0701E813DFF006E3047 /* BKPasscodeInputView.m in Sources */ = {isa = PBXBuildFile; fileRef = F73CC05D1E813DFF006E3047 /* BKPasscodeInputView.m */; };
+		F73CC0711E813DFF006E3047 /* BKPasscodeInputView.m in Sources */ = {isa = PBXBuildFile; fileRef = F73CC05D1E813DFF006E3047 /* BKPasscodeInputView.m */; };
+		F73CC0721E813DFF006E3047 /* BKPasscodeLockScreenManager.m in Sources */ = {isa = PBXBuildFile; fileRef = F73CC05F1E813DFF006E3047 /* BKPasscodeLockScreenManager.m */; };
+		F73CC0731E813DFF006E3047 /* BKPasscodeLockScreenManager.m in Sources */ = {isa = PBXBuildFile; fileRef = F73CC05F1E813DFF006E3047 /* BKPasscodeLockScreenManager.m */; };
+		F73CC0741E813DFF006E3047 /* BKPasscodeLockScreenManager.m in Sources */ = {isa = PBXBuildFile; fileRef = F73CC05F1E813DFF006E3047 /* BKPasscodeLockScreenManager.m */; };
+		F73CC0751E813DFF006E3047 /* BKPasscodeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F73CC0621E813DFF006E3047 /* BKPasscodeViewController.m */; };
+		F73CC0761E813DFF006E3047 /* BKPasscodeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F73CC0621E813DFF006E3047 /* BKPasscodeViewController.m */; };
+		F73CC0771E813DFF006E3047 /* BKPasscodeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F73CC0621E813DFF006E3047 /* BKPasscodeViewController.m */; };
+		F73CC0781E813DFF006E3047 /* BKShiftingView.m in Sources */ = {isa = PBXBuildFile; fileRef = F73CC0641E813DFF006E3047 /* BKShiftingView.m */; };
+		F73CC0791E813DFF006E3047 /* BKShiftingView.m in Sources */ = {isa = PBXBuildFile; fileRef = F73CC0641E813DFF006E3047 /* BKShiftingView.m */; };
+		F73CC07A1E813DFF006E3047 /* BKShiftingView.m in Sources */ = {isa = PBXBuildFile; fileRef = F73CC0641E813DFF006E3047 /* BKShiftingView.m */; };
+		F73CC07B1E813DFF006E3047 /* BKTouchIDManager.m in Sources */ = {isa = PBXBuildFile; fileRef = F73CC0661E813DFF006E3047 /* BKTouchIDManager.m */; };
+		F73CC07C1E813DFF006E3047 /* BKTouchIDManager.m in Sources */ = {isa = PBXBuildFile; fileRef = F73CC0661E813DFF006E3047 /* BKTouchIDManager.m */; };
+		F73CC07D1E813DFF006E3047 /* BKTouchIDManager.m in Sources */ = {isa = PBXBuildFile; fileRef = F73CC0661E813DFF006E3047 /* BKTouchIDManager.m */; };
+		F73CC07E1E813DFF006E3047 /* BKTouchIDSwitchView.m in Sources */ = {isa = PBXBuildFile; fileRef = F73CC0681E813DFF006E3047 /* BKTouchIDSwitchView.m */; };
+		F73CC07F1E813DFF006E3047 /* BKTouchIDSwitchView.m in Sources */ = {isa = PBXBuildFile; fileRef = F73CC0681E813DFF006E3047 /* BKTouchIDSwitchView.m */; };
+		F73CC0801E813DFF006E3047 /* BKTouchIDSwitchView.m in Sources */ = {isa = PBXBuildFile; fileRef = F73CC0681E813DFF006E3047 /* BKTouchIDSwitchView.m */; };
 		F73CCDD91DC13776007E38D8 /* XLFormBaseCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F73CCD841DC13775007E38D8 /* XLFormBaseCell.m */; };
 		F73CCDDB1DC13776007E38D8 /* XLFormButtonCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F73CCD861DC13775007E38D8 /* XLFormButtonCell.m */; };
 		F73CCDDD1DC13776007E38D8 /* XLFormCheckCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F73CCD881DC13775007E38D8 /* XLFormCheckCell.m */; };
@@ -213,14 +236,6 @@
 		F74344551E1277E2001CC831 /* libMagicalRecord.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F7B61E9B1DC13C20009E938F /* libMagicalRecord.a */; };
 		F74344561E12784A001CC831 /* libcrypto.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F70A63061D5B3467004E2AA5 /* libcrypto.a */; };
 		F74344591E12786C001CC831 /* libssl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F70A63071D5B3467004E2AA5 /* libssl.a */; };
-		F743445B1E127D3B001CC831 /* BKPasscodeDummyViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F70F02C01C889183008DAB36 /* BKPasscodeDummyViewController.m */; };
-		F743445C1E127D3D001CC831 /* BKPasscodeField.m in Sources */ = {isa = PBXBuildFile; fileRef = F70F02C21C889183008DAB36 /* BKPasscodeField.m */; };
-		F743445D1E127D40001CC831 /* BKPasscodeInputView.m in Sources */ = {isa = PBXBuildFile; fileRef = F70F02C41C889183008DAB36 /* BKPasscodeInputView.m */; };
-		F743445E1E127D44001CC831 /* BKPasscodeLockScreenManager.m in Sources */ = {isa = PBXBuildFile; fileRef = F70F02C61C889183008DAB36 /* BKPasscodeLockScreenManager.m */; };
-		F743445F1E127D4B001CC831 /* BKPasscodeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F70F02C91C889183008DAB36 /* BKPasscodeViewController.m */; };
-		F74344601E127D4D001CC831 /* BKShiftingView.m in Sources */ = {isa = PBXBuildFile; fileRef = F70F02CB1C889183008DAB36 /* BKShiftingView.m */; };
-		F74344611E127D51001CC831 /* BKTouchIDManager.m in Sources */ = {isa = PBXBuildFile; fileRef = F70F02CD1C889183008DAB36 /* BKTouchIDManager.m */; };
-		F74344621E127D54001CC831 /* BKTouchIDSwitchView.m in Sources */ = {isa = PBXBuildFile; fileRef = F70F02CF1C889183008DAB36 /* BKTouchIDSwitchView.m */; };
 		F74344631E127D79001CC831 /* CCBKPasscode.m in Sources */ = {isa = PBXBuildFile; fileRef = F7FE125D1BAC03FB0041924B /* CCBKPasscode.m */; };
 		F74344641E127DE6001CC831 /* OCNetworking.m in Sources */ = {isa = PBXBuildFile; fileRef = F74D3DBE1BAC1941000BAE4B /* OCNetworking.m */; };
 		F74344651E127DE9001CC831 /* CCNetworking.m in Sources */ = {isa = PBXBuildFile; fileRef = F732BA041D76CE1500E9878B /* CCNetworking.m */; };
@@ -256,6 +271,7 @@
 		F750374D1DBFA91A008FB480 /* ALView+PureLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = F75037441DBFA91A008FB480 /* ALView+PureLayout.m */; };
 		F750374F1DBFA91A008FB480 /* NSArray+PureLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = F75037461DBFA91A008FB480 /* NSArray+PureLayout.m */; };
 		F75037511DBFA91A008FB480 /* NSLayoutConstraint+PureLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = F75037481DBFA91A008FB480 /* NSLayoutConstraint+PureLayout.m */; };
+		F75797AE1E81356C00187A1B /* CTAssetsPicker.strings in Resources */ = {isa = PBXBuildFile; fileRef = F75797AC1E81356C00187A1B /* CTAssetsPicker.strings */; };
 		F75ADF451DC75FFE008A7347 /* CCLogin.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F75ADF441DC75FFE008A7347 /* CCLogin.storyboard */; };
 		F7659A271DC0B726004860C4 /* EAIntroPage.m in Sources */ = {isa = PBXBuildFile; fileRef = F7659A231DC0B726004860C4 /* EAIntroPage.m */; };
 		F7659A291DC0B726004860C4 /* EAIntroView.m in Sources */ = {isa = PBXBuildFile; fileRef = F7659A251DC0B726004860C4 /* EAIntroView.m */; };
@@ -304,14 +320,12 @@
 		F77B0E141D118A16002130FE /* CCError.m in Sources */ = {isa = PBXBuildFile; fileRef = F76C3B881C638A4C00DC4301 /* CCError.m */; };
 		F77B0E161D118A16002130FE /* AFViewShaker.m in Sources */ = {isa = PBXBuildFile; fileRef = F70F02B41C889183008DAB36 /* AFViewShaker.m */; };
 		F77B0E1B1D118A16002130FE /* CCGraphics.m in Sources */ = {isa = PBXBuildFile; fileRef = F76C3B841C6388BC00DC4301 /* CCGraphics.m */; };
-		F77B0E1C1D118A16002130FE /* BKPasscodeDummyViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F70F02C01C889183008DAB36 /* BKPasscodeDummyViewController.m */; };
 		F77B0E1D1D118A16002130FE /* ReaderThumbQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = F70F0ECC1C889317008DAB36 /* ReaderThumbQueue.m */; };
 		F77B0E201D118A16002130FE /* CCShareUserOC.m in Sources */ = {isa = PBXBuildFile; fileRef = F78316871C0CB3CA00C43975 /* CCShareUserOC.m */; };
 		F77B0E211D118A16002130FE /* ThumbsMainToolbar.m in Sources */ = {isa = PBXBuildFile; fileRef = F70F0ED81C889317008DAB36 /* ThumbsMainToolbar.m */; };
 		F77B0E221D118A16002130FE /* CCManageLocation.m in Sources */ = {isa = PBXBuildFile; fileRef = F7BFCCC11B68C21900548E76 /* CCManageLocation.m */; };
 		F77B0E231D118A16002130FE /* CCSharePermissionOC.m in Sources */ = {isa = PBXBuildFile; fileRef = F7CD0FFA1C8DDA7D006520C5 /* CCSharePermissionOC.m */; };
 		F77B0E241D118A16002130FE /* HRColorCursor.m in Sources */ = {isa = PBXBuildFile; fileRef = F70F0DE51C889300008DAB36 /* HRColorCursor.m */; };
-		F77B0E251D118A16002130FE /* BKPasscodeInputView.m in Sources */ = {isa = PBXBuildFile; fileRef = F70F02C41C889183008DAB36 /* BKPasscodeInputView.m */; };
 		F77B0E261D118A16002130FE /* ZSSTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = F70F0DF31C889300008DAB36 /* ZSSTextView.m */; };
 		F77B0E271D118A16002130FE /* CYRLayoutManager.m in Sources */ = {isa = PBXBuildFile; fileRef = F70F0DD91C889300008DAB36 /* CYRLayoutManager.m */; };
 		F77B0E291D118A16002130FE /* NSArray+LMMediaPlayerShuffle.m in Sources */ = {isa = PBXBuildFile; fileRef = F70F0F2E1C889339008DAB36 /* NSArray+LMMediaPlayerShuffle.m */; };
@@ -331,7 +345,6 @@
 		F77B0E431D118A16002130FE /* ReaderThumbsView.m in Sources */ = {isa = PBXBuildFile; fileRef = F70F0ED21C889317008DAB36 /* ReaderThumbsView.m */; };
 		F77B0E441D118A16002130FE /* CCIntro.m in Sources */ = {isa = PBXBuildFile; fileRef = F744BE931BEBB2EE004FFF66 /* CCIntro.m */; };
 		F77B0E451D118A16002130FE /* ReaderThumbRender.m in Sources */ = {isa = PBXBuildFile; fileRef = F70F0ECE1C889317008DAB36 /* ReaderThumbRender.m */; };
-		F77B0E461D118A16002130FE /* BKPasscodeLockScreenManager.m in Sources */ = {isa = PBXBuildFile; fileRef = F70F02C61C889183008DAB36 /* BKPasscodeLockScreenManager.m */; };
 		F77B0E481D118A16002130FE /* CCCrypto.m in Sources */ = {isa = PBXBuildFile; fileRef = F7FE125F1BAC03FB0041924B /* CCCrypto.m */; };
 		F77B0E491D118A16002130FE /* UIImage+Saving.m in Sources */ = {isa = PBXBuildFile; fileRef = F70F04CE1C889184008DAB36 /* UIImage+Saving.m */; };
 		F77B0E4C1D118A16002130FE /* CCDetail.m in Sources */ = {isa = PBXBuildFile; fileRef = F7D0E65F1BC5042E008D989A /* CCDetail.m */; };
@@ -372,23 +385,18 @@
 		F77B0E901D118A16002130FE /* CCManageHelp.m in Sources */ = {isa = PBXBuildFile; fileRef = F7FEB6CF1BECADC100E7C415 /* CCManageHelp.m */; };
 		F77B0E911D118A16002130FE /* CCTemplates.m in Sources */ = {isa = PBXBuildFile; fileRef = F72137301BAFF0920012B613 /* CCTemplates.m */; };
 		F77B0E921D118A16002130FE /* CCCellMainTransfer.m in Sources */ = {isa = PBXBuildFile; fileRef = F70211F81BAC56E9003FC03E /* CCCellMainTransfer.m */; };
-		F77B0E941D118A16002130FE /* BKTouchIDManager.m in Sources */ = {isa = PBXBuildFile; fileRef = F70F02CD1C889183008DAB36 /* BKTouchIDManager.m */; };
 		F77B0E951D118A16002130FE /* CCManageAsset.m in Sources */ = {isa = PBXBuildFile; fileRef = F7BFCCBF1B68C21900548E76 /* CCManageAsset.m */; };
 		F77B0E961D118A16002130FE /* ReaderContentView.m in Sources */ = {isa = PBXBuildFile; fileRef = F70F0EBE1C889317008DAB36 /* ReaderContentView.m */; };
 		F77B0E971D118A16002130FE /* LMMediaItemQueueManager.m in Sources */ = {isa = PBXBuildFile; fileRef = F70F0F381C889339008DAB36 /* LMMediaItemQueueManager.m */; };
 		F77B0E981D118A16002130FE /* CCManageAccount.m in Sources */ = {isa = PBXBuildFile; fileRef = F7ACE42D1BAC0268006C0017 /* CCManageAccount.m */; };
 		F77B0E991D118A16002130FE /* PPCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F70F051F1C889184008DAB36 /* PPCollectionViewCell.m */; };
-		F77B0E9A1D118A16002130FE /* BKTouchIDSwitchView.m in Sources */ = {isa = PBXBuildFile; fileRef = F70F02CF1C889183008DAB36 /* BKTouchIDSwitchView.m */; };
 		F77B0E9B1D118A16002130FE /* CCBKPasscode.m in Sources */ = {isa = PBXBuildFile; fileRef = F7FE125D1BAC03FB0041924B /* CCBKPasscode.m */; };
 		F77B0E9D1D118A16002130FE /* HRColorPickerView.m in Sources */ = {isa = PBXBuildFile; fileRef = F70F0DE81C889300008DAB36 /* HRColorPickerView.m */; };
 		F77B0E9F1D118A16002130FE /* mztools.c in Sources */ = {isa = PBXBuildFile; fileRef = F70F0F971C889487008DAB36 /* mztools.c */; };
 		F77B0EA61D118A16002130FE /* NSString+TruncateToWidth.m in Sources */ = {isa = PBXBuildFile; fileRef = F73049B91CB567F000C7C320 /* NSString+TruncateToWidth.m */; };
-		F77B0EA71D118A16002130FE /* BKPasscodeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F70F02C91C889183008DAB36 /* BKPasscodeViewController.m */; };
-		F77B0EA81D118A16002130FE /* BKShiftingView.m in Sources */ = {isa = PBXBuildFile; fileRef = F70F02CB1C889183008DAB36 /* BKShiftingView.m */; };
 		F77B0EAA1D118A16002130FE /* zip.c in Sources */ = {isa = PBXBuildFile; fileRef = F70F0F9B1C889487008DAB36 /* zip.c */; };
 		F77B0EAB1D118A16002130FE /* HRColorPickerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F70F0DEA1C889300008DAB36 /* HRColorPickerViewController.m */; };
 		F77B0EAD1D118A16002130FE /* CCGlobal.m in Sources */ = {isa = PBXBuildFile; fileRef = F7C8C1911B482CEA0048180E /* CCGlobal.m */; };
-		F77B0EAE1D118A16002130FE /* BKPasscodeField.m in Sources */ = {isa = PBXBuildFile; fileRef = F70F02C21C889183008DAB36 /* BKPasscodeField.m */; };
 		F77B0EB11D118A16002130FE /* CCMetadata.m in Sources */ = {isa = PBXBuildFile; fileRef = F7C8C1731B482A920048180E /* CCMetadata.m */; };
 		F77B0EB21D118A16002130FE /* ReaderMainToolbar.m in Sources */ = {isa = PBXBuildFile; fileRef = F70F0EC61C889317008DAB36 /* ReaderMainToolbar.m */; };
 		F77B0EB51D118A16002130FE /* RECommonFunctions.m in Sources */ = {isa = PBXBuildFile; fileRef = F70F0C511C8892C5008DAB36 /* RECommonFunctions.m */; };
@@ -483,7 +491,6 @@
 		F77B0F551D118A16002130FE /* Error.strings in Resources */ = {isa = PBXBuildFile; fileRef = F7B381BF1C074E3E004693F8 /* Error.strings */; };
 		F77B0F561D118A16002130FE /* ZSStable.png in Resources */ = {isa = PBXBuildFile; fileRef = F70F0DC91C889300008DAB36 /* ZSStable.png */; };
 		F77B0F571D118A16002130FE /* synchronizedcrypto.gif in Resources */ = {isa = PBXBuildFile; fileRef = F76344761BF259A800188725 /* synchronizedcrypto.gif */; };
-		F77B0F581D118A16002130FE /* TTOpenInAppActivityLocalizable.string in Resources */ = {isa = PBXBuildFile; fileRef = F7BFE0CA1B67925500F072A4 /* TTOpenInAppActivityLocalizable.string */; };
 		F77B0F591D118A16002130FE /* ZSSRichTextEditor.js in Resources */ = {isa = PBXBuildFile; fileRef = F70F0DF01C889300008DAB36 /* ZSSRichTextEditor.js */; };
 		F77B0F5B1D118A16002130FE /* ZSSclearstyle.png in Resources */ = {isa = PBXBuildFile; fileRef = F70F0D951C889300008DAB36 /* ZSSclearstyle.png */; };
 		F77B0F5C1D118A16002130FE /* ImagesIntro.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F744BE961BEBB31E004FFF66 /* ImagesIntro.xcassets */; };
@@ -525,8 +532,9 @@
 		F78088EB1DD3A1DB005C5A7C /* cryptocloud.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = F78088E51DD3A1DB005C5A7C /* cryptocloud.xcdatamodeld */; };
 		F78BFED41D3111B800E513CF /* LaunchScreenNextcloud.xib in Resources */ = {isa = PBXBuildFile; fileRef = F78BFECA1D3111B800E513CF /* LaunchScreenNextcloud.xib */; };
 		F78BFEE11D31126B00E513CF /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F78BFEDE1D31126B00E513CF /* MainInterface.storyboard */; };
+		F7A13A031E7F3D5D00016680 /* CCProgressView.m in Sources */ = {isa = PBXBuildFile; fileRef = F7A13A001E7F3D5D00016680 /* CCProgressView.m */; };
+		F7A13A041E7F3D5D00016680 /* UINavigationController+CCProgress.m in Sources */ = {isa = PBXBuildFile; fileRef = F7A13A021E7F3D5D00016680 /* UINavigationController+CCProgress.m */; };
 		F7B1FBC41E72E3D1001781FE /* Media.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F7B1FBB11E72E3D1001781FE /* Media.xcassets */; };
-		F7B1FBC51E72E3D1001781FE /* SwiftWebVC.strings in Resources */ = {isa = PBXBuildFile; fileRef = F7B1FBB31E72E3D1001781FE /* SwiftWebVC.strings */; };
 		F7B1FBC61E72E3D1001781FE /* SwiftModalWebVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7B1FBBF1E72E3D1001781FE /* SwiftModalWebVC.swift */; };
 		F7B1FBC71E72E3D1001781FE /* SwiftWebVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7B1FBC01E72E3D1001781FE /* SwiftWebVC.swift */; };
 		F7B1FBC81E72E3D1001781FE /* SwiftWebVCActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7B1FBC11E72E3D1001781FE /* SwiftWebVCActivity.swift */; };
@@ -541,8 +549,6 @@
 		F7C525A01E3B48B700FFE02C /* CCNotification.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7C5259F1E3B48B700FFE02C /* CCNotification.swift */; };
 		F7C525A21E3B6DA800FFE02C /* CCNotification.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F7C525A11E3B6DA800FFE02C /* CCNotification.storyboard */; };
 		F7C742D81E7BD5C900D9C973 /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F7C742D71E7BD5C900D9C973 /* MainInterface.storyboard */; };
-		F7CE28851D1ACFA70025783C /* CCProgressView.m in Sources */ = {isa = PBXBuildFile; fileRef = F7CE28801D1ACFA70025783C /* CCProgressView.m */; };
-		F7CE28881D1ACFA70025783C /* UINavigationController+CCProgress.m in Sources */ = {isa = PBXBuildFile; fileRef = F7CE28821D1ACFA70025783C /* UINavigationController+CCProgress.m */; };
 		F7D2677C1E157053005ACB7E /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F7F67BB81A24D27800EE80DA /* Images.xcassets */; };
 		F7D6A0911D82DBFA0045AD1A /* CCControlCenter.m in Sources */ = {isa = PBXBuildFile; fileRef = F7D6A08A1D82DBFA0045AD1A /* CCControlCenter.m */; };
 		F7D6A0931D82DBFA0045AD1A /* CCControlCenterTransferCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F7D6A08C1D82DBFA0045AD1A /* CCControlCenterTransferCell.m */; };
@@ -586,7 +592,6 @@
 		F7F06ECB1DBFACC600099AE9 /* CTAssetThumbnailOverlay.m in Sources */ = {isa = PBXBuildFile; fileRef = F7F06E6C1DBFACC600099AE9 /* CTAssetThumbnailOverlay.m */; };
 		F7F06ECD1DBFACC600099AE9 /* CTAssetThumbnailStacks.m in Sources */ = {isa = PBXBuildFile; fileRef = F7F06E6E1DBFACC600099AE9 /* CTAssetThumbnailStacks.m */; };
 		F7F06ECF1DBFACC600099AE9 /* CTAssetThumbnailView.m in Sources */ = {isa = PBXBuildFile; fileRef = F7F06E701DBFACC600099AE9 /* CTAssetThumbnailView.m */; };
-		F7F06ED11DBFACC600099AE9 /* CTAssetsPicker.strings in Resources */ = {isa = PBXBuildFile; fileRef = F7F06E721DBFACC600099AE9 /* CTAssetsPicker.strings */; };
 		F7F54CE51E5B14C700E19C62 /* ImageError.png in Resources */ = {isa = PBXBuildFile; fileRef = F7F54CAF1E5B14C700E19C62 /* ImageError.png */; };
 		F7F54CE61E5B14C700E19C62 /* ImageError@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = F7F54CB01E5B14C700E19C62 /* ImageError@2x.png */; };
 		F7F54CE71E5B14C700E19C62 /* ImageError@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = F7F54CB11E5B14C700E19C62 /* ImageError@3x.png */; };
@@ -864,23 +869,6 @@
 		F70F02B11C889183008DAB36 /* NSString+Base64.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+Base64.m"; sourceTree = "<group>"; };
 		F70F02B31C889183008DAB36 /* AFViewShaker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFViewShaker.h; sourceTree = "<group>"; };
 		F70F02B41C889183008DAB36 /* AFViewShaker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFViewShaker.m; sourceTree = "<group>"; };
-		F70F02BF1C889183008DAB36 /* BKPasscodeDummyViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BKPasscodeDummyViewController.h; sourceTree = "<group>"; };
-		F70F02C01C889183008DAB36 /* BKPasscodeDummyViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BKPasscodeDummyViewController.m; sourceTree = "<group>"; };
-		F70F02C11C889183008DAB36 /* BKPasscodeField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BKPasscodeField.h; sourceTree = "<group>"; };
-		F70F02C21C889183008DAB36 /* BKPasscodeField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BKPasscodeField.m; sourceTree = "<group>"; };
-		F70F02C31C889183008DAB36 /* BKPasscodeInputView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BKPasscodeInputView.h; sourceTree = "<group>"; };
-		F70F02C41C889183008DAB36 /* BKPasscodeInputView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BKPasscodeInputView.m; sourceTree = "<group>"; };
-		F70F02C51C889183008DAB36 /* BKPasscodeLockScreenManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BKPasscodeLockScreenManager.h; sourceTree = "<group>"; };
-		F70F02C61C889183008DAB36 /* BKPasscodeLockScreenManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BKPasscodeLockScreenManager.m; sourceTree = "<group>"; };
-		F70F02C71C889183008DAB36 /* BKPasscodeUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BKPasscodeUtils.h; sourceTree = "<group>"; };
-		F70F02C81C889183008DAB36 /* BKPasscodeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BKPasscodeViewController.h; sourceTree = "<group>"; };
-		F70F02C91C889183008DAB36 /* BKPasscodeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BKPasscodeViewController.m; sourceTree = "<group>"; };
-		F70F02CA1C889183008DAB36 /* BKShiftingView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BKShiftingView.h; sourceTree = "<group>"; };
-		F70F02CB1C889183008DAB36 /* BKShiftingView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BKShiftingView.m; sourceTree = "<group>"; };
-		F70F02CC1C889183008DAB36 /* BKTouchIDManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BKTouchIDManager.h; sourceTree = "<group>"; };
-		F70F02CD1C889183008DAB36 /* BKTouchIDManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BKTouchIDManager.m; sourceTree = "<group>"; };
-		F70F02CE1C889183008DAB36 /* BKTouchIDSwitchView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BKTouchIDSwitchView.h; sourceTree = "<group>"; };
-		F70F02CF1C889183008DAB36 /* BKTouchIDSwitchView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BKTouchIDSwitchView.m; sourceTree = "<group>"; };
 		F70F04831C889183008DAB36 /* MBProgressHUD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MBProgressHUD.h; sourceTree = "<group>"; };
 		F70F04841C889183008DAB36 /* MBProgressHUD.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MBProgressHUD.m; sourceTree = "<group>"; };
 		F70F04BF1C889184008DAB36 /* UIImage+Blurring.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+Blurring.h"; sourceTree = "<group>"; };
@@ -1121,13 +1109,11 @@
 		F70FD1C61E67552700C0FDA6 /* CCControlCenterTransfer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCControlCenterTransfer.m; sourceTree = "<group>"; };
 		F70FD1C91E675F1500C0FDA6 /* CCControlCenterActivity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCControlCenterActivity.h; sourceTree = "<group>"; };
 		F70FD1CA1E675F1500C0FDA6 /* CCControlCenterActivity.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCControlCenterActivity.m; sourceTree = "<group>"; };
-		F7151A7F1D477A4B00E6AF45 /* en */ = {isa = PBXFileReference; lastKnownFileType = text; name = en; path = en.lproj/TTOpenInAppActivityLocalizable.string; sourceTree = "<group>"; };
 		F7151A801D477A4B00E6AF45 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/BKPasscodeView.strings; sourceTree = "<group>"; };
 		F7151A811D477A4B00E6AF45 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		F7151A821D477A4B00E6AF45 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		F7151A831D477A4B00E6AF45 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Intro.strings; sourceTree = "<group>"; };
 		F7151A841D477A4B00E6AF45 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Error.strings; sourceTree = "<group>"; };
-		F7151A851D477A5400E6AF45 /* it */ = {isa = PBXFileReference; lastKnownFileType = text; name = it; path = it.lproj/TTOpenInAppActivityLocalizable.string; sourceTree = "<group>"; };
 		F7151A861D477A5400E6AF45 /* it */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = it; path = it.lproj/BKPasscodeView.strings; sourceTree = "<group>"; };
 		F7151A871D477A5400E6AF45 /* it */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = it; path = it.lproj/Localizable.strings; sourceTree = "<group>"; };
 		F7151A881D477A5400E6AF45 /* it */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = it; path = it.lproj/InfoPlist.strings; sourceTree = "<group>"; };
@@ -1136,20 +1122,16 @@
 		F719FDB11CF06645004895D0 /* CCPhotosCameraUpload.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCPhotosCameraUpload.h; sourceTree = "<group>"; };
 		F719FDB21CF06645004895D0 /* CCPhotosCameraUpload.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCPhotosCameraUpload.m; sourceTree = "<group>"; };
 		F71E67F61DC1F76F003BA52B /* ownCloud iOS library.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = "ownCloud iOS library.xcodeproj"; path = "Libraries external/OCCommunicationLib/ownCloud iOS library.xcodeproj"; sourceTree = SOURCE_ROOT; };
-		F7202C8D1E68171800C6D9AD /* ru */ = {isa = PBXFileReference; lastKnownFileType = text; name = ru; path = ru.lproj/TTOpenInAppActivityLocalizable.string; sourceTree = "<group>"; };
 		F7202C8E1E68171900C6D9AD /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/BKPasscodeView.strings; sourceTree = "<group>"; };
 		F7202C8F1E68171900C6D9AD /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/Localizable.strings; sourceTree = "<group>"; };
 		F7202C901E68171900C6D9AD /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		F7202C911E68171900C6D9AD /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/Intro.strings; sourceTree = "<group>"; };
 		F7202C921E68171A00C6D9AD /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/Error.strings; sourceTree = "<group>"; };
-		F7202C941E6817A400C6D9AD /* pl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = pl; path = pl.lproj/CTAssetsPicker.strings; sourceTree = "<group>"; };
-		F7202C951E6817A400C6D9AD /* pl */ = {isa = PBXFileReference; lastKnownFileType = text; name = pl; path = pl.lproj/TTOpenInAppActivityLocalizable.string; sourceTree = "<group>"; };
 		F7202C961E6817A400C6D9AD /* pl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = pl; path = pl.lproj/BKPasscodeView.strings; sourceTree = "<group>"; };
 		F7202C971E6817A500C6D9AD /* pl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = pl; path = pl.lproj/Localizable.strings; sourceTree = "<group>"; };
 		F7202C981E6817A500C6D9AD /* pl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = pl; path = pl.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		F7202C991E6817A500C6D9AD /* pl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = pl; path = pl.lproj/Intro.strings; sourceTree = "<group>"; };
 		F7202C9A1E6817A500C6D9AD /* pl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = pl; path = pl.lproj/Error.strings; sourceTree = "<group>"; };
-		F7202C9B1E6818B600C6D9AD /* es */ = {isa = PBXFileReference; lastKnownFileType = text; name = es; path = es.lproj/TTOpenInAppActivityLocalizable.string; sourceTree = "<group>"; };
 		F7202C9C1E6818B700C6D9AD /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/BKPasscodeView.strings; sourceTree = "<group>"; };
 		F7202C9D1E6818B700C6D9AD /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/Localizable.strings; sourceTree = "<group>"; };
 		F7202C9E1E6818B700C6D9AD /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/InfoPlist.strings; sourceTree = "<group>"; };
@@ -1194,9 +1176,23 @@
 		F72AE40A1E67246200B3E477 /* ControlCenter.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = ControlCenter.storyboard; sourceTree = "<group>"; };
 		F73049B81CB567F000C7C320 /* NSString+TruncateToWidth.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+TruncateToWidth.h"; sourceTree = "<group>"; };
 		F73049B91CB567F000C7C320 /* NSString+TruncateToWidth.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+TruncateToWidth.m"; sourceTree = "<group>"; };
+		F732B2D71E802B71002B7D75 /* pt-BR */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "pt-BR"; path = "pt-BR.lproj/BKPasscodeView.strings"; sourceTree = "<group>"; };
+		F732B2D81E802B71002B7D75 /* pt-BR */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "pt-BR"; path = "pt-BR.lproj/Localizable.strings"; sourceTree = "<group>"; };
+		F732B2D91E802B72002B7D75 /* pt-BR */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "pt-BR"; path = "pt-BR.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
+		F732B2DA1E802B72002B7D75 /* pt-BR */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "pt-BR"; path = "pt-BR.lproj/Intro.strings"; sourceTree = "<group>"; };
+		F732B2DB1E802B72002B7D75 /* pt-BR */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "pt-BR"; path = "pt-BR.lproj/Error.strings"; sourceTree = "<group>"; };
+		F732B3361E8045A1002B7D75 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/SwiftWebVC.strings; sourceTree = "<group>"; };
+		F732B3381E8045CB002B7D75 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/SwiftWebVC.strings; sourceTree = "<group>"; };
+		F732B3391E8045CF002B7D75 /* nl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nl; path = nl.lproj/SwiftWebVC.strings; sourceTree = "<group>"; };
+		F732B33A1E8045D0002B7D75 /* it */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = it; path = it.lproj/SwiftWebVC.strings; sourceTree = "<group>"; };
+		F732B33B1E8045D4002B7D75 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/SwiftWebVC.strings; sourceTree = "<group>"; };
+		F732B33C1E8045D7002B7D75 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/SwiftWebVC.strings; sourceTree = "<group>"; };
+		F732B33D1E8045D8002B7D75 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/SwiftWebVC.strings; sourceTree = "<group>"; };
+		F732B33E1E8045DA002B7D75 /* pl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = pl; path = pl.lproj/SwiftWebVC.strings; sourceTree = "<group>"; };
+		F732B33F1E8045DC002B7D75 /* is */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = is; path = is.lproj/SwiftWebVC.strings; sourceTree = "<group>"; };
+		F732B3401E8045DF002B7D75 /* pt-BR */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "pt-BR"; path = "pt-BR.lproj/SwiftWebVC.strings"; sourceTree = "<group>"; };
 		F732BA031D76CE1500E9878B /* CCNetworking.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCNetworking.h; sourceTree = "<group>"; };
 		F732BA041D76CE1500E9878B /* CCNetworking.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCNetworking.m; sourceTree = "<group>"; };
-		F73814261E65A52C0011A45E /* fr */ = {isa = PBXFileReference; lastKnownFileType = text; name = fr; path = fr.lproj/TTOpenInAppActivityLocalizable.string; sourceTree = "<group>"; };
 		F73814271E65A52C0011A45E /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/BKPasscodeView.strings; sourceTree = "<group>"; };
 		F73814281E65A52D0011A45E /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/Localizable.strings; sourceTree = "<group>"; };
 		F73814291E65A52D0011A45E /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/InfoPlist.strings; sourceTree = "<group>"; };
@@ -1204,6 +1200,27 @@
 		F738142B1E65A52D0011A45E /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/Error.strings; sourceTree = "<group>"; };
 		F73C002D1E55D7DF00EEEFA7 /* CCManageCryptoCloudSecurity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCManageCryptoCloudSecurity.h; sourceTree = "<group>"; };
 		F73C002E1E55D7DF00EEEFA7 /* CCManageCryptoCloudSecurity.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCManageCryptoCloudSecurity.m; sourceTree = "<group>"; };
+		F73C414C1E82E51F000137C0 /* TableExternalSites+CoreDataClass.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "TableExternalSites+CoreDataClass.h"; sourceTree = "<group>"; };
+		F73C414D1E82E51F000137C0 /* TableExternalSites+CoreDataClass.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "TableExternalSites+CoreDataClass.m"; sourceTree = "<group>"; };
+		F73C414E1E82E51F000137C0 /* TableExternalSites+CoreDataProperties.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "TableExternalSites+CoreDataProperties.h"; sourceTree = "<group>"; };
+		F73C414F1E82E51F000137C0 /* TableExternalSites+CoreDataProperties.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "TableExternalSites+CoreDataProperties.m"; sourceTree = "<group>"; };
+		F73CC0581E813DFF006E3047 /* BKPasscodeDummyViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BKPasscodeDummyViewController.h; sourceTree = "<group>"; };
+		F73CC0591E813DFF006E3047 /* BKPasscodeDummyViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BKPasscodeDummyViewController.m; sourceTree = "<group>"; };
+		F73CC05A1E813DFF006E3047 /* BKPasscodeField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BKPasscodeField.h; sourceTree = "<group>"; };
+		F73CC05B1E813DFF006E3047 /* BKPasscodeField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BKPasscodeField.m; sourceTree = "<group>"; };
+		F73CC05C1E813DFF006E3047 /* BKPasscodeInputView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BKPasscodeInputView.h; sourceTree = "<group>"; };
+		F73CC05D1E813DFF006E3047 /* BKPasscodeInputView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BKPasscodeInputView.m; sourceTree = "<group>"; };
+		F73CC05E1E813DFF006E3047 /* BKPasscodeLockScreenManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BKPasscodeLockScreenManager.h; sourceTree = "<group>"; };
+		F73CC05F1E813DFF006E3047 /* BKPasscodeLockScreenManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BKPasscodeLockScreenManager.m; sourceTree = "<group>"; };
+		F73CC0601E813DFF006E3047 /* BKPasscodeUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BKPasscodeUtils.h; sourceTree = "<group>"; };
+		F73CC0611E813DFF006E3047 /* BKPasscodeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BKPasscodeViewController.h; sourceTree = "<group>"; };
+		F73CC0621E813DFF006E3047 /* BKPasscodeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BKPasscodeViewController.m; sourceTree = "<group>"; };
+		F73CC0631E813DFF006E3047 /* BKShiftingView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BKShiftingView.h; sourceTree = "<group>"; };
+		F73CC0641E813DFF006E3047 /* BKShiftingView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BKShiftingView.m; sourceTree = "<group>"; };
+		F73CC0651E813DFF006E3047 /* BKTouchIDManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BKTouchIDManager.h; sourceTree = "<group>"; };
+		F73CC0661E813DFF006E3047 /* BKTouchIDManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BKTouchIDManager.m; sourceTree = "<group>"; };
+		F73CC0671E813DFF006E3047 /* BKTouchIDSwitchView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BKTouchIDSwitchView.h; sourceTree = "<group>"; };
+		F73CC0681E813DFF006E3047 /* BKTouchIDSwitchView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BKTouchIDSwitchView.m; sourceTree = "<group>"; };
 		F73CCD801DC13775007E38D8 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		F73CCD831DC13775007E38D8 /* XLFormBaseCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XLFormBaseCell.h; sourceTree = "<group>"; };
 		F73CCD841DC13775007E38D8 /* XLFormBaseCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XLFormBaseCell.m; sourceTree = "<group>"; };
@@ -1388,6 +1405,16 @@
 		F7540F2A1D5B238600C3FFA8 /* x509.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = x509.h; sourceTree = "<group>"; };
 		F7540F2B1D5B238600C3FFA8 /* x509_vfy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = x509_vfy.h; sourceTree = "<group>"; };
 		F7540F2C1D5B238600C3FFA8 /* x509v3.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = x509v3.h; sourceTree = "<group>"; };
+		F75797AD1E81356C00187A1B /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/CTAssetsPicker.strings; sourceTree = "<group>"; };
+		F75797AF1E81359500187A1B /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/CTAssetsPicker.strings; sourceTree = "<group>"; };
+		F75797B01E8135AB00187A1B /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/CTAssetsPicker.strings; sourceTree = "<group>"; };
+		F75797B11E81363C00187A1B /* nl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nl; path = nl.lproj/CTAssetsPicker.strings; sourceTree = "<group>"; };
+		F75797B21E81363F00187A1B /* it */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = it; path = it.lproj/CTAssetsPicker.strings; sourceTree = "<group>"; };
+		F75797B31E81364100187A1B /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/CTAssetsPicker.strings; sourceTree = "<group>"; };
+		F75797B41E81364400187A1B /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/CTAssetsPicker.strings; sourceTree = "<group>"; };
+		F75797B51E81364700187A1B /* pl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = pl; path = pl.lproj/CTAssetsPicker.strings; sourceTree = "<group>"; };
+		F75797B61E81364A00187A1B /* is */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = is; path = is.lproj/CTAssetsPicker.strings; sourceTree = "<group>"; };
+		F75797B71E81364C00187A1B /* pt-BR */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "pt-BR"; path = "pt-BR.lproj/CTAssetsPicker.strings"; sourceTree = "<group>"; };
 		F75ADF441DC75FFE008A7347 /* CCLogin.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = CCLogin.storyboard; sourceTree = "<group>"; };
 		F75CDBF51DF063AD00116AD0 /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; name = .gitignore; path = ../.gitignore; sourceTree = "<group>"; };
 		F76344751BF259A800188725 /* synchronized.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = synchronized.gif; sourceTree = "<group>"; };
@@ -1441,6 +1468,20 @@
 		F768EAFB1BFB7CD800B6E341 /* CCShareOC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCShareOC.h; sourceTree = "<group>"; };
 		F768EAFC1BFB7CD800B6E341 /* CCShareOC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCShareOC.m; sourceTree = "<group>"; };
 		F768EB021BFB7EA900B6E341 /* CCShare.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = CCShare.storyboard; sourceTree = "<group>"; };
+		F76A75E01E83D42B005AFFF4 /* tr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = tr; path = tr.lproj/CTAssetsPicker.strings; sourceTree = "<group>"; };
+		F76A75E11E83D42B005AFFF4 /* tr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = tr; path = tr.lproj/SwiftWebVC.strings; sourceTree = "<group>"; };
+		F76A75E21E83D42B005AFFF4 /* tr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = tr; path = tr.lproj/BKPasscodeView.strings; sourceTree = "<group>"; };
+		F76A75E31E83D42B005AFFF4 /* tr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = tr; path = tr.lproj/Localizable.strings; sourceTree = "<group>"; };
+		F76A75E41E83D42B005AFFF4 /* tr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = tr; path = tr.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		F76A75E51E83D42B005AFFF4 /* tr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = tr; path = tr.lproj/Intro.strings; sourceTree = "<group>"; };
+		F76A75E61E83D42B005AFFF4 /* tr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = tr; path = tr.lproj/Error.strings; sourceTree = "<group>"; };
+		F76A75F51E83DA6F005AFFF4 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/CTAssetsPicker.strings"; sourceTree = "<group>"; };
+		F76A75F61E83DA6F005AFFF4 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/SwiftWebVC.strings"; sourceTree = "<group>"; };
+		F76A75F71E83DA6F005AFFF4 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/BKPasscodeView.strings"; sourceTree = "<group>"; };
+		F76A75F81E83DA70005AFFF4 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; };
+		F76A75F91E83DA70005AFFF4 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
+		F76A75FA1E83DA70005AFFF4 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Intro.strings"; sourceTree = "<group>"; };
+		F76A75FB1E83DA70005AFFF4 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Error.strings"; sourceTree = "<group>"; };
 		F76C3B831C6388BC00DC4301 /* CCGraphics.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCGraphics.h; sourceTree = "<group>"; };
 		F76C3B841C6388BC00DC4301 /* CCGraphics.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCGraphics.m; sourceTree = "<group>"; };
 		F76C3B871C638A4C00DC4301 /* CCError.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCError.h; sourceTree = "<group>"; };
@@ -1464,6 +1505,10 @@
 		F7956FC91B4886E60085DEA3 /* CCUploadFromOtherUpp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCUploadFromOtherUpp.h; sourceTree = "<group>"; };
 		F7956FCA1B4886E60085DEA3 /* CCUploadFromOtherUpp.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCUploadFromOtherUpp.m; sourceTree = "<group>"; };
 		F7956FCB1B4886E60085DEA3 /* CCUploadFromOtherUpp.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = CCUploadFromOtherUpp.storyboard; sourceTree = "<group>"; };
+		F7A139FF1E7F3D5D00016680 /* CCProgressView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCProgressView.h; sourceTree = "<group>"; };
+		F7A13A001E7F3D5D00016680 /* CCProgressView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCProgressView.m; sourceTree = "<group>"; };
+		F7A13A011E7F3D5D00016680 /* UINavigationController+CCProgress.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UINavigationController+CCProgress.h"; sourceTree = "<group>"; };
+		F7A13A021E7F3D5D00016680 /* UINavigationController+CCProgress.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UINavigationController+CCProgress.m"; sourceTree = "<group>"; };
 		F7A54C341C6267B500E2C8BF /* CCExifGeo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCExifGeo.h; sourceTree = "<group>"; };
 		F7A54C351C6267B500E2C8BF /* CCExifGeo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCExifGeo.m; sourceTree = "<group>"; };
 		F7A582D61A24DAB500E903D7 /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -1480,17 +1525,6 @@
 		F7ACE4301BAC0268006C0017 /* CCSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCSettings.h; sourceTree = "<group>"; };
 		F7ACE4311BAC0268006C0017 /* CCSettings.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCSettings.m; sourceTree = "<group>"; };
 		F7B1FBB11E72E3D1001781FE /* Media.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Media.xcassets; sourceTree = "<group>"; };
-		F7B1FBB41E72E3D1001781FE /* da */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = da; path = da.lproj/SwiftWebVC.strings; sourceTree = "<group>"; };
-		F7B1FBB51E72E3D1001781FE /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/SwiftWebVC.strings; sourceTree = "<group>"; };
-		F7B1FBB61E72E3D1001781FE /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/SwiftWebVC.strings; sourceTree = "<group>"; };
-		F7B1FBB71E72E3D1001781FE /* es-ES */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "es-ES"; path = "es-ES.lproj/SwiftWebVC.strings"; sourceTree = "<group>"; };
-		F7B1FBB81E72E3D1001781FE /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/SwiftWebVC.strings; sourceTree = "<group>"; };
-		F7B1FBB91E72E3D1001781FE /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/SwiftWebVC.strings; sourceTree = "<group>"; };
-		F7B1FBBA1E72E3D1001781FE /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/SwiftWebVC.strings; sourceTree = "<group>"; };
-		F7B1FBBB1E72E3D1001781FE /* pt */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = pt; path = pt.lproj/SwiftWebVC.strings; sourceTree = "<group>"; };
-		F7B1FBBC1E72E3D1001781FE /* vi */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = vi; path = vi.lproj/SwiftWebVC.strings; sourceTree = "<group>"; };
-		F7B1FBBD1E72E3D1001781FE /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/SwiftWebVC.strings"; sourceTree = "<group>"; };
-		F7B1FBBE1E72E3D1001781FE /* zh-Hant */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hant"; path = "zh-Hant.lproj/SwiftWebVC.strings"; sourceTree = "<group>"; };
 		F7B1FBBF1E72E3D1001781FE /* SwiftModalWebVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftModalWebVC.swift; sourceTree = "<group>"; };
 		F7B1FBC01E72E3D1001781FE /* SwiftWebVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftWebVC.swift; sourceTree = "<group>"; };
 		F7B1FBC11E72E3D1001781FE /* SwiftWebVCActivity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftWebVCActivity.swift; sourceTree = "<group>"; };
@@ -1501,7 +1535,6 @@
 		F7B81D801C64E77F006D02DF /* CCCoreData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCCoreData.m; sourceTree = "<group>"; };
 		F7BE6E2B1D2D5C3B00106933 /* CCQuickActions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCQuickActions.h; sourceTree = "<group>"; };
 		F7BE6E2C1D2D5C3B00106933 /* CCQuickActions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCQuickActions.m; sourceTree = "<group>"; };
-		F7BEC53D1E7981720048500A /* is */ = {isa = PBXFileReference; lastKnownFileType = text; name = is; path = is.lproj/TTOpenInAppActivityLocalizable.string; sourceTree = "<group>"; };
 		F7BEC53E1E7981720048500A /* is */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = is; path = is.lproj/BKPasscodeView.strings; sourceTree = "<group>"; };
 		F7BEC53F1E7981720048500A /* is */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = is; path = is.lproj/Localizable.strings; sourceTree = "<group>"; };
 		F7BEC5401E7981720048500A /* is */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = is; path = is.lproj/InfoPlist.strings; sourceTree = "<group>"; };
@@ -1523,7 +1556,6 @@
 		F7C1CDCE1E6DFAD1005D92BE /* CCStandardImages.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCStandardImages.h; sourceTree = "<group>"; };
 		F7C1CDDA1E6DFC6F005D92BE /* CCNextcloudConstant.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCNextcloudConstant.h; sourceTree = "<group>"; };
 		F7C1CDDB1E6DFC6F005D92BE /* CCNextcloudImages.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCNextcloudImages.h; sourceTree = "<group>"; };
-		F7C1D8BA1D47781C00B89DEA /* nl */ = {isa = PBXFileReference; lastKnownFileType = text; name = nl; path = nl.lproj/TTOpenInAppActivityLocalizable.string; sourceTree = "<group>"; };
 		F7C1D8BB1D47781C00B89DEA /* nl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nl; path = nl.lproj/BKPasscodeView.strings; sourceTree = "<group>"; };
 		F7C1D8BC1D47781C00B89DEA /* nl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nl; path = nl.lproj/Localizable.strings; sourceTree = "<group>"; };
 		F7C1D8BD1D47781C00B89DEA /* nl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nl; path = nl.lproj/InfoPlist.strings; sourceTree = "<group>"; };
@@ -1542,10 +1574,6 @@
 		F7C8C1911B482CEA0048180E /* CCGlobal.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCGlobal.m; sourceTree = "<group>"; };
 		F7CD0FF91C8DDA7D006520C5 /* CCSharePermissionOC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCSharePermissionOC.h; sourceTree = "<group>"; };
 		F7CD0FFA1C8DDA7D006520C5 /* CCSharePermissionOC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCSharePermissionOC.m; sourceTree = "<group>"; };
-		F7CE287F1D1ACFA70025783C /* CCProgressView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCProgressView.h; sourceTree = "<group>"; };
-		F7CE28801D1ACFA70025783C /* CCProgressView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCProgressView.m; sourceTree = "<group>"; };
-		F7CE28811D1ACFA70025783C /* UINavigationController+CCProgress.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UINavigationController+CCProgress.h"; sourceTree = "<group>"; };
-		F7CE28821D1ACFA70025783C /* UINavigationController+CCProgress.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UINavigationController+CCProgress.m"; sourceTree = "<group>"; };
 		F7CE8AFA1DC1F8D8009CAE48 /* Nextcloud.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Nextcloud.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F7CE8AFB1DC1F8D8009CAE48 /* Share.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = Share.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		F7D02A461C5F9E4400D6F972 /* CCMove.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCMove.h; sourceTree = "<group>"; };
@@ -1561,7 +1589,6 @@
 		F7D6A08D1D82DBFA0045AD1A /* CCControlCenterTransferCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CCControlCenterTransferCell.xib; sourceTree = "<group>"; };
 		F7D6A08E1D82DBFA0045AD1A /* CCMenu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCMenu.h; sourceTree = "<group>"; };
 		F7D6A08F1D82DBFA0045AD1A /* CCMenu.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCMenu.m; sourceTree = "<group>"; };
-		F7D96F0A1D99498600A587A5 /* de */ = {isa = PBXFileReference; lastKnownFileType = text; name = de; path = de.lproj/TTOpenInAppActivityLocalizable.string; sourceTree = "<group>"; };
 		F7D96F0B1D99498600A587A5 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/BKPasscodeView.strings; sourceTree = "<group>"; };
 		F7D96F0C1D99498600A587A5 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/Localizable.strings; sourceTree = "<group>"; };
 		F7D96F0D1D99498600A587A5 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/InfoPlist.strings; sourceTree = "<group>"; };
@@ -1646,10 +1673,6 @@
 		F7F06E6E1DBFACC600099AE9 /* CTAssetThumbnailStacks.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CTAssetThumbnailStacks.m; sourceTree = "<group>"; };
 		F7F06E6F1DBFACC600099AE9 /* CTAssetThumbnailView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CTAssetThumbnailView.h; sourceTree = "<group>"; };
 		F7F06E701DBFACC600099AE9 /* CTAssetThumbnailView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CTAssetThumbnailView.m; sourceTree = "<group>"; };
-		F7F06E761DBFACC600099AE9 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/CTAssetsPicker.strings; sourceTree = "<group>"; };
-		F7F06E771DBFACC600099AE9 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/CTAssetsPicker.strings; sourceTree = "<group>"; };
-		F7F06E801DBFACC600099AE9 /* it */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = it; path = it.lproj/CTAssetsPicker.strings; sourceTree = "<group>"; };
-		F7F06E841DBFACC600099AE9 /* nl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nl; path = nl.lproj/CTAssetsPicker.strings; sourceTree = "<group>"; };
 		F7F54CAB1E5AFF1E00E19C62 /* PickerFileProvider-Bridging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "PickerFileProvider-Bridging-Header.h"; sourceTree = "<group>"; };
 		F7F54CAF1E5B14C700E19C62 /* ImageError.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ImageError.png; sourceTree = "<group>"; };
 		F7F54CB01E5B14C700E19C62 /* ImageError@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ImageError@2x.png"; sourceTree = "<group>"; };
@@ -1923,7 +1946,6 @@
 				F70F02A91C889183008DAB36 /* AESCrypt-ObjC */,
 				F70F02B21C889183008DAB36 /* AFViewShaker */,
 				F744FA7B1E57333C00BFAB34 /* APAvatarImageView */,
-				F70F02BE1C889183008DAB36 /* BKPasscodeView */,
 				F7F06E291DBFACC600099AE9 /* CTAssetsPickerController */,
 				F73CCE221DC13788007E38D8 /* DZNEmptyDataSet */,
 				F7659A211DC0B726004860C4 /* EAIntroView */,
@@ -1973,30 +1995,6 @@
 				F70F02B41C889183008DAB36 /* AFViewShaker.m */,
 			);
 			path = AFViewShaker;
-			sourceTree = "<group>";
-		};
-		F70F02BE1C889183008DAB36 /* BKPasscodeView */ = {
-			isa = PBXGroup;
-			children = (
-				F70F02BF1C889183008DAB36 /* BKPasscodeDummyViewController.h */,
-				F70F02C01C889183008DAB36 /* BKPasscodeDummyViewController.m */,
-				F70F02C11C889183008DAB36 /* BKPasscodeField.h */,
-				F70F02C21C889183008DAB36 /* BKPasscodeField.m */,
-				F70F02C31C889183008DAB36 /* BKPasscodeInputView.h */,
-				F70F02C41C889183008DAB36 /* BKPasscodeInputView.m */,
-				F70F02C51C889183008DAB36 /* BKPasscodeLockScreenManager.h */,
-				F70F02C61C889183008DAB36 /* BKPasscodeLockScreenManager.m */,
-				F70F02C71C889183008DAB36 /* BKPasscodeUtils.h */,
-				F70F02C81C889183008DAB36 /* BKPasscodeViewController.h */,
-				F70F02C91C889183008DAB36 /* BKPasscodeViewController.m */,
-				F70F02CA1C889183008DAB36 /* BKShiftingView.h */,
-				F70F02CB1C889183008DAB36 /* BKShiftingView.m */,
-				F70F02CC1C889183008DAB36 /* BKTouchIDManager.h */,
-				F70F02CD1C889183008DAB36 /* BKTouchIDManager.m */,
-				F70F02CE1C889183008DAB36 /* BKTouchIDSwitchView.h */,
-				F70F02CF1C889183008DAB36 /* BKTouchIDSwitchView.m */,
-			);
-			path = BKPasscodeView;
 			sourceTree = "<group>";
 		};
 		F70F04821C889183008DAB36 /* MBProgressHUD */ = {
@@ -2576,7 +2574,8 @@
 		F72B60941A24F04E004EF66F /* Localizations */ = {
 			isa = PBXGroup;
 			children = (
-				F7BFE0CA1B67925500F072A4 /* TTOpenInAppActivityLocalizable.string */,
+				F75797AC1E81356C00187A1B /* CTAssetsPicker.strings */,
+				F732B3351E8045A1002B7D75 /* SwiftWebVC.strings */,
 				F72B60911A24F00B004EF66F /* BKPasscodeView.strings */,
 				F7E70DE91A24DE4100E1B66A /* Localizable.strings */,
 				F7C6D5F61BE371D800AC83AD /* InfoPlist.strings */,
@@ -2584,6 +2583,30 @@
 				F7B381BF1C074E3E004693F8 /* Error.strings */,
 			);
 			name = Localizations;
+			sourceTree = "<group>";
+		};
+		F73CC0571E813DFF006E3047 /* BKPasscodeView */ = {
+			isa = PBXGroup;
+			children = (
+				F73CC0581E813DFF006E3047 /* BKPasscodeDummyViewController.h */,
+				F73CC0591E813DFF006E3047 /* BKPasscodeDummyViewController.m */,
+				F73CC05A1E813DFF006E3047 /* BKPasscodeField.h */,
+				F73CC05B1E813DFF006E3047 /* BKPasscodeField.m */,
+				F73CC05C1E813DFF006E3047 /* BKPasscodeInputView.h */,
+				F73CC05D1E813DFF006E3047 /* BKPasscodeInputView.m */,
+				F73CC05E1E813DFF006E3047 /* BKPasscodeLockScreenManager.h */,
+				F73CC05F1E813DFF006E3047 /* BKPasscodeLockScreenManager.m */,
+				F73CC0601E813DFF006E3047 /* BKPasscodeUtils.h */,
+				F73CC0611E813DFF006E3047 /* BKPasscodeViewController.h */,
+				F73CC0621E813DFF006E3047 /* BKPasscodeViewController.m */,
+				F73CC0631E813DFF006E3047 /* BKShiftingView.h */,
+				F73CC0641E813DFF006E3047 /* BKShiftingView.m */,
+				F73CC0651E813DFF006E3047 /* BKTouchIDManager.h */,
+				F73CC0661E813DFF006E3047 /* BKTouchIDManager.m */,
+				F73CC0671E813DFF006E3047 /* BKTouchIDSwitchView.h */,
+				F73CC0681E813DFF006E3047 /* BKTouchIDSwitchView.m */,
+			);
+			path = BKPasscodeView;
 			sourceTree = "<group>";
 		};
 		F73CCD7F1DC13775007E38D8 /* XLForm */ = {
@@ -2988,6 +3011,10 @@
 		F77F86401B4ABF6D009F0A10 /* Table */ = {
 			isa = PBXGroup;
 			children = (
+				F73C414C1E82E51F000137C0 /* TableExternalSites+CoreDataClass.h */,
+				F73C414D1E82E51F000137C0 /* TableExternalSites+CoreDataClass.m */,
+				F73C414E1E82E51F000137C0 /* TableExternalSites+CoreDataProperties.h */,
+				F73C414F1E82E51F000137C0 /* TableExternalSites+CoreDataProperties.m */,
 				F7FB5F181E66EB7200389481 /* TableActivity+CoreDataClass.h */,
 				F7FB5F191E66EB7200389481 /* TableActivity+CoreDataClass.m */,
 				F7FB5F1A1E66EB7200389481 /* TableActivity+CoreDataProperties.h */,
@@ -3028,6 +3055,17 @@
 			name = Table;
 			sourceTree = "<group>";
 		};
+		F7A139FE1E7F3D5D00016680 /* CCProgress */ = {
+			isa = PBXGroup;
+			children = (
+				F7A139FF1E7F3D5D00016680 /* CCProgressView.h */,
+				F7A13A001E7F3D5D00016680 /* CCProgressView.m */,
+				F7A13A011E7F3D5D00016680 /* UINavigationController+CCProgress.h */,
+				F7A13A021E7F3D5D00016680 /* UINavigationController+CCProgress.m */,
+			);
+			path = CCProgress;
+			sourceTree = "<group>";
+		};
 		F7ACE4281BAC0268006C0017 /* Settings */ = {
 			isa = PBXGroup;
 			children = (
@@ -3056,7 +3094,6 @@
 			isa = PBXGroup;
 			children = (
 				F7B1FBB01E72E3D1001781FE /* Resources */,
-				F7B1FBB21E72E3D1001781FE /* Strings */,
 				F7B1FBBF1E72E3D1001781FE /* SwiftModalWebVC.swift */,
 				F7B1FBC01E72E3D1001781FE /* SwiftWebVC.swift */,
 				F7B1FBC11E72E3D1001781FE /* SwiftWebVCActivity.swift */,
@@ -3072,14 +3109,6 @@
 				F7B1FBB11E72E3D1001781FE /* Media.xcassets */,
 			);
 			path = Resources;
-			sourceTree = "<group>";
-		};
-		F7B1FBB21E72E3D1001781FE /* Strings */ = {
-			isa = PBXGroup;
-			children = (
-				F7B1FBB31E72E3D1001781FE /* SwiftWebVC.strings */,
-			);
-			path = Strings;
 			sourceTree = "<group>";
 		};
 		F7B61E871DC13C20009E938F /* Products */ = {
@@ -3212,17 +3241,6 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
-		F7CE287E1D1ACFA70025783C /* UINavigationController+CCProgress */ = {
-			isa = PBXGroup;
-			children = (
-				F7CE287F1D1ACFA70025783C /* CCProgressView.h */,
-				F7CE28801D1ACFA70025783C /* CCProgressView.m */,
-				F7CE28811D1ACFA70025783C /* UINavigationController+CCProgress.h */,
-				F7CE28821D1ACFA70025783C /* UINavigationController+CCProgress.m */,
-			);
-			path = "UINavigationController+CCProgress";
-			sourceTree = "<group>";
-		};
 		F7D6A0881D82DBFA0045AD1A /* ControlCenter+MenuAccount */ = {
 			isa = PBXGroup;
 			children = (
@@ -3317,7 +3335,6 @@
 				F7F06E6E1DBFACC600099AE9 /* CTAssetThumbnailStacks.m */,
 				F7F06E6F1DBFACC600099AE9 /* CTAssetThumbnailView.h */,
 				F7F06E701DBFACC600099AE9 /* CTAssetThumbnailView.m */,
-				F7F06E711DBFACC600099AE9 /* Resources */,
 			);
 			path = CTAssetsPickerController;
 			sourceTree = "<group>";
@@ -3349,18 +3366,12 @@
 			path = Categories;
 			sourceTree = "<group>";
 		};
-		F7F06E711DBFACC600099AE9 /* Resources */ = {
-			isa = PBXGroup;
-			children = (
-				F7F06E721DBFACC600099AE9 /* CTAssetsPicker.strings */,
-			);
-			path = Resources;
-			sourceTree = "<group>";
-		};
 		F7F54CAC1E5B143100E19C62 /* Library */ = {
 			isa = PBXGroup;
 			children = (
 				F72AAEC11E5C60C700BB17E1 /* AHKActionSheet */,
+				F73CC0571E813DFF006E3047 /* BKPasscodeView */,
+				F7A139FE1E7F3D5D00016680 /* CCProgress */,
 				F7B1FBAF1E72E3D1001781FE /* SwiftWebVC */,
 				F7F54CAD1E5B14C700E19C62 /* MWPhotoBrowser */,
 			);
@@ -3483,7 +3494,6 @@
 				F7ACE4281BAC0268006C0017 /* Settings */,
 				F728CE741BF6322C00E69702 /* Share */,
 				F721371B1BAFF0920012B613 /* Templates */,
-				F7CE287E1D1ACFA70025783C /* UINavigationController+CCProgress */,
 				F70784811A2C8A0D00AC9FFF /* UploadFromOtherUpp */,
 				F7BFFA991A24D7BB0044ED85 /* Utility */,
 			);
@@ -3734,14 +3744,10 @@
 				ru,
 				pl,
 				es,
-				da,
-				"es-ES",
-				ja,
-				pt,
-				vi,
-				"zh-Hans",
-				"zh-Hant",
 				is,
+				"pt-BR",
+				tr,
+				"zh-Hans",
 			);
 			mainGroup = F7F67B9F1A24D27800EE80DA;
 			productRefGroup = F7F67B9F1A24D27800EE80DA;
@@ -3923,10 +3929,8 @@
 				F7F54CF31E5B14C700E19C62 /* ImageSelectedSmallOn@3x.png in Resources */,
 				F77B0F181D118A16002130FE /* Intro.strings in Resources */,
 				F7F54CFA1E5B14C700E19C62 /* UIBarButtonItemArrowLeft.png in Resources */,
-				F7B1FBC51E72E3D1001781FE /* SwiftWebVC.strings in Resources */,
 				F7FCFFD81D70798C000E6E29 /* CCPeekPop.storyboard in Resources */,
 				F77B0F191D118A16002130FE /* ZSSitalic.png in Resources */,
-				F7F06ED11DBFACC600099AE9 /* CTAssetsPicker.strings in Resources */,
 				F77B0F1C1D118A16002130FE /* Reader-Email@2x.png in Resources */,
 				F7F54CF61E5B14C700E19C62 /* PlayButtonOverlayLarge@3x.png in Resources */,
 				50AD32DC1E7B162E00963AFB /* close.png in Resources */,
@@ -3977,6 +3981,7 @@
 				F77B0F4E1D118A16002130FE /* Reader-Thumbs@2x.png in Resources */,
 				F7F54D021E5B14C700E19C62 /* UIBarButtonItemGrid@3x.png in Resources */,
 				F7F54CEA1E5B14C700E19C62 /* ImageSelectedOff@3x.png in Resources */,
+				F732B3371E8045A1002B7D75 /* SwiftWebVC.strings in Resources */,
 				F77B0F4F1D118A16002130FE /* ZSSquicklink.png in Resources */,
 				F77B0F511D118A16002130FE /* ZSSh2.png in Resources */,
 				F77B0F531D118A16002130FE /* ZSSbold.png in Resources */,
@@ -3986,7 +3991,6 @@
 				F77B0F561D118A16002130FE /* ZSStable.png in Resources */,
 				F77B0F571D118A16002130FE /* synchronizedcrypto.gif in Resources */,
 				F7F54CEE1E5B14C700E19C62 /* ImageSelectedSmallOff.png in Resources */,
-				F77B0F581D118A16002130FE /* TTOpenInAppActivityLocalizable.string in Resources */,
 				F77B0F591D118A16002130FE /* ZSSRichTextEditor.js in Resources */,
 				F7F54D051E5B14C800E19C62 /* VideoOverlay@3x.png in Resources */,
 				F7F54D011E5B14C700E19C62 /* UIBarButtonItemGrid@2x.png in Resources */,
@@ -4040,6 +4044,7 @@
 				F77B0F8A1D118A16002130FE /* CCCellMain.xib in Resources */,
 				F77B0F8C1D118A16002130FE /* CCCellMainTransfer.xib in Resources */,
 				F77B0F8E1D118A16002130FE /* LMMediaPlayerView.xib in Resources */,
+				F75797AE1E81356C00187A1B /* CTAssetsPicker.strings in Resources */,
 				F77B0F8F1D118A16002130FE /* ZSSunlink@2x.png in Resources */,
 				F77B0F901D118A16002130FE /* ZSSpicker@2x.png in Resources */,
 				F77B0F941D118A16002130FE /* ZSSh6@2x.png in Resources */,
@@ -4083,7 +4088,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F73C41541E82E51F000137C0 /* TableExternalSites+CoreDataProperties.m in Sources */,
 				F71459B81D12E3B700CAFEEC /* CCError.m in Sources */,
+				F73CC0701E813DFF006E3047 /* BKPasscodeInputView.m in Sources */,
 				F708CF7A1E56E8CC00271D8B /* TableGPS+CoreDataClass.m in Sources */,
 				F71459BA1D12E3B700CAFEEC /* NSString+TruncateToWidth.m in Sources */,
 				F708CF9B1E56E8CC00271D8B /* TableAccount+CoreDataProperties.m in Sources */,
@@ -4091,13 +4098,18 @@
 				F7274FEE1E6EB6F400C241B6 /* Constant.swift in Sources */,
 				F708CF981E56E8CC00271D8B /* TableAccount+CoreDataClass.m in Sources */,
 				F71459BC1D12E3B700CAFEEC /* Reachability.m in Sources */,
+				F73C41511E82E51F000137C0 /* TableExternalSites+CoreDataClass.m in Sources */,
 				F71459BD1D12E3B700CAFEEC /* UIImage+animatedGIF.m in Sources */,
 				F708CF6E1E56E8CC00271D8B /* TableMetadata+CoreDataClass.m in Sources */,
 				F71459BE1D12E3B700CAFEEC /* UIImage+Reflection.m in Sources */,
+				F73CC06D1E813DFF006E3047 /* BKPasscodeField.m in Sources */,
 				F71459BF1D12E3B700CAFEEC /* RNEncryptor.m in Sources */,
 				F708CF891E56E8CC00271D8B /* TableShare+CoreDataProperties.m in Sources */,
 				F71459C21D12E3B700CAFEEC /* ShareViewController.m in Sources */,
 				F71459C31D12E3B700CAFEEC /* UIImage+Filtering.m in Sources */,
+				F73CC0731E813DFF006E3047 /* BKPasscodeLockScreenManager.m in Sources */,
+				F73CC06A1E813DFF006E3047 /* BKPasscodeDummyViewController.m in Sources */,
+				F73CC07C1E813DFF006E3047 /* BKTouchIDManager.m in Sources */,
 				F71459C41D12E3B700CAFEEC /* UIImage+Saving.m in Sources */,
 				F71459C51D12E3B700CAFEEC /* UIImage+Rotating.m in Sources */,
 				F7FB5F201E66F0A400389481 /* TableActivity+CoreDataClass.m in Sources */,
@@ -4107,21 +4119,18 @@
 				F71459CC1D12E3B700CAFEEC /* RNCryptorEngine.m in Sources */,
 				F71459CD1D12E3B700CAFEEC /* AFViewShaker.m in Sources */,
 				F71459CE1D12E3B700CAFEEC /* NSData+CommonCrypto.m in Sources */,
-				F71459CF1D12E3B700CAFEEC /* BKPasscodeLockScreenManager.m in Sources */,
 				F708CF741E56E8CC00271D8B /* TableLocalFile+CoreDataClass.m in Sources */,
-				F71459D11D12E3B700CAFEEC /* BKPasscodeInputView.m in Sources */,
+				F73CC0791E813DFF006E3047 /* BKShiftingView.m in Sources */,
 				F71459D21D12E3B700CAFEEC /* CCUtility.m in Sources */,
 				F71459D31D12E3B700CAFEEC /* CCBKPasscode.m in Sources */,
 				F71459D51D12E3B700CAFEEC /* MBProgressHUD.m in Sources */,
 				F744FA7F1E57333C00BFAB34 /* APAvatarImageView.m in Sources */,
-				F71459D71D12E3B700CAFEEC /* BKPasscodeDummyViewController.m in Sources */,
 				F708CF801E56E8CC00271D8B /* TableDirectory+CoreDataClass.m in Sources */,
 				F71459D91D12E3B700CAFEEC /* CCCrypto.m in Sources */,
 				F732BA0B1D76DBA500E9878B /* CCNetworking.m in Sources */,
 				F708CF8C1E56E8CC00271D8B /* TableCertificates+CoreDataClass.m in Sources */,
 				F71459DD1D12E3B700CAFEEC /* CCCoreData.m in Sources */,
 				F708CF8F1E56E8CC00271D8B /* TableCertificates+CoreDataProperties.m in Sources */,
-				F71459DE1D12E3B700CAFEEC /* BKPasscodeField.m in Sources */,
 				F71459E11D12E3B700CAFEEC /* CCHud.m in Sources */,
 				F708CF921E56E8CC00271D8B /* TableAutomaticUpload+CoreDataClass.m in Sources */,
 				F71459E41D12E3B700CAFEEC /* RNDecryptor.m in Sources */,
@@ -4136,10 +4145,7 @@
 				F7EF0CAF1D9E95F400A9D15E /* CCSharedDBSession.m in Sources */,
 				F71459F11D12E3B700CAFEEC /* CCMove.m in Sources */,
 				F71459F31D12E3B700CAFEEC /* UIImage+Resizing.m in Sources */,
-				F71459F41D12E3B700CAFEEC /* BKPasscodeViewController.m in Sources */,
-				F71459F51D12E3B700CAFEEC /* BKShiftingView.m in Sources */,
 				F71459F71D12E3B700CAFEEC /* CCGraphics.m in Sources */,
-				F71459F81D12E3B700CAFEEC /* BKTouchIDSwitchView.m in Sources */,
 				F7F801051D98205A007537BC /* CCCertificate.m in Sources */,
 				F71459FB1D12E3B700CAFEEC /* PPImageScrollingCellView.m in Sources */,
 				F708CF7D1E56E8CC00271D8B /* TableGPS+CoreDataProperties.m in Sources */,
@@ -4148,9 +4154,10 @@
 				F71459FF1D12E3B700CAFEEC /* RNCryptor.m in Sources */,
 				F7145A001D12E3B700CAFEEC /* CCGlobal.m in Sources */,
 				F7145A011D12E3B700CAFEEC /* UIImage+Blurring.m in Sources */,
-				F7145A021D12E3B700CAFEEC /* BKTouchIDManager.m in Sources */,
 				F7145A041D12E3B700CAFEEC /* CCloadItemData.swift in Sources */,
 				F708CF951E56E8CC00271D8B /* TableAutomaticUpload+CoreDataProperties.m in Sources */,
+				F73CC07F1E813DFF006E3047 /* BKTouchIDSwitchView.m in Sources */,
+				F73CC0761E813DFF006E3047 /* BKPasscodeViewController.m in Sources */,
 				F7145A081D12E3B700CAFEEC /* PPCollectionViewCell.m in Sources */,
 				F7145A0D1D12E3B700CAFEEC /* NSData+Base64.m in Sources */,
 				F78088EB1DD3A1DB005C5A7C /* cryptocloud.xcdatamodeld in Sources */,
@@ -4164,13 +4171,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F743445F1E127D4B001CC831 /* BKPasscodeViewController.m in Sources */,
-				F74344611E127D51001CC831 /* BKTouchIDManager.m in Sources */,
 				F708CF781E56E8CC00271D8B /* TableLocalFile+CoreDataProperties.m in Sources */,
 				F708CF931E56E8CC00271D8B /* TableAutomaticUpload+CoreDataClass.m in Sources */,
 				F74344801E127ED3001CC831 /* NSString+Base64.m in Sources */,
 				F708CF871E56E8CC00271D8B /* TableShare+CoreDataClass.m in Sources */,
-				F74344621E127D54001CC831 /* BKTouchIDSwitchView.m in Sources */,
 				F743447A1E127EA6001CC831 /* CCGraphics.m in Sources */,
 				F708CF9C1E56E8CC00271D8B /* TableAccount+CoreDataProperties.m in Sources */,
 				F708CF811E56E8CC00271D8B /* TableDirectory+CoreDataClass.m in Sources */,
@@ -4179,9 +4183,8 @@
 				F725437C1E12A44A009BF4C2 /* CCSection.m in Sources */,
 				F74344651E127DE9001CC831 /* CCNetworking.m in Sources */,
 				F74344641E127DE6001CC831 /* OCNetworking.m in Sources */,
+				F73CC07A1E813DFF006E3047 /* BKShiftingView.m in Sources */,
 				F708CF841E56E8CC00271D8B /* TableDirectory+CoreDataProperties.m in Sources */,
-				F743445B1E127D3B001CC831 /* BKPasscodeDummyViewController.m in Sources */,
-				F743445D1E127D40001CC831 /* BKPasscodeInputView.m in Sources */,
 				F74344821E127F68001CC831 /* MBProgressHUD.m in Sources */,
 				F708CF7B1E56E8CC00271D8B /* TableGPS+CoreDataClass.m in Sources */,
 				F743444A1E126B4D001CC831 /* CCMove.m in Sources */,
@@ -4189,6 +4192,7 @@
 				F743447D1E127ECB001CC831 /* AESCrypt.m in Sources */,
 				F743447E1E127ECE001CC831 /* NSData+Base64.m in Sources */,
 				F74344671E127E38001CC831 /* CCMetadata.m in Sources */,
+				F73CC0741E813DFF006E3047 /* BKPasscodeLockScreenManager.m in Sources */,
 				F74344781E127E9E001CC831 /* CCExifGeo.m in Sources */,
 				F74344171E1264EE001CC831 /* DocumentPickerViewController.swift in Sources */,
 				F74344811E127F49001CC831 /* AFViewShaker.m in Sources */,
@@ -4196,28 +4200,33 @@
 				F708CF6F1E56E8CC00271D8B /* TableMetadata+CoreDataClass.m in Sources */,
 				F743447B1E127EAC001CC831 /* CCUtility.m in Sources */,
 				F74344871E127F95001CC831 /* UICKeyChainStore.m in Sources */,
+				F73CC0711E813DFF006E3047 /* BKPasscodeInputView.m in Sources */,
+				F73CC07D1E813DFF006E3047 /* BKTouchIDManager.m in Sources */,
 				F743447F1E127ED1001CC831 /* NSData+CommonCrypto.m in Sources */,
 				F708CF8D1E56E8CC00271D8B /* TableCertificates+CoreDataClass.m in Sources */,
 				F74344891E127FC3001CC831 /* CCGlobal.m in Sources */,
+				F73CC06E1E813DFF006E3047 /* BKPasscodeField.m in Sources */,
 				F74344841E127F84001CC831 /* RNCryptorEngine.m in Sources */,
 				F74344851E127F86001CC831 /* RNDecryptor.m in Sources */,
 				F74344881E127F9C001CC831 /* UIImage+animatedGIF.m in Sources */,
 				F708CF7E1E56E8CC00271D8B /* TableGPS+CoreDataProperties.m in Sources */,
+				F73CC0771E813DFF006E3047 /* BKPasscodeViewController.m in Sources */,
 				F7274FEF1E6EB6F400C241B6 /* Constant.swift in Sources */,
 				F743448A1E127FF2001CC831 /* CCHud.m in Sources */,
 				F74344861E127F89001CC831 /* RNEncryptor.m in Sources */,
+				F73C41521E82E51F000137C0 /* TableExternalSites+CoreDataClass.m in Sources */,
+				F73C41551E82E51F000137C0 /* TableExternalSites+CoreDataProperties.m in Sources */,
+				F73CC06B1E813DFF006E3047 /* BKPasscodeDummyViewController.m in Sources */,
 				F708CF991E56E8CC00271D8B /* TableAccount+CoreDataClass.m in Sources */,
-				F743445C1E127D3D001CC831 /* BKPasscodeField.m in Sources */,
 				F7FC88FA1E140558006D0506 /* cryptocloud.xcdatamodeld in Sources */,
 				F744FA801E57333C00BFAB34 /* APAvatarImageView.m in Sources */,
 				F708CF721E56E8CC00271D8B /* TableMetadata+CoreDataProperties.m in Sources */,
-				F743445E1E127D44001CC831 /* BKPasscodeLockScreenManager.m in Sources */,
 				F74344631E127D79001CC831 /* CCBKPasscode.m in Sources */,
 				F708CF8A1E56E8CC00271D8B /* TableShare+CoreDataProperties.m in Sources */,
 				F74344661E127E35001CC831 /* CCCoreData.m in Sources */,
+				F73CC0801E813DFF006E3047 /* BKTouchIDSwitchView.m in Sources */,
 				F743447C1E127EB2001CC831 /* NSString+TruncateToWidth.m in Sources */,
 				F708CF751E56E8CC00271D8B /* TableLocalFile+CoreDataClass.m in Sources */,
-				F74344601E127D4D001CC831 /* BKShiftingView.m in Sources */,
 				F7FB5F211E66F0A400389481 /* TableActivity+CoreDataClass.m in Sources */,
 				F74344831E127F80001CC831 /* RNCryptor.m in Sources */,
 				F708CF961E56E8CC00271D8B /* TableAutomaticUpload+CoreDataProperties.m in Sources */,
@@ -4254,6 +4263,7 @@
 				F77B0DFB1D118A16002130FE /* NYXProgressiveImageView.m in Sources */,
 				F708CF701E56E8CC00271D8B /* TableMetadata+CoreDataProperties.m in Sources */,
 				F77B0DFC1D118A16002130FE /* ReaderDocumentOutline.m in Sources */,
+				F73C41531E82E51F000137C0 /* TableExternalSites+CoreDataProperties.m in Sources */,
 				F7F54D0E1E5B14C800E19C62 /* UIImage+MWPhotoBrowser.m in Sources */,
 				F77B0DFE1D118A16002130FE /* REMenuItem.m in Sources */,
 				F7F54D091E5B14C800E19C62 /* MWPhoto.m in Sources */,
@@ -4287,6 +4297,7 @@
 				F7D6A0971D82DBFA0045AD1A /* CCMenu.m in Sources */,
 				F77B0E131D118A16002130FE /* AppDelegate.m in Sources */,
 				F750374F1DBFA91A008FB480 /* NSArray+PureLayout.m in Sources */,
+				F7A13A031E7F3D5D00016680 /* CCProgressView.m in Sources */,
 				F7F06EAF1DBFACC600099AE9 /* CTAssetsGridSelectedView.m in Sources */,
 				F77B0E141D118A16002130FE /* CCError.m in Sources */,
 				F73CCE191DC13776007E38D8 /* XLFormRegexValidator.m in Sources */,
@@ -4294,7 +4305,6 @@
 				F77B0E161D118A16002130FE /* AFViewShaker.m in Sources */,
 				F77B0E1B1D118A16002130FE /* CCGraphics.m in Sources */,
 				F73CCE071DC13776007E38D8 /* NSExpression+XLFormAdditions.m in Sources */,
-				F77B0E1C1D118A16002130FE /* BKPasscodeDummyViewController.m in Sources */,
 				F70FD1CB1E675F1500C0FDA6 /* CCControlCenterActivity.m in Sources */,
 				F77B0E1D1D118A16002130FE /* ReaderThumbQueue.m in Sources */,
 				F7274FED1E6EB6F400C241B6 /* Constant.swift in Sources */,
@@ -4306,11 +4316,11 @@
 				F7B1FBCA1E72E3D1001781FE /* SwiftWebVCActivitySafari.swift in Sources */,
 				F7F54D0A1E5B14C800E19C62 /* MWPhotoBrowser.m in Sources */,
 				F720E01F1E48C73E001A4B9E /* CCActions.swift in Sources */,
+				F73CC0721E813DFF006E3047 /* BKPasscodeLockScreenManager.m in Sources */,
 				F77B0E221D118A16002130FE /* CCManageLocation.m in Sources */,
 				F77B0E231D118A16002130FE /* CCSharePermissionOC.m in Sources */,
 				F77B0E241D118A16002130FE /* HRColorCursor.m in Sources */,
 				F708CF851E56E8CC00271D8B /* TableShare+CoreDataClass.m in Sources */,
-				F77B0E251D118A16002130FE /* BKPasscodeInputView.m in Sources */,
 				F708CF9A1E56E8CC00271D8B /* TableAccount+CoreDataProperties.m in Sources */,
 				F77B0E261D118A16002130FE /* ZSSTextView.m in Sources */,
 				F7253FCA1E38BAF20084135B /* JSAlertView.m in Sources */,
@@ -4345,8 +4355,8 @@
 				F73CCE1B1DC13776007E38D8 /* XLFormValidationStatus.m in Sources */,
 				F77B0E441D118A16002130FE /* CCIntro.m in Sources */,
 				F77B0E451D118A16002130FE /* ReaderThumbRender.m in Sources */,
-				F77B0E461D118A16002130FE /* BKPasscodeLockScreenManager.m in Sources */,
 				F77B0E481D118A16002130FE /* CCCrypto.m in Sources */,
+				F73CC0781E813DFF006E3047 /* BKShiftingView.m in Sources */,
 				F7D6A0911D82DBFA0045AD1A /* CCControlCenter.m in Sources */,
 				F708CF761E56E8CC00271D8B /* TableLocalFile+CoreDataProperties.m in Sources */,
 				F7659A6A1DC0B760004860C4 /* PSTGridLayoutInfo.m in Sources */,
@@ -4357,7 +4367,6 @@
 				F77B0E4D1D118A16002130FE /* CCCoreData.m in Sources */,
 				F7659A5E1DC0B760004860C4 /* PSTCollectionViewController.m in Sources */,
 				F7F801031D98205A007537BC /* CCCertificate.m in Sources */,
-				F7CE28881D1ACFA70025783C /* UINavigationController+CCProgress.m in Sources */,
 				F77B0E4F1D118A16002130FE /* CCManageCameraUpload.m in Sources */,
 				F77B0E511D118A16002130FE /* UIImage+Filtering.m in Sources */,
 				F73CCDEB1DC13776007E38D8 /* XLFormSegmentedCell.m in Sources */,
@@ -4367,6 +4376,7 @@
 				F73CCE051DC13776007E38D8 /* NSArray+XLFormAdditions.m in Sources */,
 				F77B0E551D118A16002130FE /* SSZipArchive.m in Sources */,
 				F77B0E581D118A16002130FE /* ReaderThumbView.m in Sources */,
+				F73CC0691E813DFF006E3047 /* BKPasscodeDummyViewController.m in Sources */,
 				F77B0E5A1D118A16002130FE /* ReaderContentTile.m in Sources */,
 				F77B0E5B1D118A16002130FE /* UIImage+Rotating.m in Sources */,
 				F7F06E8D1DBFACC600099AE9 /* NSBundle+CTAssetsPickerController.m in Sources */,
@@ -4377,6 +4387,7 @@
 				F7BE6E2F1D2D5C3B00106933 /* CCQuickActions.m in Sources */,
 				F77B0E5E1D118A16002130FE /* unzip.c in Sources */,
 				F7659A291DC0B726004860C4 /* EAIntroView.m in Sources */,
+				F73CC07E1E813DFF006E3047 /* BKTouchIDSwitchView.m in Sources */,
 				F77B0E5F1D118A16002130FE /* CCSettings.m in Sources */,
 				F77B0E601D118A16002130FE /* CGPDFDocument.m in Sources */,
 				F77B0E621D118A16002130FE /* REMenuContainerView.m in Sources */,
@@ -4388,7 +4399,9 @@
 				F708CF731E56E8CC00271D8B /* TableLocalFile+CoreDataClass.m in Sources */,
 				F77B0E661D118A16002130FE /* NSString+Base64.m in Sources */,
 				F77B0E671D118A16002130FE /* Reachability.m in Sources */,
+				F73CC06F1E813DFF006E3047 /* BKPasscodeInputView.m in Sources */,
 				F77B0E6A1D118A16002130FE /* RNDecryptor.m in Sources */,
+				F73CC0751E813DFF006E3047 /* BKPasscodeViewController.m in Sources */,
 				F73CCDF91DC13776007E38D8 /* XLFormOptionsObject.m in Sources */,
 				F77B0E6B1D118A16002130FE /* ReaderThumbCache.m in Sources */,
 				F77B0E6C1D118A16002130FE /* ReaderContentPage.m in Sources */,
@@ -4415,6 +4428,7 @@
 				F7659A661DC0B760004860C4 /* PSTCollectionViewLayout.m in Sources */,
 				F708CF911E56E8CC00271D8B /* TableAutomaticUpload+CoreDataClass.m in Sources */,
 				F75037511DBFA91A008FB480 /* NSLayoutConstraint+PureLayout.m in Sources */,
+				F73C41501E82E51F000137C0 /* TableExternalSites+CoreDataClass.m in Sources */,
 				F73CCE151DC13776007E38D8 /* XLFormRowNavigationAccessoryView.m in Sources */,
 				F73CCDFB1DC13776007E38D8 /* XLFormOptionsViewController.m in Sources */,
 				F77B0E871D118A16002130FE /* NSData+Base64.m in Sources */,
@@ -4431,7 +4445,6 @@
 				F72AAECD1E5C60C700BB17E1 /* UIWindow+AHKAdditions.m in Sources */,
 				F77B0E921D118A16002130FE /* CCCellMainTransfer.m in Sources */,
 				F73CCDE31DC13776007E38D8 /* XLFormImageCell.m in Sources */,
-				F77B0E941D118A16002130FE /* BKTouchIDManager.m in Sources */,
 				F7659A5C1DC0B760004860C4 /* PSTCollectionViewCell.m in Sources */,
 				F77B0E951D118A16002130FE /* CCManageAsset.m in Sources */,
 				F7659A391DC0B737004860C4 /* iRate.m in Sources */,
@@ -4444,30 +4457,27 @@
 				F77B0E981D118A16002130FE /* CCManageAccount.m in Sources */,
 				F77B0E991D118A16002130FE /* PPCollectionViewCell.m in Sources */,
 				F7F06EC11DBFACC600099AE9 /* CTAssetsPickerAccessDeniedView.m in Sources */,
-				F77B0E9A1D118A16002130FE /* BKTouchIDSwitchView.m in Sources */,
 				F7F06ECB1DBFACC600099AE9 /* CTAssetThumbnailOverlay.m in Sources */,
 				F77B0E9B1D118A16002130FE /* CCBKPasscode.m in Sources */,
 				F77B0E9D1D118A16002130FE /* HRColorPickerView.m in Sources */,
-				F7CE28851D1ACFA70025783C /* CCProgressView.m in Sources */,
 				F77B0E9F1D118A16002130FE /* mztools.c in Sources */,
 				F7F06EC71DBFACC600099AE9 /* CTAssetsPickerNoAssetsView.m in Sources */,
 				F7659A271DC0B726004860C4 /* EAIntroPage.m in Sources */,
 				F77B0EA61D118A16002130FE /* NSString+TruncateToWidth.m in Sources */,
 				F73CCDF71DC13776007E38D8 /* XLFormTextViewCell.m in Sources */,
-				F77B0EA71D118A16002130FE /* BKPasscodeViewController.m in Sources */,
 				F78088EA1DD3A1DB005C5A7C /* cryptocloud.xcdatamodeld in Sources */,
 				F7659A601DC0B760004860C4 /* PSTCollectionViewData.m in Sources */,
-				F77B0EA81D118A16002130FE /* BKShiftingView.m in Sources */,
 				F77B0EAA1D118A16002130FE /* zip.c in Sources */,
 				F77B0EAB1D118A16002130FE /* HRColorPickerViewController.m in Sources */,
+				F7A13A041E7F3D5D00016680 /* UINavigationController+CCProgress.m in Sources */,
 				F7F06EB51DBFACC600099AE9 /* CTAssetsGridViewController.m in Sources */,
 				F73C002F1E55D7DF00EEEFA7 /* CCManageCryptoCloudSecurity.m in Sources */,
 				F7659A621DC0B760004860C4 /* PSTCollectionViewFlowLayout.m in Sources */,
 				F7F06EBD1DBFACC600099AE9 /* CTAssetsPageView.m in Sources */,
 				F77B0EAD1D118A16002130FE /* CCGlobal.m in Sources */,
 				F7659A641DC0B760004860C4 /* PSTCollectionViewItemKey.m in Sources */,
+				F73CC07B1E813DFF006E3047 /* BKTouchIDManager.m in Sources */,
 				F7F06ECF1DBFACC600099AE9 /* CTAssetThumbnailView.m in Sources */,
-				F77B0EAE1D118A16002130FE /* BKPasscodeField.m in Sources */,
 				F7F06E9F1DBFACC600099AE9 /* CTAssetCheckmark.m in Sources */,
 				F7F54D081E5B14C800E19C62 /* MWGridViewController.m in Sources */,
 				F7F06E971DBFACC600099AE9 /* PHAssetCollection+CTAssetsPickerController.m in Sources */,
@@ -4517,6 +4527,7 @@
 				F77B0ED11D118A16002130FE /* Acknowledgements.m in Sources */,
 				F77B0ED31D118A16002130FE /* PPImageScrollingCellView.m in Sources */,
 				F77B0ED41D118A16002130FE /* LMMediaPlayerHelper.m in Sources */,
+				F73CC06C1E813DFF006E3047 /* BKPasscodeField.m in Sources */,
 				F77B0ED51D118A16002130FE /* PHAsset+Utility.m in Sources */,
 				F7F06E991DBFACC600099AE9 /* PHImageManager+CTAssetsPickerController.m in Sources */,
 				F7F06EBB1DBFACC600099AE9 /* CTAssetsNavigationController.m in Sources */,
@@ -4557,8 +4568,32 @@
 				F7202C961E6817A400C6D9AD /* pl */,
 				F7202C9C1E6818B700C6D9AD /* es */,
 				F7BEC53E1E7981720048500A /* is */,
+				F732B2D71E802B71002B7D75 /* pt-BR */,
+				F76A75E21E83D42B005AFFF4 /* tr */,
+				F76A75F71E83DA6F005AFFF4 /* zh-Hans */,
 			);
 			name = BKPasscodeView.strings;
+			path = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		F732B3351E8045A1002B7D75 /* SwiftWebVC.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				F732B3361E8045A1002B7D75 /* en */,
+				F732B3381E8045CB002B7D75 /* es */,
+				F732B3391E8045CF002B7D75 /* nl */,
+				F732B33A1E8045D0002B7D75 /* it */,
+				F732B33B1E8045D4002B7D75 /* de */,
+				F732B33C1E8045D7002B7D75 /* fr */,
+				F732B33D1E8045D8002B7D75 /* ru */,
+				F732B33E1E8045DA002B7D75 /* pl */,
+				F732B33F1E8045DC002B7D75 /* is */,
+				F732B3401E8045DF002B7D75 /* pt-BR */,
+				F76A75E11E83D42B005AFFF4 /* tr */,
+				F76A75F61E83DA6F005AFFF4 /* zh-Hans */,
+			);
+			name = SwiftWebVC.strings;
+			path = "Supporting Files";
 			sourceTree = "<group>";
 		};
 		F744BE9F1BEBB69F004FFF66 /* Intro.strings */ = {
@@ -4573,26 +4608,32 @@
 				F7202C991E6817A500C6D9AD /* pl */,
 				F7202C9F1E6818B700C6D9AD /* es */,
 				F7BEC5411E7981720048500A /* is */,
+				F732B2DA1E802B72002B7D75 /* pt-BR */,
+				F76A75E51E83D42B005AFFF4 /* tr */,
+				F76A75FA1E83DA70005AFFF4 /* zh-Hans */,
 			);
 			name = Intro.strings;
+			path = "Supporting Files";
 			sourceTree = "<group>";
 		};
-		F7B1FBB31E72E3D1001781FE /* SwiftWebVC.strings */ = {
+		F75797AC1E81356C00187A1B /* CTAssetsPicker.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
-				F7B1FBB41E72E3D1001781FE /* da */,
-				F7B1FBB51E72E3D1001781FE /* de */,
-				F7B1FBB61E72E3D1001781FE /* en */,
-				F7B1FBB71E72E3D1001781FE /* es-ES */,
-				F7B1FBB81E72E3D1001781FE /* es */,
-				F7B1FBB91E72E3D1001781FE /* fr */,
-				F7B1FBBA1E72E3D1001781FE /* ja */,
-				F7B1FBBB1E72E3D1001781FE /* pt */,
-				F7B1FBBC1E72E3D1001781FE /* vi */,
-				F7B1FBBD1E72E3D1001781FE /* zh-Hans */,
-				F7B1FBBE1E72E3D1001781FE /* zh-Hant */,
+				F75797AD1E81356C00187A1B /* en */,
+				F75797AF1E81359500187A1B /* de */,
+				F75797B01E8135AB00187A1B /* es */,
+				F75797B11E81363C00187A1B /* nl */,
+				F75797B21E81363F00187A1B /* it */,
+				F75797B31E81364100187A1B /* fr */,
+				F75797B41E81364400187A1B /* ru */,
+				F75797B51E81364700187A1B /* pl */,
+				F75797B61E81364A00187A1B /* is */,
+				F75797B71E81364C00187A1B /* pt-BR */,
+				F76A75E01E83D42B005AFFF4 /* tr */,
+				F76A75F51E83DA6F005AFFF4 /* zh-Hans */,
 			);
-			name = SwiftWebVC.strings;
+			name = CTAssetsPicker.strings;
+			path = "Supporting Files";
 			sourceTree = "<group>";
 		};
 		F7B381BF1C074E3E004693F8 /* Error.strings */ = {
@@ -4607,24 +4648,12 @@
 				F7202C9A1E6817A500C6D9AD /* pl */,
 				F7202CA01E6818B700C6D9AD /* es */,
 				F7BEC5421E7981720048500A /* is */,
+				F732B2DB1E802B72002B7D75 /* pt-BR */,
+				F76A75E61E83D42B005AFFF4 /* tr */,
+				F76A75FB1E83DA70005AFFF4 /* zh-Hans */,
 			);
 			name = Error.strings;
-			sourceTree = "<group>";
-		};
-		F7BFE0CA1B67925500F072A4 /* TTOpenInAppActivityLocalizable.string */ = {
-			isa = PBXVariantGroup;
-			children = (
-				F7C1D8BA1D47781C00B89DEA /* nl */,
-				F7151A7F1D477A4B00E6AF45 /* en */,
-				F7151A851D477A5400E6AF45 /* it */,
-				F7D96F0A1D99498600A587A5 /* de */,
-				F73814261E65A52C0011A45E /* fr */,
-				F7202C8D1E68171800C6D9AD /* ru */,
-				F7202C951E6817A400C6D9AD /* pl */,
-				F7202C9B1E6818B600C6D9AD /* es */,
-				F7BEC53D1E7981720048500A /* is */,
-			);
-			name = TTOpenInAppActivityLocalizable.string;
+			path = "Supporting Files";
 			sourceTree = "<group>";
 		};
 		F7C6D5F61BE371D800AC83AD /* InfoPlist.strings */ = {
@@ -4639,8 +4668,12 @@
 				F7202C981E6817A500C6D9AD /* pl */,
 				F7202C9E1E6818B700C6D9AD /* es */,
 				F7BEC5401E7981720048500A /* is */,
+				F732B2D91E802B72002B7D75 /* pt-BR */,
+				F76A75E41E83D42B005AFFF4 /* tr */,
+				F76A75F91E83DA70005AFFF4 /* zh-Hans */,
 			);
 			name = InfoPlist.strings;
+			path = "Supporting Files";
 			sourceTree = "<group>";
 		};
 		F7E70DE91A24DE4100E1B66A /* Localizable.strings */ = {
@@ -4655,20 +4688,12 @@
 				F7202C971E6817A500C6D9AD /* pl */,
 				F7202C9D1E6818B700C6D9AD /* es */,
 				F7BEC53F1E7981720048500A /* is */,
+				F732B2D81E802B71002B7D75 /* pt-BR */,
+				F76A75E31E83D42B005AFFF4 /* tr */,
+				F76A75F81E83DA70005AFFF4 /* zh-Hans */,
 			);
 			name = Localizable.strings;
-			sourceTree = "<group>";
-		};
-		F7F06E721DBFACC600099AE9 /* CTAssetsPicker.strings */ = {
-			isa = PBXVariantGroup;
-			children = (
-				F7F06E761DBFACC600099AE9 /* de */,
-				F7F06E771DBFACC600099AE9 /* en */,
-				F7F06E801DBFACC600099AE9 /* it */,
-				F7F06E841DBFACC600099AE9 /* nl */,
-				F7202C941E6817A400C6D9AD /* pl */,
-			);
-			name = CTAssetsPicker.strings;
+			path = "Supporting Files";
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */

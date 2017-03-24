@@ -219,19 +219,6 @@
     //[[AVAudioSession sharedInstance] setActive:YES error:nil];
     [[UIApplication sharedApplication] beginReceivingRemoteControlEvents];
     
-    // permission request camera roll
-    ALAssetsLibrary *lib = [[ALAssetsLibrary alloc] init];
-    
-    [lib enumerateGroupsWithTypes:ALAssetsGroupSavedPhotos usingBlock:^(ALAssetsGroup *group, BOOL *stop) {
-        //NSLog(@"[LOG] %li",(long)[group numberOfAssets]);
-    } failureBlock:^(NSError *error) {
-        if (error.code == ALAssetsLibraryAccessUserDeniedError) {
-            NSLog(@"[LOG] user denied access, code: %li",(long)error.code);
-        }else{
-            NSLog(@"[LOG] Other error code: %li",(long)error.code);
-        }
-    }];
-    
     // Tint Color GLOBAL WINDOW
     [self.window setTintColor:COLOR_WINDOW_TINTCOLOR];
     
@@ -318,6 +305,8 @@
 //
 - (void)applicationWillResignActive:(UIApplication *)application
 {
+    [_activeMain closeAllMenu];
+    
     [self updateApplicationIconBadgeNumber];
 }
 
@@ -789,8 +778,8 @@
     // File
     item = [tabBarController.tabBar.items objectAtIndex: k_tabBarApplicationIndexFile];
     [item setTitle:NSLocalizedString(@"_home_", nil)];
-    item.image = [UIImage imageNamed:image_tabBarFile];
-    item.selectedImage = [UIImage imageNamed:image_tabBarFile];
+    item.image = [UIImage imageNamed:image_tabBarFiles];
+    item.selectedImage = [UIImage imageNamed:image_tabBarFiles];
     
     // Favorite
     item = [tabBarController.tabBar.items objectAtIndex: k_tabBarApplicationIndexOffline];
@@ -1202,12 +1191,7 @@
     if ([selector isEqualToString:selectorUploadAutomaticAll]) {
     
         NSUInteger count = [TableMetadata MR_countOfEntitiesWithPredicate:[NSPredicate predicateWithFormat:@"(account == %@) AND (sessionSelector == %@) AND ((sessionTaskIdentifier == %i) OR (sessionTaskIdentifierPlist == %i))", app.activeAccount, selectorUploadAutomaticAll,k_taskIdentifierError, k_taskIdentifierError]];
-        
-#ifdef DEBUG
-        NSArray *records = [[NSArray alloc] init];
-        records = [TableMetadata MR_findAllWithPredicate:[NSPredicate predicateWithFormat:@"(account == %@) AND (sessionSelector == %@) AND ((sessionTaskIdentifier == %i) OR (sessionTaskIdentifierPlist == %i))", app.activeAccount, selectorUploadAutomaticAll,k_taskIdentifierError, k_taskIdentifierError]];
-#endif
-        
+                
         if (count >= 10) {
             
             [app messageNotification:@"_error_" description:@"_too_errors_automatic_all_" visible:YES delay:k_dismissAfterSecond type:TWMessageBarMessageTypeError];
@@ -1312,6 +1296,8 @@
 
 - (void)changeTask:(CCMetadata *)metadata
 {
+    NSString *serverUrl = [CCCoreData getServerUrlFromDirectoryID:metadata.directoryID activeAccount:metadata.account];
+    
     if ([[_listChangeTask objectForKey:metadata.fileID] isEqualToString:@"stopUpload"]) {
         
         // sessionTaskIdentifier on Stop
@@ -1331,8 +1317,6 @@
             
         if (metadata.sessionTaskIdentifier != k_taskIdentifierDone) downloadData = YES;
         if (metadata.sessionTaskIdentifierPlist != k_taskIdentifierDone) downloadPlist = YES;
-            
-        NSString *serverUrl = [CCCoreData getServerUrlFromDirectoryID:metadata.directoryID activeAccount:metadata.account];
         
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.2 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
             [[CCNetworking sharedNetworking] downloadFile:metadata serverUrl:serverUrl downloadData:downloadData downloadPlist:downloadPlist selector:metadata.sessionSelector selectorPost:metadata.sessionSelectorPost session:k_download_session taskStatus:k_taskStatusResume delegate:nil];
@@ -1357,10 +1341,11 @@
     // delete progress
     [_listProgressMetadata removeObjectForKey:metadata.fileID];
     
-    // Detail
-    if (_activeDetail)
-        [_activeDetail progressTask:nil serverUrl:nil cryptated:NO progress:0];
+    // Progress Task
+    NSDictionary* userInfo = @{@"fileID": (metadata.fileID), @"serverUrl": (serverUrl), @"cryptated": ([NSNumber numberWithBool:NO]), @"progress": ([NSNumber numberWithFloat:0.0])};
     
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"NotificationProgressTask" object:nil userInfo:userInfo];
+
     // Refresh
     if (_activeMain && [_listChangeTask count] == 0) {
         [_activeMain reloadDatasource:[CCCoreData getServerUrlFromDirectoryID:metadata.directoryID activeAccount:metadata.account] fileID:nil selector:nil];
