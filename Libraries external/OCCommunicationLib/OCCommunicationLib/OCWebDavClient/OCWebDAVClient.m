@@ -140,7 +140,6 @@ NSString const *OCWebDAVModificationDateKey	= @"modificationdate";
         [UtilsFramework deleteAllCookies];
     }
     
-    
     OCHTTPRequestOperation *operation = (OCHTTPRequestOperation*) [sharedOCCommunication.networkSessionManager dataTaskWithRequest:request completionHandler:^(NSURLResponse * _Nonnull response, id  _Nullable responseObject, NSError * _Nullable error) {
          if (!error) {
             success((NSHTTPURLResponse*)response,responseObject);
@@ -737,7 +736,7 @@ NSString const *OCWebDAVModificationDateKey	= @"modificationdate";
     [operation resume];
 }
 
-- (void)subscribingNextcloudServerPush:(NSString *)serverPath authorizationToken:(NSString *)authorizationToken pushTokenHash:(NSString *)pushTokenHash devicePublicKey:(NSString *)devicePublicKey onCommunication:(OCCommunication *)sharedOCCommunication success:(void(^)(NSHTTPURLResponse *, id))success failure:(void(^)(NSHTTPURLResponse *, id  _Nullable responseObject, NSError *))failure {
+- (void)subscribingNextcloudServerPush:(NSString *)serverPath authorizationToken:(NSString *)authorizationToken pushTokenHash:(NSString *)pushTokenHash devicePublicKey:(NSString *)devicePublicKey proxyServerPath:(NSString *)proxyServerPath onCommunication:(OCCommunication *)sharedOCCommunication success:(void(^)(NSHTTPURLResponse *, id))success failure:(void(^)(NSHTTPURLResponse *, id  _Nullable responseObject, NSError *))failure {
     
     NSParameterAssert(success);
     
@@ -745,10 +744,12 @@ NSString const *OCWebDAVModificationDateKey	= @"modificationdate";
     
     NSString *pushTokenHashParam = [NSString stringWithFormat:@"?pushTokenHash=%@",pushTokenHash];
     NSString *devicePublicKeyParam = [NSString stringWithFormat:@"&devicePublicKey=%@",devicePublicKey];
+    NSString *proxyServerPathParam = [NSString stringWithFormat:@"&proxyServer=%@",proxyServerPath];
     
     serverPath = [serverPath stringByAppendingString:pushTokenHashParam];
     serverPath = [serverPath stringByAppendingString:devicePublicKeyParam];
-    
+    serverPath = [serverPath stringByAppendingString:proxyServerPathParam];
+
     NSMutableURLRequest *request = [self sharedRequestWithMethod:_requestMethod path:serverPath parameters:nil];
     [request setValue:[NSString stringWithFormat:@"token %@", authorizationToken] forHTTPHeaderField:@"Authorization"];
     
@@ -772,8 +773,10 @@ NSString const *OCWebDAVModificationDateKey	= @"modificationdate";
     serverPath = [serverPath stringByAppendingString:deviceIdentifier];
     serverPath = [serverPath stringByAppendingString:deviceIdentifierSignature];
     serverPath = [serverPath stringByAppendingString:userPublicKey];
-
+    
     NSMutableURLRequest *request = [self sharedRequestWithMethod:_requestMethod path:serverPath parameters:nil];
+    
+    [request setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"Content-Type"];
     
     OCHTTPRequestOperation *operation = [self mr_operationWithRequest:request onCommunication:sharedOCCommunication success:success failure:failure];
     [self setRedirectionBlockOnDatataskWithOCCommunication:sharedOCCommunication andSessionManager:sharedOCCommunication.networkSessionManager];

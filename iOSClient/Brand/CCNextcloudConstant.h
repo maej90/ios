@@ -27,6 +27,7 @@
 #define k_textCopyright                 @"Nextcloud %@ © 2017 T.W.S. Inc."
 #define k_loginBaseUrl                  @"https://cloud.twsweb.it"
 #define k_pushNotificationServer        @"https://push-notifications.nextcloud.com"
+#define k_loginButtonLabelLink          @"https://nextcloud.com/providers"
 
 // Capabilities Group & Service Key Share
 #define k_capabilitiesGroups            @"group.it.twsweb.Crypto-Cloud"
@@ -53,16 +54,15 @@
 /*
  #define OPTION_MULTIUSER_DISABLE
  #define OPTION_CRYPTO_CLOUD_SYSTEM_DISABLE
- #define OPTION_OFFLINE_DISABLE
  
- #define OPTION_NOTIFICATION_PUSH_ENABLE
+ #define OPTION_FIREBASE_ENABLE
  #define OPTION_AUTOMATIC_UPLOAD_ENABLE
  #define OPTION_DISABLE_INTRO
  
  #define NO_REQUEST_LOGIN_URL
- */
+*/
 
-#define OPTION_OFFLINE_DISABLE
+#define OPTION_FIREBASE_ENABLE
 
 // -----------------------------------------------------------------------------------------------------------
 // COLOR

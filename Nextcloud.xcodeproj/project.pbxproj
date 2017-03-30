@@ -157,6 +157,7 @@
 		F732B3371E8045A1002B7D75 /* SwiftWebVC.strings in Resources */ = {isa = PBXBuildFile; fileRef = F732B3351E8045A1002B7D75 /* SwiftWebVC.strings */; };
 		F732BA061D76CE1500E9878B /* CCNetworking.m in Sources */ = {isa = PBXBuildFile; fileRef = F732BA041D76CE1500E9878B /* CCNetworking.m */; };
 		F732BA0B1D76DBA500E9878B /* CCNetworking.m in Sources */ = {isa = PBXBuildFile; fileRef = F732BA041D76CE1500E9878B /* CCNetworking.m */; };
+		F73B4F791E8D3BF800A97F07 /* CCMainTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F73B4F781E8D3BF800A97F07 /* CCMainTabBarController.swift */; };
 		F73C002F1E55D7DF00EEEFA7 /* CCManageCryptoCloudSecurity.m in Sources */ = {isa = PBXBuildFile; fileRef = F73C002E1E55D7DF00EEEFA7 /* CCManageCryptoCloudSecurity.m */; };
 		F73C41501E82E51F000137C0 /* TableExternalSites+CoreDataClass.m in Sources */ = {isa = PBXBuildFile; fileRef = F73C414D1E82E51F000137C0 /* TableExternalSites+CoreDataClass.m */; };
 		F73C41511E82E51F000137C0 /* TableExternalSites+CoreDataClass.m in Sources */ = {isa = PBXBuildFile; fileRef = F73C414D1E82E51F000137C0 /* TableExternalSites+CoreDataClass.m */; };
@@ -273,6 +274,14 @@
 		F75037511DBFA91A008FB480 /* NSLayoutConstraint+PureLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = F75037481DBFA91A008FB480 /* NSLayoutConstraint+PureLayout.m */; };
 		F75797AE1E81356C00187A1B /* CTAssetsPicker.strings in Resources */ = {isa = PBXBuildFile; fileRef = F75797AC1E81356C00187A1B /* CTAssetsPicker.strings */; };
 		F75ADF451DC75FFE008A7347 /* CCLogin.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F75ADF441DC75FFE008A7347 /* CCLogin.storyboard */; };
+		F75EDFAC1E8C106900E6F369 /* FirebaseAnalytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F75EDFA61E8C106900E6F369 /* FirebaseAnalytics.framework */; };
+		F75EDFAD1E8C106900E6F369 /* FirebaseCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F75EDFA71E8C106900E6F369 /* FirebaseCore.framework */; };
+		F75EDFAE1E8C106900E6F369 /* FirebaseInstanceID.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F75EDFA81E8C106900E6F369 /* FirebaseInstanceID.framework */; };
+		F75EDFAF1E8C106900E6F369 /* FirebaseMessaging.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F75EDFA91E8C106900E6F369 /* FirebaseMessaging.framework */; };
+		F75EDFB01E8C106900E6F369 /* GoogleToolboxForMac.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F75EDFAA1E8C106900E6F369 /* GoogleToolboxForMac.framework */; };
+		F75EDFB11E8C106900E6F369 /* Protobuf.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F75EDFAB1E8C106900E6F369 /* Protobuf.framework */; };
+		F75EDFBD1E8C112F00E6F369 /* libsqlite3.0.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = F75EDFBC1E8C112F00E6F369 /* libsqlite3.0.tbd */; };
+		F75EDFBF1E8C116D00E6F369 /* libstdc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = F75EDFBE1E8C116D00E6F369 /* libstdc++.tbd */; };
 		F7659A271DC0B726004860C4 /* EAIntroPage.m in Sources */ = {isa = PBXBuildFile; fileRef = F7659A231DC0B726004860C4 /* EAIntroPage.m */; };
 		F7659A291DC0B726004860C4 /* EAIntroView.m in Sources */ = {isa = PBXBuildFile; fileRef = F7659A251DC0B726004860C4 /* EAIntroView.m */; };
 		F7659A2E1DC0B72F004860C4 /* EARestrictedScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = F7659A2C1DC0B72F004860C4 /* EARestrictedScrollView.m */; };
@@ -1156,7 +1165,6 @@
 		F721372E1BAFF0920012B613 /* CCPatenteGuida.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCPatenteGuida.m; sourceTree = "<group>"; };
 		F721372F1BAFF0920012B613 /* CCTemplates.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCTemplates.h; sourceTree = "<group>"; };
 		F72137301BAFF0920012B613 /* CCTemplates.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCTemplates.m; sourceTree = "<group>"; };
-		F7229B461DF71BA800E8C4E7 /* ChangeLog */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ChangeLog; sourceTree = SOURCE_ROOT; };
 		F7229B491DF71BB300E8C4E7 /* AUTHORS */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = AUTHORS; sourceTree = SOURCE_ROOT; };
 		F7253FC81E38BAF20084135B /* JSAlertView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSAlertView.h; sourceTree = "<group>"; };
 		F7253FC91E38BAF20084135B /* JSAlertView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JSAlertView.m; sourceTree = "<group>"; };
@@ -1198,6 +1206,7 @@
 		F73814291E65A52D0011A45E /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		F738142A1E65A52D0011A45E /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/Intro.strings; sourceTree = "<group>"; };
 		F738142B1E65A52D0011A45E /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/Error.strings; sourceTree = "<group>"; };
+		F73B4F781E8D3BF800A97F07 /* CCMainTabBarController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CCMainTabBarController.swift; sourceTree = "<group>"; };
 		F73C002D1E55D7DF00EEEFA7 /* CCManageCryptoCloudSecurity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCManageCryptoCloudSecurity.h; sourceTree = "<group>"; };
 		F73C002E1E55D7DF00EEEFA7 /* CCManageCryptoCloudSecurity.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCManageCryptoCloudSecurity.m; sourceTree = "<group>"; };
 		F73C414C1E82E51F000137C0 /* TableExternalSites+CoreDataClass.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "TableExternalSites+CoreDataClass.h"; sourceTree = "<group>"; };
@@ -1417,6 +1426,15 @@
 		F75797B71E81364C00187A1B /* pt-BR */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "pt-BR"; path = "pt-BR.lproj/CTAssetsPicker.strings"; sourceTree = "<group>"; };
 		F75ADF441DC75FFE008A7347 /* CCLogin.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = CCLogin.storyboard; sourceTree = "<group>"; };
 		F75CDBF51DF063AD00116AD0 /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; name = .gitignore; path = ../.gitignore; sourceTree = "<group>"; };
+		F75EDFA51E8C106900E6F369 /* Firebase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Firebase.h; sourceTree = "<group>"; };
+		F75EDFA61E8C106900E6F369 /* FirebaseAnalytics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FirebaseAnalytics.framework; sourceTree = "<group>"; };
+		F75EDFA71E8C106900E6F369 /* FirebaseCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FirebaseCore.framework; sourceTree = "<group>"; };
+		F75EDFA81E8C106900E6F369 /* FirebaseInstanceID.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FirebaseInstanceID.framework; sourceTree = "<group>"; };
+		F75EDFA91E8C106900E6F369 /* FirebaseMessaging.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FirebaseMessaging.framework; sourceTree = "<group>"; };
+		F75EDFAA1E8C106900E6F369 /* GoogleToolboxForMac.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = GoogleToolboxForMac.framework; sourceTree = "<group>"; };
+		F75EDFAB1E8C106900E6F369 /* Protobuf.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Protobuf.framework; sourceTree = "<group>"; };
+		F75EDFBC1E8C112F00E6F369 /* libsqlite3.0.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.0.tbd; path = usr/lib/libsqlite3.0.tbd; sourceTree = SDKROOT; };
+		F75EDFBE1E8C116D00E6F369 /* libstdc++.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libstdc++.tbd"; path = "usr/lib/libstdc++.tbd"; sourceTree = SDKROOT; };
 		F76344751BF259A800188725 /* synchronized.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = synchronized.gif; sourceTree = "<group>"; };
 		F76344761BF259A800188725 /* synchronizedcrypto.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = synchronizedcrypto.gif; sourceTree = "<group>"; };
 		F7659A221DC0B726004860C4 /* EAIntroPage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EAIntroPage.h; sourceTree = "<group>"; };
@@ -1814,10 +1832,19 @@
 				50765B161E79E8B4006682B5 /* libengagement.a in Frameworks */,
 				50765B071E79E7D0006682B5 /* Crashlytics.framework in Frameworks */,
 				50765B061E79E7D0006682B5 /* Fabric.framework in Frameworks */,
+				F75EDFBF1E8C116D00E6F369 /* libstdc++.tbd in Frameworks */,
+				F75EDFBD1E8C112F00E6F369 /* libsqlite3.0.tbd in Frameworks */,
 				F71E68001DC1F792003BA52B /* libownCloudiOS.a in Frameworks */,
 				F714526D1DC1523B0006A5D4 /* libMagicalRecord.a in Frameworks */,
+				F75EDFAC1E8C106900E6F369 /* FirebaseAnalytics.framework in Frameworks */,
+				F75EDFAE1E8C106900E6F369 /* FirebaseInstanceID.framework in Frameworks */,
+				F75EDFB11E8C106900E6F369 /* Protobuf.framework in Frameworks */,
+				F7FC7D561DC1F93800BB2C6A /* libz.tbd in Frameworks */,
+				F75EDFAD1E8C106900E6F369 /* FirebaseCore.framework in Frameworks */,
+				F75EDFAF1E8C106900E6F369 /* FirebaseMessaging.framework in Frameworks */,
 				F7BB14961D5B62C000ECEE68 /* libcrypto.a in Frameworks */,
 				F7BB14971D5B62C000ECEE68 /* libssl.a in Frameworks */,
+				F75EDFB01E8C106900E6F369 /* GoogleToolboxForMac.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1918,6 +1945,7 @@
 				F70211FA1BAC56E9003FC03E /* CCMain.h */,
 				F70211FB1BAC56E9003FC03E /* CCMain.m */,
 				F7D0E65E1BC5042E008D989A /* CCDetail.h */,
+				F73B4F781E8D3BF800A97F07 /* CCMainTabBarController.swift */,
 				F7D0E65F1BC5042E008D989A /* CCDetail.m */,
 				F787E5581BC503ED00AFBFE1 /* Main.storyboard */,
 				F78F6FAE1CC8CCB700F4EA25 /* CCSection.h */,
@@ -2919,6 +2947,21 @@
 			path = openssl;
 			sourceTree = "<group>";
 		};
+		F75EDFA41E8C106900E6F369 /* Analytics */ = {
+			isa = PBXGroup;
+			children = (
+				F75EDFA51E8C106900E6F369 /* Firebase.h */,
+				F75EDFA61E8C106900E6F369 /* FirebaseAnalytics.framework */,
+				F75EDFA71E8C106900E6F369 /* FirebaseCore.framework */,
+				F75EDFA81E8C106900E6F369 /* FirebaseInstanceID.framework */,
+				F75EDFA91E8C106900E6F369 /* FirebaseMessaging.framework */,
+				F75EDFAA1E8C106900E6F369 /* GoogleToolboxForMac.framework */,
+				F75EDFAB1E8C106900E6F369 /* Protobuf.framework */,
+			);
+			name = Analytics;
+			path = "Libraries external/Analytics";
+			sourceTree = SOURCE_ROOT;
+		};
 		F7659A211DC0B726004860C4 /* EAIntroView */ = {
 			isa = PBXGroup;
 			children = (
@@ -3177,7 +3220,7 @@
 			path = Utility;
 			sourceTree = "<group>";
 		};
-		F7C00D411E2D0D0F0032160B /* Favorite+Offline+Synchronize */ = {
+		F7C00D411E2D0D0F0032160B /* Favorite+Synchronize */ = {
 			isa = PBXGroup;
 			children = (
 				F7C00D421E2D0D0F0032160B /* CCCellOffline.h */,
@@ -3190,7 +3233,7 @@
 				F7EC14791E5D9C0B0046F351 /* CCSynchronize.h */,
 				F7EC147A1E5D9C0B0046F351 /* CCSynchronize.m */,
 			);
-			name = "Favorite+Offline+Synchronize";
+			name = "Favorite+Synchronize";
 			path = Offline;
 			sourceTree = "<group>";
 		};
@@ -3466,6 +3509,7 @@
 				F7B61E861DC13C20009E938F /* MagicalRecord.xcodeproj */,
 				F71E67F61DC1F76F003BA52B /* ownCloud iOS library.xcodeproj */,
 				F70F02A81C889183008DAB36 /* Libraries external */,
+				F75EDFA41E8C106900E6F369 /* Analytics */,
 				F7A582D71A24DAB500E903D7 /* AppDelegate.h */,
 				F7A582D61A24DAB500E903D7 /* AppDelegate.m */,
 				F7C1CDCE1E6DFAD1005D92BE /* CCStandardImages.h */,
@@ -3486,7 +3530,7 @@
 				F7F9E3451BC26B19004B9223 /* Move */,
 				F74D3DB81BAC1941000BAE4B /* Networking */,
 				F7C5259A1E3B441D00FFE02C /* Notification */,
-				F7C00D411E2D0D0F0032160B /* Favorite+Offline+Synchronize */,
+				F7C00D411E2D0D0F0032160B /* Favorite+Synchronize */,
 				F7FCFFD51D70798C000E6E29 /* PeekPop */,
 				F719FDAE1CF06645004895D0 /* PhotosCameraUpload */,
 				F7BE6E2A1D2D5C3B00106933 /* QuickActions */,
@@ -3506,7 +3550,6 @@
 				F76344751BF259A800188725 /* synchronized.gif */,
 				F7D154271E2392A300202FD9 /* Nextcloud-Bridging-Header.h */,
 				F75CDBF51DF063AD00116AD0 /* .gitignore */,
-				F7229B461DF71BA800E8C4E7 /* ChangeLog */,
 				F7229B491DF71BB300E8C4E7 /* AUTHORS */,
 				F78BFECA1D3111B800E513CF /* LaunchScreenNextcloud.xib */,
 				F77D49A71DC238E500CDC568 /* loading@2x.gif */,
@@ -3542,6 +3585,8 @@
 				50765AEB1E79CB28006682B5 /* SystemConfiguration.framework */,
 				50765AE91E79CB1E006682B5 /* CoreTelephony.framework */,
 				50765AE41E79CB01006682B5 /* NewRelicAgent.framework */,
+				F75EDFBE1E8C116D00E6F369 /* libstdc++.tbd */,
+				F75EDFBC1E8C112F00E6F369 /* libsqlite3.0.tbd */,
 				08EA97441E6554FC004C83FA /* FirebaseAnalytics.framework */,
 				08EA97451E6554FC004C83FA /* FirebaseCore.framework */,
 				08EA97461E6554FC004C83FA /* FirebaseInstanceID.framework */,
@@ -4370,6 +4415,7 @@
 				F77B0E4F1D118A16002130FE /* CCManageCameraUpload.m in Sources */,
 				F77B0E511D118A16002130FE /* UIImage+Filtering.m in Sources */,
 				F73CCDEB1DC13776007E38D8 /* XLFormSegmentedCell.m in Sources */,
+				F73B4F791E8D3BF800A97F07 /* CCMainTabBarController.swift in Sources */,
 				F7FCFFE01D707B83000E6E29 /* CCPeekPop.m in Sources */,
 				F7F06E911DBFACC600099AE9 /* NSIndexSet+CTAssetsPickerController.m in Sources */,
 				F77B0E541D118A16002130FE /* CCMove.m in Sources */,
@@ -4954,6 +5000,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
+					"$(PROJECT_DIR)\"/Libraries external/Analytics\"",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = iOSClient/CryptoCloud.pch;
@@ -5000,6 +5047,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
+					"$(PROJECT_DIR)\"/Libraries external/Analytics\"",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = iOSClient/CryptoCloud.pch;

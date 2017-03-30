@@ -35,15 +35,14 @@
 #import "CCSynchronize.h"
 #import "CCMain.h"
 #import "CCDetail.h"
+#import "Firebase.h"
 #import <Fabric/Fabric.h>
 #import <Crashlytics/Crashlytics.h>
 #import "EngagementAgent.h"
 #import "AEReachModule.h"
 #import <UserNotifications/UserNotifications.h>
 
-
 #ifdef CUSTOM_BUILD
-    #import "Firebase.h"
     #import "CustomSwift.h"
 #else
     #import "Nextcloud-Swift.h"
@@ -69,7 +68,7 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    #ifdef CUSTOM_BUILD
+    #ifdef OPTION_FIREBASE_ENABLE
         /*
          In order for this to work, proper GoogleService-Info.plist must be included
          */
@@ -385,11 +384,6 @@
         NSLog(@"[LOG] Initialize Camera Upload");
         [[NSNotificationCenter defaultCenter] postNotificationName:@"initStateCameraUpload" object:nil];
         
-#ifndef OPTION_OFFLINE_DISABLE
-        NSLog(@"[LOG] files Offline");
-        [[CCSynchronize sharedSynchronize] readOffline];
-#endif
-        
         NSLog(@"[LOG] Listning Favorites");
         [[CCSynchronize sharedSynchronize] readListingFavorites];        
     });
@@ -446,12 +440,9 @@
 - (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
 {
 
-    
     [[EngagementAgent shared] registerDeviceToken:deviceToken];
     NSLog(@"DEVICE TOKEN = %@", deviceToken);
 
-#if defined(OPTION_NOTIFICATION_PUSH_ENABLE)
-    
     NSString *pushToken = [[[[deviceToken description] stringByReplacingOccurrencesOfString: @"<" withString: @""] stringByReplacingOccurrencesOfString: @">" withString: @""] stringByReplacingOccurrencesOfString: @" " withString: @""];
     NSString *pushTokenHash = [[CCCrypto sharedManager] createSHA512:pushToken];
     
@@ -468,16 +459,13 @@
     if ([devicePublicKey length] > 0 && [pushTokenHash length] > 0) {
         
         CCMetadataNet *metadataNet = [[CCMetadataNet alloc] initWithAccount:app.activeAccount];
-    
+        
         NSDictionary *options = [[NSDictionary alloc] initWithObjectsAndKeys:pushToken, @"pushToken", pushTokenHash, @"pushTokenHash", devicePublicKey, @"devicePublicKey", nil];
         
         metadataNet.action = actionSubscribingNextcloudServer;
         metadataNet.options = options;
         [app addNetworkingOperationQueue:app.netQueue delegate:self metadataNet:metadataNet];
     }
-    
-#endif
-
 }
 
 - (void)application:(UIApplication *)application didFailToRegisterForRemoteNotificationsWithError:(NSError *)error
