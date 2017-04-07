@@ -251,19 +251,19 @@
 
 - (void)loginCloud
 {
-    ////////// crash test //////////////////////
-    
-    
-    NSArray *testCrashArray = [NSArray arrayWithObjects:@"Test1", @"Test2", @"Test3", nil];
-    
-    NSString *testString = [testCrashArray objectAtIndex:3];
-    
-    NSLog(@"%@",testString);
-
-    
-    
-    
-     ////////// crash test //////////////////////
+//    ////////// crash test //////////////////////
+//    
+//    
+//    NSArray *testCrashArray = [NSArray arrayWithObjects:@"Test1", @"Test2", @"Test3", nil];
+//    
+//    NSString *testString = [testCrashArray objectAtIndex:3];
+//    
+//    NSLog(@"%@",testString);
+//
+//    
+//    
+//    
+//     ////////// crash test //////////////////////
     
     
     self.login.enabled = NO;
