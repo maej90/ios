@@ -39,7 +39,7 @@
     NSMutableArray *_queueMetadatas;
     NSMutableArray *_selectedMetadatas;
     NSUInteger _numSelectedMetadatas;
-    //BOOL _AutomaticCameraUploadInProgress;      // START/STOP new request : initStateCameraUpload
+    BOOL _AutomaticCameraUploadInProgress;      // START/STOP new request : initStateCameraUpload
     
     CCSectionDataSourceMetadata *_sectionDataSource;
     
@@ -795,9 +795,6 @@
 
 - (void)initStateCameraUpload
 {
-    //if (_AutomaticCameraUploadInProgress)
-    //    return;
-    
     if([CCCoreData getCameraUploadActiveAccount:app.activeAccount]) {
         
         [self setupCameraUpload];
@@ -1084,6 +1081,10 @@
     CCManageAsset *manageAsset = [[CCManageAsset alloc] init];
     NSMutableArray *newItemsToUpload;
     
+    // CHECK : initStateCameraUpload
+    if (_AutomaticCameraUploadInProgress)
+        return;
+    
     // Check Asset : NEW or FULL
     if (assetsFull) {
         
@@ -1101,11 +1102,8 @@
     if ([newItemsToUpload count] == 0)
         return;
     
-    // Activity
-    [CCCoreData addActivityClient:@"" fileID:@"" action:k_activityDebugActionAutomaticUpload selector:@"" note:[NSString stringWithFormat:@"Number: %lu", (unsigned long)[newItemsToUpload count]] type:k_activityTypeInfo verbose:k_activityVerboseHigh account:app.activeAccount];
-    
     // STOP new request : initStateCameraUpload
-    //_AutomaticCameraUploadInProgress = YES;
+    _AutomaticCameraUploadInProgress = YES;
     
     // Disable idle timer
     [[UIApplication sharedApplication] setIdleTimerDisabled: YES];
@@ -1142,7 +1140,7 @@
     NSMutableArray *newItemsPHAssetToUpload = [[NSMutableArray alloc] init];
     
     NSString *folderPhotos = [CCCoreData getCameraUploadFolderNamePathActiveAccount:app.activeAccount activeUrl:app.activeUrl];
-    BOOL createSubfolders = [CCCoreData getCameraUploadCreateSubfolderActiveAccount:app.activeAccount];
+    BOOL useSubFolder = [CCCoreData getCameraUploadCreateSubfolderActiveAccount:app.activeAccount];
     
     // Conversion from ALAsset -to-> PHAsset
     for (ALAsset *asset in newItemsToUpload) {
@@ -1151,43 +1149,16 @@
         PHFetchResult *fetchResult = [PHAsset fetchAssetsWithALAssetURLs:@[url] options:nil];
         PHAsset *asset = [fetchResult firstObject];
         [newItemsPHAssetToUpload addObject:asset];
+        NSLog(@"Convert url %@", url);
     }
     
-    // verify/create folder Camera Upload, if error exit
-    if(![self automaticCreateFolder:folderPhotos]) {
+    // selectorUploadAutomaticAll : create the folder for Photos & if request the subfolders
+    if (assetsFull) {
         
-        NSString *description = NSLocalizedStringFromTable(@"_not_possible_create_folder_", @"Error", nil);
-        
-        // Full Upload ?
-        if (assetsFull)
-            [app messageNotification:@"_error_" description:description visible:YES delay:k_dismissAfterSecond type:TWMessageBarMessageTypeInfo];
-        
-        // START new request : initStateCameraUpload
-        //_AutomaticCameraUploadInProgress = NO;
-        
-        // Activity
-        [CCCoreData addActivityClient:@"" fileID:@"" action:k_activityDebugActionAutomaticUpload selector:@"" note:description type:k_activityTypeFailure verbose:k_activityVerboseDefault account:app.activeAccount];
-        
-        return;
-    }
-    
-    // Use subfolders verify/create subfolder, if error exit
-    if (createSubfolders) {
-        
-        for (NSString *dateSubFolder in [CCUtility createNameSubFolder:newItemsPHAssetToUpload]) {
+        if(![app createFolderSubFolderAutomaticUploadFolderPhotos:folderPhotos useSubFolder:useSubFolder assets:newItemsPHAssetToUpload selector:selectorUploadAutomaticAll]) {
             
-            if (![self automaticCreateFolder:[NSString stringWithFormat:@"%@/%@", folderPhotos, dateSubFolder]]) {
-                
-                [self endLoadingAssets];
-                
-                if (assetsFull)
-                    [app messageNotification:@"_error_" description:@"_error_createsubfolders_upload_" visible:YES delay:k_dismissAfterSecond type:TWMessageBarMessageTypeInfo];
-                
-                // Activity
-                [CCCoreData addActivityClient:@"" fileID:@"" action:k_activityDebugActionAutomaticUpload selector:@"" note:NSLocalizedString(@"_error_createsubfolders_upload_",nil) type:k_activityTypeFailure verbose:k_activityVerboseDefault account:app.activeAccount];
-                
-                return;
-            }
+            [self endLoadingAssets];
+            return;
         }
     }
     
@@ -1206,7 +1177,7 @@
         if (assetMediaType == PHAssetMediaTypeImage && [CCCoreData getCameraUploadWWanPhotoActiveAccount:app.activeAccount]) session = k_upload_session_wwan;
         if (assetMediaType == PHAssetMediaTypeVideo && [CCCoreData getCameraUploadWWanVideoActiveAccount:app.activeAccount]) session = k_upload_session_wwan;
 
-        NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+        NSDateFormatter *formatter = [NSDateFormatter new];
         
         [formatter setDateFormat:@"yyyy"];
         NSString *yearString = [formatter stringFromDate:assetDate];
@@ -1214,7 +1185,7 @@
         [formatter setDateFormat:@"MM"];
         NSString *monthString = [formatter stringFromDate:assetDate];
 
-        if (createSubfolders)
+        if (useSubFolder)
             serverUrl = [NSString stringWithFormat:@"%@/%@/%@", folderPhotos, yearString, monthString];
         else
             serverUrl = folderPhotos;
@@ -1237,13 +1208,20 @@
         metadataNet.session = session;
         metadataNet.taskStatus = k_taskStatusResume;
         
-        [CCCoreData addTableAutomaticUpload:metadataNet account:app.activeAccount];
+        if (![CCCoreData addTableAutomaticUpload:metadataNet account:app.activeAccount]) {
+            
+            [CCCoreData addActivityClient:fileName fileID:metadataNet.identifier action:k_activityDebugActionAutomaticUpload selector:metadataNet.selector note:@"File already present in Table automatic Upload" type:k_activityTypeInfo verbose:k_activityVerboseHigh account:app.activeAccount activeUrl:app.activeUrl];
+            
+            [self endLoadingAssets];
+
+            return;
+        }
         
         // Activity
         NSString *media = @"";
         if (assetMediaType == PHAssetMediaTypeImage) media = @"Image";
         if (assetMediaType == PHAssetMediaTypeVideo) media = @"Video";
-        [CCCoreData addActivityClient:fileName fileID:@"" action:k_activityDebugActionAutomaticUpload selector:@"" note:[NSString stringWithFormat:@"Add TableAutomaticUpload on Session: %@, Set Data asset %@", session, media] type:k_activityTypeInfo verbose:k_activityVerboseHigh account:app.activeAccount];
+        [CCCoreData addActivityClient:fileName fileID:metadataNet.identifier action:k_activityDebugActionAutomaticUpload selector:metadataNet.selector note:[NSString stringWithFormat:@"Add Automatic Upload on Session: %@, Media Type: %@, Asset Data: %@", session, media, [NSDateFormatter localizedStringFromDate:assetDate dateStyle:NSDateFormatterMediumStyle timeStyle:NSDateFormatterMediumStyle]] type:k_activityTypeInfo verbose:k_activityVerboseHigh account:app.activeAccount activeUrl:app.activeUrl];
         
         // Upldate Camera Upload data  
         if ([metadataNet.selector isEqualToString:selectorUploadAutomatic])
@@ -1252,9 +1230,9 @@
     
     // start upload
     if (assetsFull)
-        [app loadTableAutomaticUploadForSelector:selectorUploadAutomaticAll];
+        [app performSelectorOnMainThread:@selector(loadTableAutomaticUploadForSelector:) withObject:selectorUploadAutomaticAll waitUntilDone:NO];
     else
-        [app loadTableAutomaticUploadForSelector:selectorUploadAutomatic];
+        [app performSelectorOnMainThread:@selector(loadTableAutomaticUploadForSelector:) withObject:selectorUploadAutomatic waitUntilDone:NO];
 
     // end loading
     [self endLoadingAssets];
@@ -1263,53 +1241,12 @@
     [app updateApplicationIconBadgeNumber];
 }
 
-- (BOOL)automaticCreateFolder:(NSString *)folderPathName
-{
-    OCCommunication *communication = [CCNetworking sharedNetworking].sharedOCCommunication;
-    __block BOOL noError = YES;
-        
-    dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
-        
-    [communication setCredentialsWithUser:app.activeUser andPassword:app.activePassword];
-    [communication setUserAgent:[CCUtility getUserAgent]];
-        
-    [communication readFile:folderPathName onCommunication:communication successRequest:^(NSHTTPURLResponse *response, NSArray *items, NSString *redirectedServer) {
-            
-        dispatch_semaphore_signal(semaphore);
-            
-    } failureRequest:^(NSHTTPURLResponse *response, NSError *error, NSString *redirectedServer) {
-        
-        [communication createFolder:folderPathName onCommunication:communication withForbiddenCharactersSupported:app.hasServerForbiddenCharactersSupport successRequest:^(NSHTTPURLResponse *response, NSString *redirectedServer) {
-            
-            [CCCoreData clearDateReadAccount:app.activeAccount serverUrl:[CCUtility deletingLastPathComponentFromServerUrl:folderPathName] directoryID:nil];
-                        
-            dispatch_semaphore_signal(semaphore);
-            
-        } failureRequest:^(NSHTTPURLResponse *response, NSError *error, NSString *redirectedServer) {
-            
-            noError = NO;
-            
-            dispatch_semaphore_signal(semaphore);
-            
-        } errorBeforeRequest:^(NSError *error) {
-            
-            noError = NO;
-            dispatch_semaphore_signal(semaphore);
-        }];
-    }];
-        
-    while (dispatch_semaphore_wait(semaphore, DISPATCH_TIME_NOW))
-        [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode beforeDate:[NSDate dateWithTimeIntervalSinceNow:k_timeout_webdav]];
-    
-    return noError;
-}
-
 -(void)endLoadingAssets
 {
     [_hud hideHud];
     
     // START new request : initStateCameraUpload
-    //_AutomaticCameraUploadInProgress = NO;
+    _AutomaticCameraUploadInProgress = NO;
     
     // Enable idle timer
     [[UIApplication sharedApplication] setIdleTimerDisabled:NO];

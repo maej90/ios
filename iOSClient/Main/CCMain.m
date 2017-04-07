@@ -990,11 +990,14 @@
 
 - (void)changePasswordAccount
 {
+#ifdef LOGIN_WEB
+#else
     CCLogin *loginVC = [[UIStoryboard storyboardWithName:@"CCLogin" bundle:nil] instantiateViewControllerWithIdentifier:@"CCLoginNextcloud"];
     loginVC.delegate = self;
     loginVC.loginType = loginModifyPasswordUser;
     
     [self presentViewController:loginVC animated:YES completion:nil];
+#endif
 }
 
 #pragma mark -
@@ -1056,9 +1059,8 @@
 
 - (void)getActivityServerSuccess:(NSArray *)listOfActivity
 {
-    for (OCActivity *activity in listOfActivity) {
+    for (OCActivity *activity in listOfActivity)
         [CCCoreData addActivityServer:activity account:app.activeAccount];
-    }
     
     // Reload Activity Data Source
     [app.controlCenterActivity reloadDatasource];
@@ -1543,8 +1545,8 @@
 {
     // Automatic upload
     if([selector isEqualToString:selectorUploadAutomatic] || [selector isEqualToString:selectorUploadAutomaticAll])
-        [app loadTableAutomaticUploadForSelector:selector];
-
+        [app performSelectorOnMainThread:@selector(loadTableAutomaticUploadForSelector:) withObject:selector waitUntilDone:NO];
+    
     // Read File test do not exists
     if (errorCode == k_CCErrorFileUploadNotFound && fileID) {
        
@@ -1568,7 +1570,7 @@
 {
     // Automatic upload
     if([selector isEqualToString:selectorUploadAutomatic] || [selector isEqualToString:selectorUploadAutomaticAll])
-        [app loadTableAutomaticUploadForSelector:selector];
+        [app performSelectorOnMainThread:@selector(loadTableAutomaticUploadForSelector:) withObject:selector waitUntilDone:NO];
     
     if ([selectorPost isEqualToString:selectorReadFolderForced] ) {
             
@@ -1596,7 +1598,7 @@
     NSString *serverUrl = [arguments objectAtIndex:1];
     BOOL cryptated = [[arguments objectAtIndex:2] boolValue];
     BOOL useSubFolder = [[arguments objectAtIndex:3] boolValue];
-    NSString * session = [arguments objectAtIndex:4];
+    NSString *session = [arguments objectAtIndex:4];
     
     // remove title (graphics)
     [self setTitleBackgroundTableView:nil];
@@ -1604,31 +1606,10 @@
     NSString *folderPhotos = [CCCoreData getCameraUploadFolderNamePathActiveAccount:app.activeAccount activeUrl:app.activeUrl];
     NSString *directoryID = [CCCoreData getDirectoryIDFromServerUrl:serverUrl activeAccount:app.activeAccount];
     
-    // Create if request the folder for Photos
-    if ((useSubFolder || [serverUrl isEqualToString:folderPhotos]) && [_serverUrl isEqualToString:serverUrl] == NO){
-        
-        if(![app.activePhotosCameraUpload automaticCreateFolder:folderPhotos]) {
-            
-            [app messageNotification:@"_error_" description:@"_error_createsubfolders_upload_" visible:YES delay:k_dismissAfterSecond type:TWMessageBarMessageTypeInfo];
-            
-            return;
-        }
-    }
+    // Create the folder for Photos & if request the subfolders
+    if (![app createFolderSubFolderAutomaticUploadFolderPhotos:folderPhotos useSubFolder:useSubFolder assets:assets selector:selectorUploadFile])
+        return;
     
-    // Create if request the subfolders
-    if (useSubFolder) {
-        
-        for (NSString *dateSubFolder in [CCUtility createNameSubFolder:assets]) {
-                
-            if(![app.activePhotosCameraUpload automaticCreateFolder:[NSString stringWithFormat:@"%@/%@", folderPhotos, dateSubFolder]]) {
-                
-                [app messageNotification:@"_error_" description:@"_error_createsubfolders_upload_" visible:YES delay:k_dismissAfterSecond type:TWMessageBarMessageTypeInfo];
-                    
-                return;
-            }
-        }
-    }
-
     NSLog(@"[LOG] Asset N. %lu", (unsigned long)[assets count]);
     
     for (PHAsset *asset in assets) {
@@ -4346,11 +4327,11 @@
     actionSheet.separatorHeight = 5.0f;
     
     actionSheet.automaticallyTintButtonImages = @(NO);
-        
-    actionSheet.encryptedButtonTextAttributes = @{ NSFontAttributeName:[UIFont systemFontOfSize:14], NSForegroundColorAttributeName:COLOR_CRYPTOCLOUD };
-    actionSheet.buttonTextAttributes = @{ NSFontAttributeName:[UIFont systemFontOfSize:14], NSForegroundColorAttributeName:COLOR_TEXT_ANTHRACITE };
+    
+    actionSheet.encryptedButtonTextAttributes = @{ NSFontAttributeName:[UIFont systemFontOfSize:16], NSForegroundColorAttributeName:COLOR_CRYPTOCLOUD };
+    actionSheet.buttonTextAttributes = @{ NSFontAttributeName:[UIFont systemFontOfSize:16], NSForegroundColorAttributeName:COLOR_TEXT_ANTHRACITE };
     actionSheet.cancelButtonTextAttributes = @{ NSFontAttributeName:[UIFont systemFontOfSize:16], NSForegroundColorAttributeName:COLOR_BRAND };
-    actionSheet.disableButtonTextAttributes = @{ NSFontAttributeName:[UIFont systemFontOfSize:12], NSForegroundColorAttributeName:COLOR_TEXT_ANTHRACITE };
+    actionSheet.disableButtonTextAttributes = @{ NSFontAttributeName:[UIFont systemFontOfSize:16], NSForegroundColorAttributeName:COLOR_TEXT_ANTHRACITE };
     
     actionSheet.separatorColor = COLOR_SEPARATOR_TABLE;
     actionSheet.cancelButtonTitle = NSLocalizedString(@"_cancel_",nil);
@@ -5157,13 +5138,11 @@
     cell.reloadTaskButton.hidden = YES;
     cell.stopTaskButton.hidden = YES;
     
-    // colori e font
+    // Encrypted color
     if (metadata.cryptated) {
         cell.labelTitle.textColor = COLOR_CRYPTOCLOUD;
-        cell.labelInfoFile.textColor = [UIColor blackColor];
     } else {
-        cell.labelTitle.textColor = COLOR_TEXT_ANTHRACITE;
-        cell.labelInfoFile.textColor = [UIColor blackColor];
+        cell.labelTitle.textColor = [UIColor blackColor];
     }
     
     // ----------------------------------------------------------------------------------------------------------

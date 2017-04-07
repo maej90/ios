@@ -33,7 +33,6 @@
 #define image_actionSheetLocal                  @"localStorage"
 #define image_actionSheetRemoveLocal            @"actionSheetRemoveLocal"
 #define image_activeCameraUpload                @"activeCameraUpload"
-#define image_attention                         @"attention"
 #define image_avatar                            @"avatar"
 
 #define image_bkfull                            @"bkfull"
@@ -160,6 +159,7 @@
 #define image_tabBarLocal                       @"tabBarLocal"
 #define image_tabBarPhotos                      @"tabBarPhotos"
 #define image_tabBarSettings                    @"tabBarSettings"
+#define image_tabBarMore                        @"tabBarMore"
 #define image_thumbs                            @"thumbs"
 
 #define image_user                              @"loginUser"

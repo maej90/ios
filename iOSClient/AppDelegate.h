@@ -24,6 +24,7 @@
 #import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
 #import <MagicalRecord/MagicalRecord.h>
+#import <UserNotifications/UserNotifications.h>
 
 #import "BKPasscodeLockScreenManager.h"
 #import "REMenu.h"
@@ -168,7 +169,7 @@
 - (NSMutableArray *)verifyExistsInQueuesUploadSelector:(NSString *)selector;
 
 - (void)loadTableAutomaticUploadForSelector:(NSString *)selector;
-
+- (BOOL)createFolderSubFolderAutomaticUploadFolderPhotos:(NSString *)folderPhotos useSubFolder:(BOOL)useSubFolder assets:(NSArray *)assets selector:(NSString *)selector;
 - (void)dropAutomaticUploadWithSelector:(NSString *)selector;
 
 @end

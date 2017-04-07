@@ -189,8 +189,10 @@
 
 // ===== Automatic Upload =====
 
-+ (void)addTableAutomaticUpload:(CCMetadataNet *)metadataNet account:(NSString *)account;
-+ (CCMetadataNet *)getTableAutomaticUploadForAccount:(NSString *)account selector:(NSString *)selector context:(NSManagedObjectContext *)context;
++ (BOOL)addTableAutomaticUpload:(CCMetadataNet *)metadataNet account:(NSString *)account;
++ (CCMetadataNet *)getTableAutomaticUploadForAccount:(NSString *)account selector:(NSString *)selector;
++ (void)unlockTableAutomaticUploadForAccount:(NSString *)account identifier:(NSString *)identifier;
++ (void)deleteTableAutomaticUploadForAccount:(NSString *)account identifier:(NSString *)identifier;
 + (NSUInteger)countTableAutomaticUploadForAccount:(NSString *)account selector:(NSString *)selector;
 
 // ===== GPS =====
@@ -213,7 +215,7 @@
 // ===== Activity =====
 
 + (void)addActivityServer:(OCActivity *)activity account:(NSString *)account;
-+ (void)addActivityClient:(NSString *)file fileID:(NSString *)fileID action:(NSString *)action selector:(NSString *)selector note:(NSString *)note type:(NSString *)type verbose:(NSInteger)verbose account:(NSString *)account;
++ (void)addActivityClient:(NSString *)file fileID:(NSString *)fileID action:(NSString *)action selector:(NSString *)selector note:(NSString *)note type:(NSString *)type verbose:(NSInteger)verbose account:(NSString *)account activeUrl:(NSString *)activeUrl;
 + (NSArray *)getAllTableActivityWithPredicate:(NSPredicate *)predicate;
 
 // ===== External Sites =====
@@ -232,8 +234,6 @@
 
 + (void)insertMetadataInEntity:(CCMetadata *)metadata recordMetadata:(TableMetadata *)recordMetadata activeAccount:(NSString *)activeAccount activeUrl:(NSString *)activeUrl;
 + (CCMetadata *)insertEntityInMetadata:(TableMetadata *)recordMetadata;
-
-// ===== Routine for migrate =====
 
 // ===== Utility Database =====
 

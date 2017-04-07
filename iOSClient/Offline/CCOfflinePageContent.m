@@ -391,10 +391,10 @@
     
     actionSheet.automaticallyTintButtonImages = @(NO);
     
-    actionSheet.encryptedButtonTextAttributes = @{ NSFontAttributeName:[UIFont systemFontOfSize:14], NSForegroundColorAttributeName:COLOR_CRYPTOCLOUD };
-    actionSheet.buttonTextAttributes = @{ NSFontAttributeName:[UIFont systemFontOfSize:14], NSForegroundColorAttributeName:COLOR_TEXT_ANTHRACITE };
+    actionSheet.encryptedButtonTextAttributes = @{ NSFontAttributeName:[UIFont systemFontOfSize:16], NSForegroundColorAttributeName:COLOR_CRYPTOCLOUD };
+    actionSheet.buttonTextAttributes = @{ NSFontAttributeName:[UIFont systemFontOfSize:16], NSForegroundColorAttributeName:COLOR_TEXT_ANTHRACITE };
     actionSheet.cancelButtonTextAttributes = @{ NSFontAttributeName:[UIFont systemFontOfSize:16], NSForegroundColorAttributeName:COLOR_BRAND };
-    actionSheet.disableButtonTextAttributes = @{ NSFontAttributeName:[UIFont systemFontOfSize:12], NSForegroundColorAttributeName:COLOR_TEXT_ANTHRACITE };
+    actionSheet.disableButtonTextAttributes = @{ NSFontAttributeName:[UIFont systemFontOfSize:16], NSForegroundColorAttributeName:COLOR_TEXT_ANTHRACITE };
     
     actionSheet.separatorColor = COLOR_SEPARATOR_TABLE;
     actionSheet.cancelButtonTitle = NSLocalizedString(@"_cancel_",nil);
@@ -624,21 +624,12 @@
     // ButtonDown Tapped
     [cell.buttonDown addTarget:self action:@selector(cellButtonDownWasTapped:) forControlEvents:UIControlEventTouchUpInside];
     
-    // color and font
-    /*
+    // encrypted color
     if (metadata.cryptated) {
         cell.labelTitle.textColor = COLOR_CRYPTOCLOUD;
-        cell.labelInfoFile.textColor = [UIColor blackColor];
     } else {
-        cell.labelTitle.textColor = COLOR_TEXT_ANTHRACITE;
-        cell.labelInfoFile.textColor = [UIColor blackColor];
+        cell.labelTitle.textColor = [UIColor blackColor];
     }
-    
-    if (metadata.directory) {
-        cell.labelInfoFile.text = [CCUtility dateDiff:metadata.date];
-        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-    }
-    */
     
     // File name
     cell.labelTitle.text = metadata.fileNamePrint;
@@ -651,10 +642,6 @@
     // it's encrypted ???
     if (metadata.cryptated && [metadata.type isEqualToString: k_metadataType_template] == NO)
         cell.statusImageView.image = [UIImage imageNamed:image_lock];
-    
-    // it's in download mode
-    if ([metadata.session length] > 0 && [metadata.session containsString:@"download"])
-        cell.statusImageView.image = [UIImage imageNamed:image_attention];
     
     // text and length
     if (metadata.directory) {

@@ -45,6 +45,8 @@
     
     [super viewDidLoad];
     
+    _verbose = [CCUtility getActivityVerboseHigh];
+    
     _sectionDataSource = [NSArray new];
     
     [self reloadDatasource];
@@ -89,7 +91,7 @@
         
         NSDate *sixDaysAgo = [[NSCalendar currentCalendar] dateByAddingUnit:NSCalendarUnitDay value:-daysOfActivity toDate:[NSDate date] options:0];
         
-        if ([CCUtility getActivityVerboseHigh])
+        if (_verbose)
             predicate = [NSPredicate predicateWithFormat:@"((account == %@) || (account == '')) AND (date > %@)", app.activeAccount, sixDaysAgo];
         else
             predicate = [NSPredicate predicateWithFormat:@"(account == %@) AND (verbose == %lu) AND (date > %@)", app.activeAccount, k_activityVerboseDefault, sixDaysAgo];
@@ -162,14 +164,14 @@
     // Note
     [label setFont:fontSizeNote];
     
-    if (_verbose && activity.idActivity == 0)
+    if (_verbose && activity.idActivity == 0 && [activity.selector length] > 0)
         label.text = [NSString stringWithFormat:@"%@ Selector: %@", activity.note, activity.selector];
     else
         label.text = activity.note;
     
     int heightNote = [[self class] getLabelHeight:label width:self.collectionView.frame.size.width];
     
-    int heightView = 40 + heightAction + heightNote;
+    int heightView = 40 + heightAction + heightNote + 17;
     
     return CGSizeMake(collectionView.frame.size.width, heightView);
 }
@@ -192,7 +194,7 @@
         [dateLabel setFont:fontSizeData];
         dateLabel.textColor = [UIColor colorWithRed:100.0/255.0 green:100.0/255.0 blue:100.0/255.0 alpha:1.0];
     
-        if ([CCUtility getActivityVerboseHigh]) {
+        if (_verbose) {
         
             dateLabel.text = [NSDateFormatter localizedStringFromDate:activity.date dateStyle:NSDateFormatterFullStyle timeStyle:NSDateFormatterMediumStyle];
         
@@ -234,8 +236,10 @@
         noteLabel.numberOfLines = 0;
         noteLabel.lineBreakMode = NSLineBreakByWordWrapping;
     
-        if ([CCUtility getActivityVerboseHigh] && activity.idActivity == 0) noteLabel.text = [NSString stringWithFormat:@"%@ Selector: %@", activity.note, activity.selector];
-        else noteLabel.text = activity.note;
+        if (_verbose && activity.idActivity == 0 && [activity.selector length] > 0)
+            noteLabel.text = [NSString stringWithFormat:@"%@ Selector: %@", activity.note, activity.selector];
+        else
+            noteLabel.text = activity.note;
     }
     
     if (kind == UICollectionElementKindSectionFooter) {

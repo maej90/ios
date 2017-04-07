@@ -25,8 +25,16 @@
 #import "AppDelegate.h"
 #import "CCLogin.h"
 
+#ifdef CUSTOM_BUILD
+    #import "CustomSwift.h"
+#else
+    #import "Nextcloud-Swift.h"
+#endif
+
 @interface CCSplit ()
 {
+    CCLoginWeb *_loginWeb;
+    CCLogin *_loginVC;
 }
 @end
 
@@ -59,14 +67,8 @@
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-}
-
-// E' apparsa
-- (void)viewDidAppear:(BOOL)animated
-{
-    [super viewDidAppear:animated];
     
-    [self newAccount];
+    [self showIntro];
 }
 
 - (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator
@@ -100,6 +102,41 @@
 }
 
 #pragma --------------------------------------------------------------------------------------------
+#pragma mark ===== Intro =====
+#pragma --------------------------------------------------------------------------------------------
+
+- (void)showIntro
+{
+    
+#ifdef OPTION_DISABLE_INTRO
+
+    [CCUtility setIntro:@"1.0"];
+    
+    [self performSelector:@selector(newAccount) withObject:nil afterDelay:0.1];
+
+#else
+    
+    if ([CCUtility getIntro:@"1.0"] == NO) {
+        
+        _intro = [[CCIntro alloc] initWithDelegate:self delegateView:self.view];
+        [_intro showIntroCryptoCloud:0.0];
+        
+    } else {
+        
+        [self performSelector:@selector(newAccount) withObject:nil afterDelay:0.1];
+    }
+    
+#endif
+    
+}
+
+- (void)introWillFinish:(EAIntroView *)introView wasSkipped:(BOOL)wasSkipped
+{
+    [CCUtility setIntro:@"1.0"];
+    [self performSelector:@selector(newAccount) withObject:nil afterDelay:0.1];
+}
+
+#pragma --------------------------------------------------------------------------------------------
 #pragma mark ===== newAccount =====
 #pragma --------------------------------------------------------------------------------------------
 
@@ -110,14 +147,25 @@
 
 - (void)newAccount
 {
-    // test
     if (app.activeAccount.length == 0) {
     
-        CCLogin *loginVC = [[UIStoryboard storyboardWithName:@"CCLogin" bundle:nil] instantiateViewControllerWithIdentifier:@"CCLoginNextcloud"];
-        loginVC.delegate = self;
-        loginVC.loginType = loginAddForced;
+#ifdef LOGIN_WEB
         
-        [self presentViewController:loginVC animated:YES completion:nil];
+        _loginWeb = [CCLoginWeb new];
+        _loginWeb.delegate = self;
+        _loginWeb.loginType = loginAddForced;
+        
+        [_loginWeb presentModalWithDefaultTheme:self];
+        
+#else
+        _loginVC = [[UIStoryboard storyboardWithName:@"CCLogin" bundle:nil] instantiateViewControllerWithIdentifier:@"CCLoginNextcloud"];
+        _loginVC.delegate = self;
+        _loginVC.loginType = loginAddForced;
+        
+        [self presentViewController:_loginVC animated:YES completion:nil];
+
+#endif
+    
     }
 }
 

@@ -10,7 +10,9 @@ import WebKit
 
 public protocol SwiftWebVCDelegate: class {
     func didStartLoading()
+    func didReceiveServerRedirectForProvisionalNavigation(url: URL)
     func didFinishLoading(success: Bool)
+    func didFinishLoading(success: Bool, url: URL)
 }
 
 public class SwiftWebVC: UIViewController {
@@ -20,6 +22,7 @@ public class SwiftWebVC: UIViewController {
     var buttonColor: UIColor? = nil
     var titleColor: UIColor? = nil
     var closing: Bool! = false
+    var toobar: Bool! = true
     
     lazy var backBarButtonItem: UIBarButtonItem =  {
         var tempBackBarButtonItem = UIBarButtonItem(image: SwiftWebVC.bundledImage(named: "SwiftWebVCBack"),
@@ -100,6 +103,12 @@ public class SwiftWebVC: UIViewController {
     }
     
     func loadRequest(_ request: URLRequest) {
+        if #available(iOS 9.0, *) {
+            webView.customUserAgent = "Mozilla/5.0 (iOS) Nextcloud-iOS"
+        } else {
+            // Fallback on earlier versions
+            UserDefaults.standard.register(defaults: ["UserAgent": "Mozilla/5.0 (iOS) Nextcloud-iOS"])
+        }
         webView.load(request)
     }
     
@@ -136,10 +145,16 @@ public class SwiftWebVC: UIViewController {
         
         super.viewWillAppear(true)
         
-        if (UIDevice.current.userInterfaceIdiom == UIUserInterfaceIdiom.phone) {
-            self.navigationController?.setToolbarHidden(false, animated: false)
-        }
-        else if (UIDevice.current.userInterfaceIdiom == UIUserInterfaceIdiom.pad) {
+        if (toobar == true) {
+        
+            if (UIDevice.current.userInterfaceIdiom == UIUserInterfaceIdiom.phone) {
+                self.navigationController?.setToolbarHidden(false, animated: false)
+            }
+            else if (UIDevice.current.userInterfaceIdiom == UIUserInterfaceIdiom.pad) {
+                self.navigationController?.setToolbarHidden(true, animated: true)
+            }
+            
+        } else {
             self.navigationController?.setToolbarHidden(true, animated: true)
         }
     }
@@ -161,6 +176,11 @@ public class SwiftWebVC: UIViewController {
     // Toolbar
     
     func updateToolbarItems() {
+        
+        if (toobar == false) {
+            return
+        }
+        
         backBarButtonItem.isEnabled = webView.canGoBack
         forwardBarButtonItem.isEnabled = webView.canGoForward
         
@@ -288,9 +308,15 @@ extension SwiftWebVC: WKNavigationDelegate {
         updateToolbarItems()
     }
     
+    public func webView(_ webView: WKWebView, didReceiveServerRedirectForProvisionalNavigation navigation: WKNavigation!) {
+        self.delegate?.didReceiveServerRedirectForProvisionalNavigation(url: webView.url!)
+    }
+    
     public func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
         self.delegate?.didFinishLoading(success: true)
+        self.delegate?.didFinishLoading(success: true, url: webView.url!)
         UIApplication.shared.isNetworkActivityIndicatorVisible = false
+        
         
         webView.evaluateJavaScript("document.title", completionHandler: {(response, error) in
             self.navBarTitle.text = response as! String?
@@ -302,6 +328,7 @@ extension SwiftWebVC: WKNavigationDelegate {
     
     public func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
         self.delegate?.didFinishLoading(success: false)
+        self.delegate?.didFinishLoading(success: false, url: webView.url!)
         UIApplication.shared.isNetworkActivityIndicatorVisible = false
         updateToolbarItems()
     }

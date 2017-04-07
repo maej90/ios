@@ -8,10 +8,18 @@
 
 import UIKit
 
+public protocol SwiftModalWebVCDelegate: class {
+    func didStartLoading()
+    func didReceiveServerRedirectForProvisionalNavigation(url: URL)
+    func didFinishLoading(success: Bool, url: URL)
+}
+
 public class SwiftModalWebVC: UINavigationController {
     
+    public weak var delegateWeb: SwiftModalWebVCDelegate?
+    
     public enum SwiftModalWebVCTheme {
-        case lightBlue, lightBlack, dark
+        case lightBlue, lightBlack, dark, loginWeb
     }
     
     weak var webViewDelegate: UIWebViewDelegate? = nil
@@ -24,23 +32,28 @@ public class SwiftModalWebVC: UINavigationController {
         self.init(pageURL: URL(string: urlString)!, theme: theme)
     }
     
+    public convenience init(urlString: String, theme: SwiftModalWebVCTheme, color: UIColor, colorText: UIColor) {
+        self.init(pageURL: URL(string: urlString)!, theme: theme, color: color, colorText: colorText)
+    }
+    
     public convenience init(pageURL: URL) {
         self.init(request: URLRequest(url: pageURL))
     }
     
-    public convenience init(pageURL: URL, theme: SwiftModalWebVCTheme) {
-        self.init(request: URLRequest(url: pageURL), theme: theme)
+    public convenience init(pageURL: URL, theme: SwiftModalWebVCTheme, color : UIColor = UIColor.clear, colorText: UIColor = UIColor.black) {
+        self.init(request: URLRequest(url: pageURL), theme: theme, color: color, colorText: colorText)
     }
-    
-    public init(request: URLRequest, theme: SwiftModalWebVCTheme = .dark) {
+   
+    public init(request: URLRequest, theme: SwiftModalWebVCTheme = .dark, color: UIColor = UIColor.clear, colorText: UIColor = UIColor.black) {
+        
         let webViewController = SwiftWebVC(aRequest: request)
         webViewController.storedStatusColor = UINavigationBar.appearance().barStyle
-
+        
         let doneButton = UIBarButtonItem(image: SwiftWebVC.bundledImage(named: "SwiftWebVCDismiss"),
                                          style: UIBarButtonItemStyle.plain,
                                          target: webViewController,
                                          action: #selector(SwiftWebVC.doneButtonTapped))
-        
+    
         switch theme {
         case .lightBlue:
             doneButton.tintColor = nil
@@ -57,15 +70,23 @@ public class SwiftModalWebVC: UINavigationController {
             webViewController.buttonColor = UIColor.white
             webViewController.titleColor = UIColor.groupTableViewBackground
             UINavigationBar.appearance().barStyle = UIBarStyle.black
+        case .loginWeb:
+            webViewController.buttonColor = UIColor.white
+            UINavigationBar.appearance().barStyle = UIBarStyle.default
+            webViewController.toobar = false
         }
         
-        if (UIDevice.current.userInterfaceIdiom == UIUserInterfaceIdiom.pad) {
-            webViewController.navigationItem.leftBarButtonItem = doneButton
+        if (theme != .loginWeb) {
+            if (UIDevice.current.userInterfaceIdiom == UIUserInterfaceIdiom.pad) {
+                webViewController.navigationItem.leftBarButtonItem = doneButton
+            }
+            else {
+                webViewController.navigationItem.rightBarButtonItem = doneButton
+            }
         }
-        else {
-            webViewController.navigationItem.rightBarButtonItem = doneButton
-        }
+        
         super.init(rootViewController: webViewController)
+        webViewController.delegate = self
     }
     
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
@@ -78,5 +99,24 @@ public class SwiftModalWebVC: UINavigationController {
     
     override public func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(false)
+    }
+}
+
+extension SwiftModalWebVC: SwiftWebVCDelegate {
+    
+    public func didStartLoading() {
+        self.delegateWeb?.didStartLoading()
+    }
+    
+    public func didReceiveServerRedirectForProvisionalNavigation(url: URL) {
+        self.delegateWeb?.didReceiveServerRedirectForProvisionalNavigation(url: url)
+    }
+    
+    public func didFinishLoading(success: Bool) {
+        print("Finished loading. Success: \(success).")
+    }
+    
+    public func didFinishLoading(success: Bool, url: URL) {
+        self.delegateWeb?.didFinishLoading(success: success, url: url)
     }
 }

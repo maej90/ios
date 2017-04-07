@@ -48,7 +48,7 @@
     #import "Nextcloud-Swift.h"
 #endif
 
-@interface AppDelegate ()
+@interface AppDelegate () <UNUserNotificationCenterDelegate, FIRMessagingDelegate>
 {
     
 }
@@ -68,18 +68,42 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    #ifdef OPTION_FIREBASE_ENABLE
-        /*
-         In order for this to work, proper GoogleService-Info.plist must be included
-         */
-        @try {
-            [FIRApp configure];
-        } @catch (NSException *exception) {
-            NSLog(@"[LOG] Something went wrong while configuring Firebase");
-        }
-    #endif
-    
 
+#ifdef OPTION_FIREBASE_ENABLE
+    
+    /*
+    In order for this to work, proper GoogleService-Info.plist must be included
+    */
+    
+    @try {
+        [FIRApp configure];
+    } @catch (NSException *exception) {
+        NSLog(@"[LOG] Something went wrong while configuring Firebase");
+    }
+    
+    if (floor(NSFoundationVersionNumber) <= NSFoundationVersionNumber_iOS_9_x_Max) {
+        
+        UIUserNotificationType allNotificationTypes =(UIUserNotificationTypeSound | UIUserNotificationTypeAlert | UIUserNotificationTypeBadge);
+        UIUserNotificationSettings *settings = [UIUserNotificationSettings settingsForTypes:allNotificationTypes categories:nil];
+        
+        [[UIApplication sharedApplication] registerUserNotificationSettings:settings];
+        
+    } else {
+        
+        // iOS 10 or later
+        #if defined(__IPHONE_10_0) && __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_10_0
+        // For iOS 10 display notification (sent via APNS)
+        [UNUserNotificationCenter currentNotificationCenter].delegate = self;
+        UNAuthorizationOptions authOptions = UNAuthorizationOptionAlert | UNAuthorizationOptionSound | UNAuthorizationOptionBadge;
+        [[UNUserNotificationCenter currentNotificationCenter] requestAuthorizationWithOptions:authOptions completionHandler:^(BOOL granted, NSError * _Nullable error) {
+        }];
+        
+        // For iOS 10 data message (sent via FCM)
+        [FIRMessaging messaging].remoteMessageDelegate = self;
+        #endif
+    }
+    
+#endif // OPTION_FIREBASE_ENABLE
 
     NSString *dir;
     NSURL *dirGroup = [[NSFileManager defaultManager] containerURLForSecurityApplicationGroupIdentifier:k_capabilitiesGroups];
@@ -292,10 +316,10 @@
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 5.0 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
         
         if ([CCCoreData countTableAutomaticUploadForAccount:self.activeAccount selector:selectorUploadAutomatic] > 0)
-            [app loadTableAutomaticUploadForSelector:selectorUploadAutomatic];
-    
+            [self performSelectorOnMainThread:@selector(loadTableAutomaticUploadForSelector:) withObject:selectorUploadAutomatic waitUntilDone:NO];
+        
         if ([CCCoreData countTableAutomaticUploadForAccount:self.activeAccount selector:selectorUploadAutomaticAll] > 0)
-            [app loadTableAutomaticUploadForSelector:selectorUploadAutomaticAll];
+            [self performSelectorOnMainThread:@selector(loadTableAutomaticUploadForSelector:) withObject:selectorUploadAutomaticAll waitUntilDone:NO];
     });
 }
 
@@ -439,13 +463,26 @@
 
 - (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
 {
+<<<<<<< HEAD
 
     [[EngagementAgent shared] registerDeviceToken:deviceToken];
     NSLog(@"DEVICE TOKEN = %@", deviceToken);
 
     NSString *pushToken = [[[[deviceToken description] stringByReplacingOccurrencesOfString: @"<" withString: @""] stringByReplacingOccurrencesOfString: @">" withString: @""] stringByReplacingOccurrencesOfString: @" " withString: @""];
     NSString *pushTokenHash = [[CCCrypto sharedManager] createSHA512:pushToken];
+=======
+    // test
+    if (self.activeAccount.length == 0)
+        return;
     
+    // FIREBASE registered token
+>>>>>>> upstream/master
+    
+    [[FIRInstanceID instanceID] setAPNSToken:deviceToken type:FIRInstanceIDAPNSTokenTypeSandbox];
+    NSString *pushToken = [[FIRInstanceID instanceID] token];
+    // NSString *pushToken = [[[[deviceToken description] stringByReplacingOccurrencesOfString: @"<" withString: @""] stringByReplacingOccurrencesOfString: @">" withString: @""] stringByReplacingOccurrencesOfString: @" " withString: @""];
+    
+    NSString *pushTokenHash = [[CCCrypto sharedManager] createSHA512:pushToken];
     NSDictionary *devicePushKey = [NSDictionary dictionaryWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"DevicePushKey-Info" ofType:@"plist"]];
     
 #ifdef DEBUG
@@ -454,9 +491,9 @@
     NSString *devicePublicKey = [devicePushKey objectForKey:@"devicePublicKeyProduction"];
 #endif
     
-    NSLog(@"DEVICE TOKEN = %@", pushToken);
-    
     if ([devicePublicKey length] > 0 && [pushTokenHash length] > 0) {
+        
+        NSLog(@"Firebase InstanceID push token: %@", pushToken);
         
         CCMetadataNet *metadataNet = [[CCMetadataNet alloc] initWithAccount:app.activeAccount];
         
@@ -485,13 +522,37 @@
         
         NSLog(@"Receive Notification on Active state");
     }
+    
+    // If you are receiving a notification message while your app is in the background,
+    // this callback will not be fired till the user taps on the notification launching the application.
+    // TODO: Handle data of notification
+    
+    // Print message ID.
+    //if (userInfo[kGCMMessageIDKey]) {
+    //    NSLog(@"Message ID: %@", userInfo[kGCMMessageIDKey]);
+    //}
+    
+    // Print full message.
+    NSLog(@"%@", userInfo);
+
 }
 
 - (void) application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler
 {
     UIApplicationState state = [application applicationState];
     
+<<<<<<< HEAD
     [[EngagementAgent shared] applicationDidReceiveRemoteNotification:userInfo fetchCompletionHandler:completionHandler];
+=======
+    // Print message ID.
+    //if (userInfo[kGCMMessageIDKey]) {
+    //    NSLog(@"Message ID: %@", userInfo[kGCMMessageIDKey]);
+    //}
+    
+    // Print full message.
+    NSLog(@"%@", userInfo);
+
+>>>>>>> upstream/master
     
     if (state == UIApplicationStateBackground || (state == UIApplicationStateInactive)) {
         
@@ -506,6 +567,50 @@
         completionHandler(UIBackgroundFetchResultNoData);
     }
 }
+
+#pragma FIREBASE
+
+- (void)tokenRefreshNotification:(NSNotification *)notification {
+    
+    // Note that this callback will be fired everytime a new token is generated, including the first
+    // time. So if you need to retrieve the token as soon as it is available this is where that
+    // should be done.
+    
+    NSString *refreshedToken = [[FIRInstanceID instanceID] token];
+    NSLog(@"InstanceID token: %@", refreshedToken);
+    
+    // Connect to FCM since connection may have failed when attempted before having a token.
+    [self connectToFcm];
+    
+    // TODO: If necessary send token to application server.
+}
+
+- (void)connectToFcm {
+    
+    // Won't connect since there is no token
+    if (![[FIRInstanceID instanceID] token]) {
+        return;
+    }
+    
+    // Disconnect previous FCM connection if it exists.
+    [[FIRMessaging messaging] disconnect];
+    
+    [[FIRMessaging messaging] connectWithCompletion:^(NSError * _Nullable error) {
+        if (error != nil) {
+            NSLog(@"Unable to connect to FCM. %@", error);
+        } else {
+            NSLog(@"Connected to FCM.");
+        }
+    }];
+}
+
+#if defined(__IPHONE_10_0) && __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_10_0
+// Receive data message on iOS 10 devices while app is in the foreground.
+- (void)applicationReceivedRemoteMessage:(FIRMessagingRemoteMessage *)remoteMessage {
+    // Print full message
+    NSLog(@"%@", remoteMessage.appData);
+}
+#endif
 
 #pragma --------------------------------------------------------------------------------------------
 #pragma mark ===== Quick Actions - ShotcutItem =====
@@ -1188,8 +1293,28 @@
         }
     }
     
-    // Add Network queue
-    CCMetadataNet *metadataNet = [CCCoreData getTableAutomaticUploadForAccount:self.activeAccount selector:selector context:nil];
+    // Get Record on Table Automatic Upload
+    CCMetadataNet *metadataNet = [CCCoreData getTableAutomaticUploadForAccount:self.activeAccount selector:selector];
+
+    // For UploadAutomatic create the folder for Photos & if request the subfolders
+    if ([selector isEqualToString:selectorUploadAutomatic] && metadataNet) {
+        
+        NSString *folderPhotos = [CCCoreData getCameraUploadFolderNamePathActiveAccount:app.activeAccount activeUrl:app.activeUrl];
+        BOOL useSubFolder = [CCCoreData getCameraUploadCreateSubfolderActiveAccount:app.activeAccount];
+
+        PHFetchResult *result = [PHAsset fetchAssetsWithLocalIdentifiers:@[metadataNet.identifier] options:nil];
+
+        if (!result.count) {
+           [CCCoreData addActivityClient:metadataNet.fileName fileID:metadataNet.identifier action:k_activityDebugActionUpload selector:selector note:@"Internal error image/video not found" type:k_activityVerboseDefault verbose:k_activityVerboseHigh account:_activeAccount activeUrl:_activeUrl];
+            [CCCoreData unlockTableAutomaticUploadForAccount:_activeAccount identifier:metadataNet.identifier];
+            return;
+        }
+        
+        if(![self createFolderSubFolderAutomaticUploadFolderPhotos:folderPhotos useSubFolder:useSubFolder assets:[[NSArray alloc] initWithObjects:result[0], nil] selector:selectorUploadAutomatic]) {
+            [CCCoreData unlockTableAutomaticUploadForAccount:_activeAccount identifier:metadataNet.identifier];
+            return;
+        }
+    }
     
     if (metadataNet) {
         
@@ -1201,6 +1326,9 @@
             queue = app.netQueueUpload;
         
         [self addNetworkingOperationQueue:queue delegate:app.activeMain metadataNet:metadataNet];
+        
+        // Delete record on Table Automatic Upload
+        [CCCoreData deleteTableAutomaticUploadForAccount:self.activeAccount identifier:metadataNet.identifier];
     }
 }
 
@@ -1348,6 +1476,36 @@
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 1.0 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
         [self updateApplicationIconBadgeNumber];
     });
+}
+
+- (BOOL)createFolderSubFolderAutomaticUploadFolderPhotos:(NSString *)folderPhotos useSubFolder:(BOOL)useSubFolder assets:(NSArray *)assets selector:(NSString *)selector
+{
+    OCnetworking *ocNetworking = [[OCnetworking alloc] initWithDelegate:nil metadataNet:nil withUser:_activeUser withPassword:_activePassword withUrl:_activeUrl isCryptoCloudMode:NO];
+
+    if(![ocNetworking automaticCreateFolderSync:folderPhotos]) {
+        
+        // Activity
+        [CCCoreData addActivityClient:folderPhotos fileID:@"" action:k_activityDebugActionAutomaticUpload selector:selector note:NSLocalizedStringFromTable(@"_not_possible_create_folder_", @"Error", nil) type:k_activityTypeFailure verbose:k_activityVerboseDefault account:_activeAccount activeUrl:_activeUrl];
+        
+        return false;
+    }
+    
+    // Create if request the subfolders
+    if (useSubFolder) {
+        
+        for (NSString *dateSubFolder in [CCUtility createNameSubFolder:assets]) {
+            
+            if(![ocNetworking automaticCreateFolderSync:[NSString stringWithFormat:@"%@/%@", folderPhotos, dateSubFolder]]) {
+                
+                // Activity
+                [CCCoreData addActivityClient:[NSString stringWithFormat:@"%@/%@", folderPhotos, dateSubFolder] fileID:@"" action:k_activityDebugActionAutomaticUpload selector:selector note:NSLocalizedString(@"_error_createsubfolders_upload_",nil) type:k_activityTypeFailure verbose:k_activityVerboseDefault account:_activeAccount activeUrl:_activeUrl];
+                
+                return false;
+            }
+        }
+    }
+    
+    return true;
 }
 
 #pragma --------------------------------------------------------------------------------------------

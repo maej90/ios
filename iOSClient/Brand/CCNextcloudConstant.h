@@ -28,41 +28,24 @@
 #define k_loginBaseUrl                  @"https://cloud.twsweb.it"
 #define k_pushNotificationServer        @"https://push-notifications.nextcloud.com"
 #define k_loginButtonLabelLink          @"https://nextcloud.com/providers"
+#define k_webLoginAutenticationProtocol @""
 
-// Capabilities Group & Service Key Share
+// Capabilities Group
 #define k_capabilitiesGroups            @"group.it.twsweb.Crypto-Cloud"
-#define k_serviceShareKeyChain          @"Crypto Cloud"
-#define k_metadataKeyedUnarchiver       @"it.twsweb.Crypto-Cloud.metadata"
-
-// Session
-#define k_download_session              @"it.twsweb.Crypto-Cloud.download.session"
-#define k_download_session_foreground   @"it.twsweb.Crypto-Cloud.download.sessionforeground"
-#define k_download_session_wwan         @"it.twsweb.Crypto-Cloud.download.sessionwwan"
-#define k_upload_session                @"it.twsweb.Crypto-Cloud.upload.session"
-#define k_upload_session_foreground     @"it.twsweb.Crypto-Cloud.upload.sessionforeground"
-#define k_upload_session_wwan           @"it.twsweb.Crypto-Cloud.upload.sessionwwan"
-
-// OperationQueue
-#define k_queue                         @"it.twsweb.Crypto-Cloud.queue"
-#define k_download_queue                @"it.twsweb.Crypto-Cloud.download.queue"
-#define k_download_queuewwan            @"it.twsweb.Crypto-Cloud.download.queuewwan"
-#define k_upload_queue                  @"it.twsweb.Crypto-Cloud.upload.queue"
-#define k_upload_queuewwan              @"it.twsweb.Crypto-Cloud.upload.queuewwan"
 
 /* Define option compiler */
 
 /*
- #define OPTION_MULTIUSER_DISABLE
- #define OPTION_CRYPTO_CLOUD_SYSTEM_DISABLE
+ #define OPTION_DISABLE_INTRO
+ #define NO_REQUEST_LOGIN_URL
+ #define LOGIN_WEB
  
  #define OPTION_FIREBASE_ENABLE
- #define OPTION_AUTOMATIC_UPLOAD_ENABLE
- #define OPTION_DISABLE_INTRO
  
- #define NO_REQUEST_LOGIN_URL
+ #define OPTION_MULTIUSER_DISABLE
+ #define OPTION_CRYPTO_CLOUD_SYSTEM_DISABLE
+ #define OPTION_AUTOMATIC_UPLOAD_ENABLE
 */
-
-#define OPTION_FIREBASE_ENABLE
 
 // -----------------------------------------------------------------------------------------------------------
 // COLOR

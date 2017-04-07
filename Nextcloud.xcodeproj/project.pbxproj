@@ -229,6 +229,7 @@
 		F73CCE261DC13788007E38D8 /* UIScrollView+EmptyDataSet.m in Sources */ = {isa = PBXBuildFile; fileRef = F73CCE241DC13788007E38D8 /* UIScrollView+EmptyDataSet.m */; };
 		F73CCE301DC13798007E38D8 /* UICKeyChainStore.m in Sources */ = {isa = PBXBuildFile; fileRef = F73CCE2A1DC13798007E38D8 /* UICKeyChainStore.m */; };
 		F73CCE321DC13798007E38D8 /* UICKeyChainStore.m in Sources */ = {isa = PBXBuildFile; fileRef = F73CCE2A1DC13798007E38D8 /* UICKeyChainStore.m */; };
+		F73F537F1E929C8500F8678D /* CCMore.swift in Sources */ = {isa = PBXBuildFile; fileRef = F73F537E1E929C8500F8678D /* CCMore.swift */; };
 		F74344171E1264EE001CC831 /* DocumentPickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F74344161E1264EE001CC831 /* DocumentPickerViewController.swift */; };
 		F74344251E1264EE001CC831 /* FileProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = F74344241E1264EE001CC831 /* FileProvider.swift */; };
 		F743444A1E126B4D001CC831 /* CCMove.m in Sources */ = {isa = PBXBuildFile; fileRef = F7D02A471C5F9E4400D6F972 /* CCMove.m */; };
@@ -549,6 +550,7 @@
 		F7B1FBC81E72E3D1001781FE /* SwiftWebVCActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7B1FBC11E72E3D1001781FE /* SwiftWebVCActivity.swift */; };
 		F7B1FBC91E72E3D1001781FE /* SwiftWebVCActivityChrome.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7B1FBC21E72E3D1001781FE /* SwiftWebVCActivityChrome.swift */; };
 		F7B1FBCA1E72E3D1001781FE /* SwiftWebVCActivitySafari.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7B1FBC31E72E3D1001781FE /* SwiftWebVCActivitySafari.swift */; };
+		F7B3A4EE1E97818A000DACE8 /* CCLoginWeb.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7B3A4ED1E97818A000DACE8 /* CCLoginWeb.swift */; };
 		F7BB14961D5B62C000ECEE68 /* libcrypto.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F70A63061D5B3467004E2AA5 /* libcrypto.a */; };
 		F7BB14971D5B62C000ECEE68 /* libssl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F70A63071D5B3467004E2AA5 /* libssl.a */; };
 		F7BE6E2F1D2D5C3B00106933 /* CCQuickActions.m in Sources */ = {isa = PBXBuildFile; fileRef = F7BE6E2C1D2D5C3B00106933 /* CCQuickActions.m */; };
@@ -1184,6 +1186,13 @@
 		F72AE40A1E67246200B3E477 /* ControlCenter.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = ControlCenter.storyboard; sourceTree = "<group>"; };
 		F73049B81CB567F000C7C320 /* NSString+TruncateToWidth.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+TruncateToWidth.h"; sourceTree = "<group>"; };
 		F73049B91CB567F000C7C320 /* NSString+TruncateToWidth.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+TruncateToWidth.m"; sourceTree = "<group>"; };
+		F73200DD1E94E4DF00AB2F01 /* es-MX */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "es-MX"; path = "es-MX.lproj/CTAssetsPicker.strings"; sourceTree = "<group>"; };
+		F73200DE1E94E4DF00AB2F01 /* es-MX */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "es-MX"; path = "es-MX.lproj/SwiftWebVC.strings"; sourceTree = "<group>"; };
+		F73200DF1E94E4E000AB2F01 /* es-MX */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "es-MX"; path = "es-MX.lproj/BKPasscodeView.strings"; sourceTree = "<group>"; };
+		F73200E01E94E4E000AB2F01 /* es-MX */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "es-MX"; path = "es-MX.lproj/Localizable.strings"; sourceTree = "<group>"; };
+		F73200E11E94E4E000AB2F01 /* es-MX */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "es-MX"; path = "es-MX.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
+		F73200E21E94E4E000AB2F01 /* es-MX */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "es-MX"; path = "es-MX.lproj/Intro.strings"; sourceTree = "<group>"; };
+		F73200E31E94E4E000AB2F01 /* es-MX */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "es-MX"; path = "es-MX.lproj/Error.strings"; sourceTree = "<group>"; };
 		F732B2D71E802B71002B7D75 /* pt-BR */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "pt-BR"; path = "pt-BR.lproj/BKPasscodeView.strings"; sourceTree = "<group>"; };
 		F732B2D81E802B71002B7D75 /* pt-BR */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "pt-BR"; path = "pt-BR.lproj/Localizable.strings"; sourceTree = "<group>"; };
 		F732B2D91E802B72002B7D75 /* pt-BR */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "pt-BR"; path = "pt-BR.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
@@ -1197,7 +1206,6 @@
 		F732B33C1E8045D7002B7D75 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/SwiftWebVC.strings; sourceTree = "<group>"; };
 		F732B33D1E8045D8002B7D75 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/SwiftWebVC.strings; sourceTree = "<group>"; };
 		F732B33E1E8045DA002B7D75 /* pl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = pl; path = pl.lproj/SwiftWebVC.strings; sourceTree = "<group>"; };
-		F732B33F1E8045DC002B7D75 /* is */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = is; path = is.lproj/SwiftWebVC.strings; sourceTree = "<group>"; };
 		F732B3401E8045DF002B7D75 /* pt-BR */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "pt-BR"; path = "pt-BR.lproj/SwiftWebVC.strings"; sourceTree = "<group>"; };
 		F732BA031D76CE1500E9878B /* CCNetworking.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCNetworking.h; sourceTree = "<group>"; };
 		F732BA041D76CE1500E9878B /* CCNetworking.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCNetworking.m; sourceTree = "<group>"; };
@@ -1314,6 +1322,7 @@
 		F73CCE281DC13798007E38D8 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		F73CCE291DC13798007E38D8 /* UICKeyChainStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UICKeyChainStore.h; sourceTree = "<group>"; };
 		F73CCE2A1DC13798007E38D8 /* UICKeyChainStore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UICKeyChainStore.m; sourceTree = "<group>"; };
+		F73F537E1E929C8500F8678D /* CCMore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CCMore.swift; sourceTree = "<group>"; };
 		F74344161E1264EE001CC831 /* DocumentPickerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentPickerViewController.swift; sourceTree = "<group>"; };
 		F74344241E1264EE001CC831 /* FileProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileProvider.swift; sourceTree = "<group>"; };
 		F74344521E126D06001CC831 /* Picker-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Picker-Bridging-Header.h"; sourceTree = "<group>"; };
@@ -1422,7 +1431,6 @@
 		F75797B31E81364100187A1B /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/CTAssetsPicker.strings; sourceTree = "<group>"; };
 		F75797B41E81364400187A1B /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/CTAssetsPicker.strings; sourceTree = "<group>"; };
 		F75797B51E81364700187A1B /* pl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = pl; path = pl.lproj/CTAssetsPicker.strings; sourceTree = "<group>"; };
-		F75797B61E81364A00187A1B /* is */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = is; path = is.lproj/CTAssetsPicker.strings; sourceTree = "<group>"; };
 		F75797B71E81364C00187A1B /* pt-BR */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "pt-BR"; path = "pt-BR.lproj/CTAssetsPicker.strings"; sourceTree = "<group>"; };
 		F75ADF441DC75FFE008A7347 /* CCLogin.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = CCLogin.storyboard; sourceTree = "<group>"; };
 		F75CDBF51DF063AD00116AD0 /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; name = .gitignore; path = ../.gitignore; sourceTree = "<group>"; };
@@ -1513,6 +1521,13 @@
 		F78088E91DD3A1DB005C5A7C /* cryptocloud.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = cryptocloud.xcdatamodel; sourceTree = "<group>"; };
 		F78316861C0CB3CA00C43975 /* CCShareUserOC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCShareUserOC.h; sourceTree = "<group>"; };
 		F78316871C0CB3CA00C43975 /* CCShareUserOC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCShareUserOC.m; sourceTree = "<group>"; };
+		F783450F1E937DFB00318AC2 /* fi-FI */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "fi-FI"; path = "fi-FI.lproj/CTAssetsPicker.strings"; sourceTree = "<group>"; };
+		F78345101E937DFB00318AC2 /* fi-FI */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "fi-FI"; path = "fi-FI.lproj/SwiftWebVC.strings"; sourceTree = "<group>"; };
+		F78345111E937DFC00318AC2 /* fi-FI */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "fi-FI"; path = "fi-FI.lproj/BKPasscodeView.strings"; sourceTree = "<group>"; };
+		F78345121E937DFC00318AC2 /* fi-FI */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "fi-FI"; path = "fi-FI.lproj/Localizable.strings"; sourceTree = "<group>"; };
+		F78345131E937DFC00318AC2 /* fi-FI */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "fi-FI"; path = "fi-FI.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
+		F78345141E937DFC00318AC2 /* fi-FI */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "fi-FI"; path = "fi-FI.lproj/Intro.strings"; sourceTree = "<group>"; };
+		F78345151E937DFC00318AC2 /* fi-FI */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "fi-FI"; path = "fi-FI.lproj/Error.strings"; sourceTree = "<group>"; };
 		F787E5581BC503ED00AFBFE1 /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
 		F78BFECA1D3111B800E513CF /* LaunchScreenNextcloud.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LaunchScreenNextcloud.xib; sourceTree = "<group>"; };
 		F78BFEDE1D31126B00E513CF /* MainInterface.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = MainInterface.storyboard; sourceTree = "<group>"; };
@@ -1548,16 +1563,12 @@
 		F7B1FBC11E72E3D1001781FE /* SwiftWebVCActivity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftWebVCActivity.swift; sourceTree = "<group>"; };
 		F7B1FBC21E72E3D1001781FE /* SwiftWebVCActivityChrome.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftWebVCActivityChrome.swift; sourceTree = "<group>"; };
 		F7B1FBC31E72E3D1001781FE /* SwiftWebVCActivitySafari.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftWebVCActivitySafari.swift; sourceTree = "<group>"; };
+		F7B3A4ED1E97818A000DACE8 /* CCLoginWeb.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CCLoginWeb.swift; sourceTree = "<group>"; };
 		F7B61E861DC13C20009E938F /* MagicalRecord.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = MagicalRecord.xcodeproj; path = "Libraries external/MagicalRecord/MagicalRecord.xcodeproj"; sourceTree = SOURCE_ROOT; };
 		F7B81D7F1C64E77F006D02DF /* CCCoreData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCCoreData.h; sourceTree = "<group>"; };
 		F7B81D801C64E77F006D02DF /* CCCoreData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCCoreData.m; sourceTree = "<group>"; };
 		F7BE6E2B1D2D5C3B00106933 /* CCQuickActions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCQuickActions.h; sourceTree = "<group>"; };
 		F7BE6E2C1D2D5C3B00106933 /* CCQuickActions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCQuickActions.m; sourceTree = "<group>"; };
-		F7BEC53E1E7981720048500A /* is */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = is; path = is.lproj/BKPasscodeView.strings; sourceTree = "<group>"; };
-		F7BEC53F1E7981720048500A /* is */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = is; path = is.lproj/Localizable.strings; sourceTree = "<group>"; };
-		F7BEC5401E7981720048500A /* is */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = is; path = is.lproj/InfoPlist.strings; sourceTree = "<group>"; };
-		F7BEC5411E7981720048500A /* is */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = is; path = is.lproj/Intro.strings; sourceTree = "<group>"; };
-		F7BEC5421E7981720048500A /* is */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = is; path = is.lproj/Error.strings; sourceTree = "<group>"; };
 		F7BF1B3F1D51E893000854F6 /* CCLogin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCLogin.h; sourceTree = "<group>"; };
 		F7BF1B401D51E893000854F6 /* CCLogin.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCLogin.m; sourceTree = "<group>"; };
 		F7BFA4541E0693EE0010E44C /* cryptocloud 5.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "cryptocloud 5.xcdatamodel"; sourceTree = "<group>"; };
@@ -1936,18 +1947,19 @@
 		F70211F31BAC56E9003FC03E /* Main */ = {
 			isa = PBXGroup;
 			children = (
+				F787E5581BC503ED00AFBFE1 /* Main.storyboard */,
 				F70211F51BAC56E9003FC03E /* CCCellMain.m */,
 				F70211F61BAC56E9003FC03E /* CCCellMain.xib */,
 				F70211F41BAC56E9003FC03E /* CCCellMain.h */,
 				F70211F71BAC56E9003FC03E /* CCCellMainTransfer.h */,
 				F70211F81BAC56E9003FC03E /* CCCellMainTransfer.m */,
 				F70211F91BAC56E9003FC03E /* CCCellMainTransfer.xib */,
+				F73B4F781E8D3BF800A97F07 /* CCMainTabBarController.swift */,
 				F70211FA1BAC56E9003FC03E /* CCMain.h */,
 				F70211FB1BAC56E9003FC03E /* CCMain.m */,
 				F7D0E65E1BC5042E008D989A /* CCDetail.h */,
-				F73B4F781E8D3BF800A97F07 /* CCMainTabBarController.swift */,
 				F7D0E65F1BC5042E008D989A /* CCDetail.m */,
-				F787E5581BC503ED00AFBFE1 /* Main.storyboard */,
+				F73F537E1E929C8500F8678D /* CCMore.swift */,
 				F78F6FAE1CC8CCB700F4EA25 /* CCSection.h */,
 				F78F6FAF1CC8CCB700F4EA25 /* CCSection.m */,
 				F792A77B1BC7C45400C9388E /* CCSplit.h */,
@@ -3197,6 +3209,7 @@
 				F75ADF441DC75FFE008A7347 /* CCLogin.storyboard */,
 				F7BF1B3F1D51E893000854F6 /* CCLogin.h */,
 				F7BF1B401D51E893000854F6 /* CCLogin.m */,
+				F7B3A4ED1E97818A000DACE8 /* CCLoginWeb.swift */,
 			);
 			path = Login;
 			sourceTree = "<group>";
@@ -3789,10 +3802,11 @@
 				ru,
 				pl,
 				es,
-				is,
 				"pt-BR",
 				tr,
 				"zh-Hans",
+				"fi-FI",
+				"es-MX",
 			);
 			mainGroup = F7F67B9F1A24D27800EE80DA;
 			productRefGroup = F7F67B9F1A24D27800EE80DA;
@@ -4334,6 +4348,7 @@
 				F7B1FBC71E72E3D1001781FE /* SwiftWebVC.swift in Sources */,
 				F77B0E111D118A16002130FE /* UIImage+Reflection.m in Sources */,
 				F708CF8B1E56E8CC00271D8B /* TableCertificates+CoreDataClass.m in Sources */,
+				F73F537F1E929C8500F8678D /* CCMore.swift in Sources */,
 				F7F54D0C1E5B14C800E19C62 /* MWTapDetectingView.m in Sources */,
 				F708CF7C1E56E8CC00271D8B /* TableGPS+CoreDataProperties.m in Sources */,
 				F708CF821E56E8CC00271D8B /* TableDirectory+CoreDataProperties.m in Sources */,
@@ -4437,6 +4452,7 @@
 				F77B0E5F1D118A16002130FE /* CCSettings.m in Sources */,
 				F77B0E601D118A16002130FE /* CGPDFDocument.m in Sources */,
 				F77B0E621D118A16002130FE /* REMenuContainerView.m in Sources */,
+				F7B3A4EE1E97818A000DACE8 /* CCLoginWeb.swift in Sources */,
 				F77B0E631D118A16002130FE /* CCShareOC.m in Sources */,
 				F73CCE261DC13788007E38D8 /* UIScrollView+EmptyDataSet.m in Sources */,
 				F70FD1C71E67552700C0FDA6 /* CCControlCenterTransfer.m in Sources */,
@@ -4613,10 +4629,11 @@
 				F7202C8E1E68171900C6D9AD /* ru */,
 				F7202C961E6817A400C6D9AD /* pl */,
 				F7202C9C1E6818B700C6D9AD /* es */,
-				F7BEC53E1E7981720048500A /* is */,
 				F732B2D71E802B71002B7D75 /* pt-BR */,
 				F76A75E21E83D42B005AFFF4 /* tr */,
 				F76A75F71E83DA6F005AFFF4 /* zh-Hans */,
+				F78345111E937DFC00318AC2 /* fi-FI */,
+				F73200DF1E94E4E000AB2F01 /* es-MX */,
 			);
 			name = BKPasscodeView.strings;
 			path = "Supporting Files";
@@ -4633,10 +4650,11 @@
 				F732B33C1E8045D7002B7D75 /* fr */,
 				F732B33D1E8045D8002B7D75 /* ru */,
 				F732B33E1E8045DA002B7D75 /* pl */,
-				F732B33F1E8045DC002B7D75 /* is */,
 				F732B3401E8045DF002B7D75 /* pt-BR */,
 				F76A75E11E83D42B005AFFF4 /* tr */,
 				F76A75F61E83DA6F005AFFF4 /* zh-Hans */,
+				F78345101E937DFB00318AC2 /* fi-FI */,
+				F73200DE1E94E4DF00AB2F01 /* es-MX */,
 			);
 			name = SwiftWebVC.strings;
 			path = "Supporting Files";
@@ -4653,10 +4671,11 @@
 				F7202C911E68171900C6D9AD /* ru */,
 				F7202C991E6817A500C6D9AD /* pl */,
 				F7202C9F1E6818B700C6D9AD /* es */,
-				F7BEC5411E7981720048500A /* is */,
 				F732B2DA1E802B72002B7D75 /* pt-BR */,
 				F76A75E51E83D42B005AFFF4 /* tr */,
 				F76A75FA1E83DA70005AFFF4 /* zh-Hans */,
+				F78345141E937DFC00318AC2 /* fi-FI */,
+				F73200E21E94E4E000AB2F01 /* es-MX */,
 			);
 			name = Intro.strings;
 			path = "Supporting Files";
@@ -4673,10 +4692,11 @@
 				F75797B31E81364100187A1B /* fr */,
 				F75797B41E81364400187A1B /* ru */,
 				F75797B51E81364700187A1B /* pl */,
-				F75797B61E81364A00187A1B /* is */,
 				F75797B71E81364C00187A1B /* pt-BR */,
 				F76A75E01E83D42B005AFFF4 /* tr */,
 				F76A75F51E83DA6F005AFFF4 /* zh-Hans */,
+				F783450F1E937DFB00318AC2 /* fi-FI */,
+				F73200DD1E94E4DF00AB2F01 /* es-MX */,
 			);
 			name = CTAssetsPicker.strings;
 			path = "Supporting Files";
@@ -4693,10 +4713,11 @@
 				F7202C921E68171A00C6D9AD /* ru */,
 				F7202C9A1E6817A500C6D9AD /* pl */,
 				F7202CA01E6818B700C6D9AD /* es */,
-				F7BEC5421E7981720048500A /* is */,
 				F732B2DB1E802B72002B7D75 /* pt-BR */,
 				F76A75E61E83D42B005AFFF4 /* tr */,
 				F76A75FB1E83DA70005AFFF4 /* zh-Hans */,
+				F78345151E937DFC00318AC2 /* fi-FI */,
+				F73200E31E94E4E000AB2F01 /* es-MX */,
 			);
 			name = Error.strings;
 			path = "Supporting Files";
@@ -4713,10 +4734,11 @@
 				F7202C901E68171900C6D9AD /* ru */,
 				F7202C981E6817A500C6D9AD /* pl */,
 				F7202C9E1E6818B700C6D9AD /* es */,
-				F7BEC5401E7981720048500A /* is */,
 				F732B2D91E802B72002B7D75 /* pt-BR */,
 				F76A75E41E83D42B005AFFF4 /* tr */,
 				F76A75F91E83DA70005AFFF4 /* zh-Hans */,
+				F78345131E937DFC00318AC2 /* fi-FI */,
+				F73200E11E94E4E000AB2F01 /* es-MX */,
 			);
 			name = InfoPlist.strings;
 			path = "Supporting Files";
@@ -4733,10 +4755,11 @@
 				F7202C8F1E68171900C6D9AD /* ru */,
 				F7202C971E6817A500C6D9AD /* pl */,
 				F7202C9D1E6818B700C6D9AD /* es */,
-				F7BEC53F1E7981720048500A /* is */,
 				F732B2D81E802B71002B7D75 /* pt-BR */,
 				F76A75E31E83D42B005AFFF4 /* tr */,
 				F76A75F81E83DA70005AFFF4 /* zh-Hans */,
+				F78345121E937DFC00318AC2 /* fi-FI */,
+				F73200E01E94E4E000AB2F01 /* es-MX */,
 			);
 			name = Localizable.strings;
 			path = "Supporting Files";

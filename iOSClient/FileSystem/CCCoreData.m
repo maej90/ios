@@ -39,17 +39,29 @@
         
     record.account = account;
     record.active = [NSNumber numberWithBool:NO];
-        
+    
+#ifdef OPTION_AUTOMATIC_UPLOAD_ENABLE
+    record.cameraUpload = [NSNumber numberWithBool:YES];
+    record.cameraUploadPhoto = [NSNumber numberWithBool:YES];
+    record.cameraUploadVideo = [NSNumber numberWithBool:YES];
+    
+    record.cameraUploadDatePhoto = [NSDate date];
+    record.cameraUploadDateVideo = [NSDate date];
+
+    record.cameraUploadWWAnPhoto = [NSNumber numberWithBool:NO];
+    record.cameraUploadWWAnVideo = [NSNumber numberWithBool:YES];
+#else
     record.cameraUpload = [NSNumber numberWithBool:NO];
     record.cameraUploadPhoto = [NSNumber numberWithBool:NO];
     record.cameraUploadVideo = [NSNumber numberWithBool:NO];
-        
-    record.cameraUploadCryptatedPhoto = [NSNumber numberWithBool:NO];
-    record.cameraUploadCryptatedVideo = [NSNumber numberWithBool:NO];
-        
+    
     record.cameraUploadWWAnPhoto = [NSNumber numberWithBool:NO];
     record.cameraUploadWWAnVideo = [NSNumber numberWithBool:NO];
-        
+#endif
+    
+    record.cameraUploadCryptatedPhoto = [NSNumber numberWithBool:NO];
+    record.cameraUploadCryptatedVideo = [NSNumber numberWithBool:NO];
+
     record.optimization = [NSDate date];
     record.password = password;
     record.url = url;
@@ -1501,18 +1513,21 @@
 #pragma mark ===== Automatic Upload =====
 #pragma --------------------------------------------------------------------------------------------
 
-+ (void)addTableAutomaticUpload:(CCMetadataNet *)metadataNet account:(NSString *)account
++ (BOOL)addTableAutomaticUpload:(CCMetadataNet *)metadataNet account:(NSString *)account
 {
     NSManagedObjectContext *context = [NSManagedObjectContext MR_context];
+    TableAutomaticUpload *record = nil;
     
-    // Delete record if exists
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(account == %@) AND (fileName == %@) AND (serverUrl == %@) AND (selector == %@)", account, metadataNet.fileName, metadataNet.serverUrl, metadataNet.selector];
-    [TableAutomaticUpload MR_deleteAllMatchingPredicate:predicate inContext:context];
+    // Record exists ?
+    record = [TableAutomaticUpload MR_findFirstWithPredicate:[NSPredicate predicateWithFormat:@"(account == %@) AND (identifier == %@)", account, metadataNet.identifier] inContext:context];
+    if (record)
+        return NO;
     
-    TableAutomaticUpload *record = [TableAutomaticUpload MR_createEntityInContext:context];
+    record = [TableAutomaticUpload MR_createEntityInContext:context];
         
     record.account = account;
     record.identifier = metadataNet.identifier;
+    record.lock = [NSNumber numberWithBool:NO];
     record.date = [NSDate date];
     record.fileName = metadataNet.fileName;
     record.selector = metadataNet.selector;
@@ -1522,18 +1537,19 @@
     record.priority = [NSNumber numberWithLong:metadataNet.priority];
         
     [context MR_saveToPersistentStoreAndWait];
+    
+    return YES;
 }
 
-+ (CCMetadataNet *)getTableAutomaticUploadForAccount:(NSString *)account selector:(NSString *)selector context:(NSManagedObjectContext *)context
++ (CCMetadataNet *)getTableAutomaticUploadForAccount:(NSString *)account selector:(NSString *)selector
 {
-    if (context == nil)
-        context = [NSManagedObjectContext MR_context];
+    NSManagedObjectContext *context = [NSManagedObjectContext MR_context];
     
-    TableAutomaticUpload *record = [TableAutomaticUpload MR_findFirstWithPredicate:[NSPredicate predicateWithFormat:@"(account == %@) AND (selector == %@)", account, selector] inContext:context];
+    TableAutomaticUpload *record = [TableAutomaticUpload MR_findFirstWithPredicate:[NSPredicate predicateWithFormat:@"(account == %@) AND (selector == %@) AND (lock == 0)", account, selector] inContext:context];
     
     if (record) {
     
-        CCMetadataNet *metadataNet = [[CCMetadataNet alloc] init];
+        CCMetadataNet *metadataNet = [CCMetadataNet new];
         
         metadataNet.action = actionUploadAsset;                             // Default
         metadataNet.identifier = record.identifier;
@@ -1545,13 +1561,40 @@
         metadataNet.session = record.session;
         metadataNet.taskStatus = k_taskStatusResume;                        // Default
         
-        [record MR_deleteEntityInContext:context];                          // Remove record
+        // LOCK
+        record.lock = [NSNumber numberWithBool:YES];
         [context MR_saveToPersistentStoreAndWait];
-        
+
         return metadataNet;
     }
     
     return nil;
+}
+
++ (void)unlockTableAutomaticUploadForAccount:(NSString *)account identifier:(NSString *)identifier
+{
+    NSManagedObjectContext *context = [NSManagedObjectContext MR_context];
+    
+    TableAutomaticUpload *record = [TableAutomaticUpload MR_findFirstWithPredicate:[NSPredicate predicateWithFormat:@"(account == %@) AND (identifier == %@)", account, identifier] inContext:context];
+    
+    if (record) {
+        
+        // UN-LOCK
+        record.lock = [NSNumber numberWithBool:NO];
+        [context MR_saveToPersistentStoreAndWait];
+    }
+}
+
++ (void)deleteTableAutomaticUploadForAccount:(NSString *)account identifier:(NSString *)identifier
+{
+    NSManagedObjectContext *context = [NSManagedObjectContext MR_context];
+    
+    TableAutomaticUpload *record = [TableAutomaticUpload MR_findFirstWithPredicate:[NSPredicate predicateWithFormat:@"(account == %@) AND (identifier == %@)", account, identifier] inContext:context];
+    
+    if (record) {
+        [record MR_deleteEntityInContext:context];
+        [context MR_saveToPersistentStoreAndWait];
+    }
 }
 
 + (NSUInteger)countTableAutomaticUploadForAccount:(NSString *)account selector:(NSString *)selector
@@ -1872,8 +1915,11 @@
     }];
 }
 
-+ (void)addActivityClient:(NSString *)file fileID:(NSString *)fileID action:(NSString *)action selector:(NSString *)selector note:(NSString *)note type:(NSString *)type verbose:(NSInteger)verbose account:(NSString *)account
++ (void)addActivityClient:(NSString *)file fileID:(NSString *)fileID action:(NSString *)action selector:(NSString *)selector note:(NSString *)note type:(NSString *)type verbose:(NSInteger)verbose account:(NSString *)account activeUrl:(NSString *)activeUrl
 {
+    note = [note stringByReplacingOccurrencesOfString:[activeUrl stringByAppendingString:webDAV] withString:@""];
+    note = [note stringByReplacingOccurrencesOfString:[k_domain_session_queue stringByAppendingString:@"."] withString:@""];
+
     [MagicalRecord saveWithBlockAndWait:^(NSManagedObjectContext *localContext) {
         
         TableActivity *record = [TableActivity MR_createEntityInContext:localContext];

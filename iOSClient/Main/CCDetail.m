@@ -443,7 +443,9 @@
 
 - (NSString *)photoBrowser:(MWPhotoBrowser *)photoBrowser titleForPhotoAtIndex:(NSUInteger)index
 {
-    NSString *titleDir = [NSString stringWithFormat:@"%lu %@ %lu", (unsigned long)index+1, NSLocalizedString(@"of", nil), (unsigned long)self.photos.count];
+    CCMetadata *metadata = [self.dataSourceImagesVideos objectAtIndex:index];
+    
+    NSString *titleDir = metadata.fileNamePrint; //[NSString stringWithFormat:@"%lu %@ %lu", (unsigned long)index+1, NSLocalizedString(@"of", nil), (unsigned long)self.photos.count];
     self.title = titleDir;
     
     return titleDir;
@@ -474,6 +476,10 @@
     // Download
     if (metadata && [[NSFileManager defaultManager] fileExistsAtPath:[NSString stringWithFormat:@"%@/%@", directory, metadata.fileID]] == NO && [metadata.session length] == 0)
         [self performSelector:@selector(downloadPhotoBrowser:) withObject:metadata afterDelay:0.1];
+    
+    // Title
+    if (metadata && !photoBrowser.isGridController)
+        self.title = metadata.fileNamePrint;
 }
 
 - (id <MWPhoto>)photoBrowser:(MWPhotoBrowser *)photoBrowser photoAtIndex:(NSUInteger)index
@@ -509,8 +515,10 @@
                     // Location ??
                     [self setLocationCaptionPhoto:photo fileID:metadata.fileID];
                     
-                    if (!photo.caption)
-                        photo.caption = metadata.fileNamePrint;
+                    if (!photo.caption) {
+                        // Remove title foto caption
+                        //photo.caption = metadata.fileNamePrint;
+                    }
                     
                     [self.photos replaceObjectAtIndex:index withObject:photo];
                     
@@ -996,11 +1004,7 @@
             
                 [self.photoBrowser reloadData];
             
-                if ([self.dataSourceImagesVideos count] == 1) {
-                
-                    self.title = [NSString stringWithFormat:@"1 %@ 1", NSLocalizedString(@"of", nil)];
-                }
-            
+                // Title
                 if ([self.dataSourceImagesVideos count] == 0) {
                 
                     self.title = @"";

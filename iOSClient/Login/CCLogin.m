@@ -59,6 +59,10 @@
         self.bottomLabel.hidden = YES;
     }
     
+#ifdef CUSTOM_BUILD
+    self.bottomLabel.hidden = YES;
+#endif
+    
 #ifdef NO_REQUEST_LOGIN_URL
     _baseUrl.text = k_loginBaseUrl;
     _imageBaseUrl.hidden = YES;
@@ -96,9 +100,7 @@
     }
     
     [self.annulla setTitle:NSLocalizedString(@"_cancel_", nil) forState:UIControlStateNormal];
-    [self.login setTitle:NSLocalizedString(@"_login_", nil) forState:UIControlStateNormal];
-    
-    [self.baseUrl setKeyboardType:UIKeyboardTypeURL];
+    [self.login setTitle:NSLocalizedString(@"_login_", nil) forState:UIControlStateNormal];    
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -114,10 +116,6 @@
 - (void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
-    
-    
-    
-    //[self showIntro];
 }
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField
@@ -143,30 +141,6 @@
     }];
     
     [super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
-}
-
-
-#pragma --------------------------------------------------------------------------------------------
-#pragma mark ===== Intro =====
-#pragma --------------------------------------------------------------------------------------------
-
-- (void)showIntro
-{
-    
-#ifdef OPTION_DISABLE_INTRO
-    [CCUtility setIntro:@"1.0"];
-#endif
-    
-    if ([CCUtility getIntro:@"1.0"] == NO) {
-        
-        _intro = [[CCIntro alloc] initWithDelegate:self delegateView:self.view];
-        [_intro showIntroCryptoCloud:0.0];
-    }
-}
-
-- (void)introDidFinish:(EAIntroView *)introView wasSkipped:(BOOL)wasSkipped
-{
-    [CCUtility setIntro:@"1.0"];
 }
 
 #pragma --------------------------------------------------------------------------------------------
@@ -291,29 +265,6 @@
         
             // Add default account
             [CCCoreData addAccount:account url:self.baseUrl.text user:self.user.text password:self.password.text];
-            
-// ---------------------------------------
-//  *** DEFAULT OPTION ***
-// ---------------------------------------
-            
-#ifdef OPTION_AUTOMATIC_UPLOAD_ENABLE
-            
-            [CCCoreData setCameraUpload:YES activeAccount:account];
-            
-            // Default parameter
-            [CCCoreData setCameraUploadFolderName:nil activeAccount:account];
-            [CCCoreData setCameraUploadFolderPath:nil activeUrl:self.baseUrl.text activeAccount:account];
-            
-            [CCCoreData setCameraUploadPhoto:YES activeAccount:account];
-            [CCCoreData setCameraUploadDatePhoto:[NSDate date]];
-
-            [CCCoreData setCameraUploadVideo:YES activeAccount:account];
-            [CCCoreData setCameraUploadWWanVideo:YES activeAccount:account];
-            [CCCoreData setCameraUploadDateVideo:[NSDate date]];
-            
-            [CCCoreData setCameraUploadCreateSubfolderActiveAccount:YES activeAccount:account];
-#endif
-            
         }
         
         TableAccount *tableAccount = [CCCoreData setActiveAccount:account];
