@@ -463,20 +463,15 @@
 
 - (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
 {
-<<<<<<< HEAD
 
     [[EngagementAgent shared] registerDeviceToken:deviceToken];
     NSLog(@"DEVICE TOKEN = %@", deviceToken);
-
-    NSString *pushToken = [[[[deviceToken description] stringByReplacingOccurrencesOfString: @"<" withString: @""] stringByReplacingOccurrencesOfString: @">" withString: @""] stringByReplacingOccurrencesOfString: @" " withString: @""];
-    NSString *pushTokenHash = [[CCCrypto sharedManager] createSHA512:pushToken];
-=======
+    
     // test
     if (self.activeAccount.length == 0)
         return;
     
     // FIREBASE registered token
->>>>>>> upstream/master
     
     [[FIRInstanceID instanceID] setAPNSToken:deviceToken type:FIRInstanceIDAPNSTokenTypeSandbox];
     NSString *pushToken = [[FIRInstanceID instanceID] token];
@@ -539,11 +534,24 @@
 
 - (void) application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler
 {
+    
+    [[EngagementAgent shared] applicationDidReceiveRemoteNotification:userInfo fetchCompletionHandler:completionHandler];
+    
     UIApplicationState state = [application applicationState];
     
-<<<<<<< HEAD
-    [[EngagementAgent shared] applicationDidReceiveRemoteNotification:userInfo fetchCompletionHandler:completionHandler];
-=======
+    if (state == UIApplicationStateInactive || state == UIApplicationStateBackground) {
+        
+        NSLog(@"Receive Notification on Inactive or Background state");
+        
+    } else {
+        
+        NSLog(@"Receive Notification on Active state");
+    }
+    
+    // If you are receiving a notification message while your app is in the background,
+    // this callback will not be fired till the user taps on the notification launching the application.
+    // TODO: Handle data of notification
+    
     // Print message ID.
     //if (userInfo[kGCMMessageIDKey]) {
     //    NSLog(@"Message ID: %@", userInfo[kGCMMessageIDKey]);
@@ -551,21 +559,6 @@
     
     // Print full message.
     NSLog(@"%@", userInfo);
-
->>>>>>> upstream/master
-    
-    if (state == UIApplicationStateBackground || (state == UIApplicationStateInactive)) {
-        
-    } else if (state == UIApplicationStateInactive) {
-        
-        // user tapped notification
-        completionHandler(UIBackgroundFetchResultNewData);
-        
-    } else {
-        
-        // app is active
-        completionHandler(UIBackgroundFetchResultNoData);
-    }
 }
 
 #pragma FIREBASE
