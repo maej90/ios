@@ -338,7 +338,7 @@
 //
 - (void)applicationWillEnterForeground:(UIApplication *)application
 {    
-    // facciamo partire il timer per il controllo delle sessioni
+    // facciamo partire il timer per il controllo delle sessioni e dei Lock
     [self.timerVerifySessionInProgress invalidate];
     self.timerVerifySessionInProgress = [NSTimer scheduledTimerWithTimeInterval:k_timerVerifySession target:self selector:@selector(verifyDownloadUploadInProgress) userInfo:nil repeats:YES];
     
@@ -456,6 +456,11 @@
 #pragma mark ===== Push Notification =====
 #pragma --------------------------------------------------------------------------------------------
 
+- (void)subscribingNextcloudServerFailure:(CCMetadataNet *)metadataNet message:(NSString *)message errorCode:(NSInteger)errorCode
+{
+    NSLog(@"[LOG] Error Subscribing Nextcloud Server %@", message);
+}
+
 - (void)application:(UIApplication *)application didRegisterUserNotificationSettings:(UIUserNotificationSettings *)notificationSettings
 {
     [application registerForRemoteNotifications];
@@ -488,7 +493,7 @@
     
     if ([devicePublicKey length] > 0 && [pushTokenHash length] > 0) {
         
-        NSLog(@"Firebase InstanceID push token: %@", pushToken);
+        NSLog(@"[LOG] Firebase InstanceID push token: %@", pushToken);
         
         CCMetadataNet *metadataNet = [[CCMetadataNet alloc] initWithAccount:app.activeAccount];
         
@@ -502,7 +507,7 @@
 
 - (void)application:(UIApplication *)application didFailToRegisterForRemoteNotificationsWithError:(NSError *)error
 {
-    NSLog(@"Error register remote notification %@", error);
+    NSLog(@"[LOG] Error register remote notification %@", error);
 }
 
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo {
@@ -511,11 +516,11 @@
     
     if (state == UIApplicationStateInactive || state == UIApplicationStateBackground) {
         
-        NSLog(@"Receive Notification on Inactive or Background state");
+        NSLog(@"[LOG] Receive Notification on Inactive or Background state");
         
     } else {
         
-        NSLog(@"Receive Notification on Active state");
+        NSLog(@"[LOG] Receive Notification on Active state");
     }
     
     // If you are receiving a notification message while your app is in the background,
@@ -528,7 +533,7 @@
     //}
     
     // Print full message.
-    NSLog(@"%@", userInfo);
+    NSLog(@"[LOG] %@", userInfo);
 
 }
 
@@ -558,7 +563,21 @@
     //}
     
     // Print full message.
-    NSLog(@"%@", userInfo);
+    NSLog(@"[LOG] %@", userInfo);
+
+    
+    if (state == UIApplicationStateBackground || (state == UIApplicationStateInactive)) {
+        
+    } else if (state == UIApplicationStateInactive) {
+        
+        // user tapped notification
+        completionHandler(UIBackgroundFetchResultNewData);
+        
+    } else {
+        
+        // app is active
+        completionHandler(UIBackgroundFetchResultNoData);
+    }
 }
 
 #pragma FIREBASE
@@ -570,7 +589,7 @@
     // should be done.
     
     NSString *refreshedToken = [[FIRInstanceID instanceID] token];
-    NSLog(@"InstanceID token: %@", refreshedToken);
+    NSLog(@"[LOG] InstanceID token: %@", refreshedToken);
     
     // Connect to FCM since connection may have failed when attempted before having a token.
     [self connectToFcm];
@@ -590,9 +609,9 @@
     
     [[FIRMessaging messaging] connectWithCompletion:^(NSError * _Nullable error) {
         if (error != nil) {
-            NSLog(@"Unable to connect to FCM. %@", error);
+            NSLog(@"[LOG] Unable to connect to FCM. %@", error);
         } else {
-            NSLog(@"Connected to FCM.");
+            NSLog(@"[LOG] Connected to FCM.");
         }
     }];
 }
@@ -601,7 +620,7 @@
 // Receive data message on iOS 10 devices while app is in the foreground.
 - (void)applicationReceivedRemoteMessage:(FIRMessagingRemoteMessage *)remoteMessage {
     // Print full message
-    NSLog(@"%@", remoteMessage.appData);
+    NSLog(@"[LOG] %@", remoteMessage.appData);
 }
 #endif
 
@@ -885,11 +904,11 @@
     item.image = [UIImage imageNamed:image_tabBarPhotos];
     item.selectedImage = [UIImage imageNamed:image_tabBarPhotos];
     
-    // Settings
-    item = [tabBarController.tabBar.items objectAtIndex: k_tabBarApplicationIndexSettings];
-    [item setTitle:NSLocalizedString(@"_settings_", nil)];
-    item.image = [UIImage imageNamed:image_tabBarSettings];
-    item.selectedImage = [UIImage imageNamed:image_tabBarSettings];
+    // More
+    item = [tabBarController.tabBar.items objectAtIndex: k_tabBarApplicationIndexMore];
+    [item setTitle:NSLocalizedString(@"_more_", nil)];
+    item.image = [UIImage imageNamed:image_tabBarMore];
+    item.selectedImage = [UIImage imageNamed:image_tabBarMore];
     
     // Plus Button
     UIImage *buttonImage = [UIImage imageNamed:image_tabBarPlus];    
@@ -1272,7 +1291,7 @@
     // Only one
     if ([[self verifyExistsInQueuesUploadSelector:selector] count] > 1)
         return;
-
+    
     // Verify num error if selectorUploadAutomaticAll
     if ([selector isEqualToString:selectorUploadAutomaticAll]) {
     
@@ -1298,13 +1317,17 @@
         PHFetchResult *result = [PHAsset fetchAssetsWithLocalIdentifiers:@[metadataNet.identifier] options:nil];
 
         if (!result.count) {
-           [CCCoreData addActivityClient:metadataNet.fileName fileID:metadataNet.identifier action:k_activityDebugActionUpload selector:selector note:@"Internal error image/video not found" type:k_activityVerboseDefault verbose:k_activityVerboseHigh account:_activeAccount activeUrl:_activeUrl];
+            
+            [CCCoreData addActivityClient:metadataNet.fileName fileID:metadataNet.identifier action:k_activityDebugActionUpload selector:selector note:@"Internal error image/video not found" type:k_activityVerboseDefault verbose:k_activityVerboseHigh account:_activeAccount activeUrl:_activeUrl];
             [CCCoreData unlockTableAutomaticUploadForAccount:_activeAccount identifier:metadataNet.identifier];
+            
             return;
         }
         
         if(![self createFolderSubFolderAutomaticUploadFolderPhotos:folderPhotos useSubFolder:useSubFolder assets:[[NSArray alloc] initWithObjects:result[0], nil] selector:selectorUploadAutomatic]) {
+            
             [CCCoreData unlockTableAutomaticUploadForAccount:_activeAccount identifier:metadataNet.identifier];
+            
             return;
         }
     }
@@ -1322,6 +1345,30 @@
         
         // Delete record on Table Automatic Upload
         [CCCoreData deleteTableAutomaticUploadForAccount:self.activeAccount identifier:metadataNet.identifier];
+    }
+}
+
+- (void)verifyLockTableAutomaticUpload
+{
+    NSArray *UploadAutomaticInQueue = [self verifyExistsInQueuesUploadSelector:selectorUploadAutomatic];
+    NSArray *UploadAutomaticAllInQueue = [self verifyExistsInQueuesUploadSelector:selectorUploadAutomaticAll];
+    NSMutableArray *UploadInQueue = [NSMutableArray new];
+    [UploadInQueue addObjectsFromArray:UploadAutomaticInQueue];
+    [UploadInQueue addObjectsFromArray:UploadAutomaticAllInQueue];
+    
+    NSArray *recordAutomaticUploadInLock = [CCCoreData getAllLockTableAutomaticUploadForAccount:_activeAccount];
+    
+    for (TableAutomaticUpload *tableAutomaticUpload in recordAutomaticUploadInLock) {
+        
+        BOOL recordFound = NO;
+        
+        for (CCMetadataNet *metadataNet in UploadInQueue) {
+            if (metadataNet.identifier == tableAutomaticUpload.identifier)
+                recordFound = YES;
+        }
+        
+        if (!recordFound)
+            [CCCoreData unlockTableAutomaticUploadForAccount:_activeAccount identifier:tableAutomaticUpload.identifier];
     }
 }
 
@@ -1352,6 +1399,9 @@
             
             [self.timerVerifySessionInProgress invalidate];
         }
+        
+        // Verify Lock in Table Automatic Upload
+        //[self verifyLockTableAutomaticUpload];
     }
 }
 

@@ -17,9 +17,10 @@ public protocol SwiftModalWebVCDelegate: class {
 public class SwiftModalWebVC: UINavigationController {
     
     public weak var delegateWeb: SwiftModalWebVCDelegate?
+    var doneButtonHide: Bool! = true
     
     public enum SwiftModalWebVCTheme {
-        case lightBlue, lightBlack, dark, loginWeb
+        case lightBlue, lightBlack, dark, custom
     }
     
     weak var webViewDelegate: UIWebViewDelegate? = nil
@@ -49,6 +50,8 @@ public class SwiftModalWebVC: UINavigationController {
         let webViewController = SwiftWebVC(aRequest: request)
         webViewController.storedStatusColor = UINavigationBar.appearance().barStyle
         
+        super.init(rootViewController: webViewController)
+
         let doneButton = UIBarButtonItem(image: SwiftWebVC.bundledImage(named: "SwiftWebVCDismiss"),
                                          style: UIBarButtonItemStyle.plain,
                                          target: webViewController,
@@ -70,13 +73,19 @@ public class SwiftModalWebVC: UINavigationController {
             webViewController.buttonColor = UIColor.white
             webViewController.titleColor = UIColor.groupTableViewBackground
             UINavigationBar.appearance().barStyle = UIBarStyle.black
-        case .loginWeb:
-            webViewController.buttonColor = UIColor.white
-            UINavigationBar.appearance().barStyle = UIBarStyle.default
-            webViewController.toobar = false
+        case .custom:
+            doneButton.tintColor = colorText
+            webViewController.buttonColor = colorText
+            webViewController.titleColor = colorText
+            
+            self.navigationBar.isTranslucent = false
+            UINavigationBar.appearance().barTintColor = color
+            
+            self.toolbar.isTranslucent = false
+            self.toolbar.barTintColor = color
         }
         
-        if (theme != .loginWeb) {
+        if (doneButtonHide == false) {
             if (UIDevice.current.userInterfaceIdiom == UIUserInterfaceIdiom.pad) {
                 webViewController.navigationItem.leftBarButtonItem = doneButton
             }
@@ -84,8 +93,6 @@ public class SwiftModalWebVC: UINavigationController {
                 webViewController.navigationItem.rightBarButtonItem = doneButton
             }
         }
-        
-        super.init(rootViewController: webViewController)
         webViewController.delegate = self
     }
     

@@ -53,7 +53,7 @@
     // Metadata
     _metadata = [CCMetadata new];
     
-    self.tableView.tableFooterView = [UIView new];
+    self.tableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.tableView.frame.size.width, 1)];
     self.tableView.separatorColor = COLOR_SEPARATOR_TABLE;
     self.tableView.emptyDataSetDelegate = self;
     self.tableView.emptyDataSetSource = self;
@@ -365,6 +365,7 @@
     CGPoint touchPoint = [sender convertPoint:CGPointZero toView:self.tableView];
     NSIndexPath *indexPath = [self.tableView indexPathForRowAtPoint:touchPoint];
     CCMetadata *metadata = [CCMetadata new];
+    UIImage *iconHeader;
     
     if ([_pageType isEqualToString:k_pageOfflineLocal]) {
         
@@ -399,16 +400,20 @@
     actionSheet.separatorColor = COLOR_SEPARATOR_TABLE;
     actionSheet.cancelButtonTitle = NSLocalizedString(@"_cancel_",nil);
     
-    // NO Directory - NO Template
-    if (metadata.directory == NO && [metadata.type isEqualToString:k_metadataType_template] == NO) {
-        
-        [actionSheet addButtonWithTitle:NSLocalizedString(@"_open_in_", nil) image:[UIImage imageNamed:image_actionSheetOpenIn] backgroundColor:[UIColor whiteColor] height: 50.0 type:AHKActionSheetButtonTypeDefault handler:^(AHKActionSheet *as) {
-                                    
-            [self.tableView setEditing:NO animated:YES];
-            [self openWith:metadata];
-        }];
-    }
+    // assegnamo l'immagine anteprima se esiste, altrimenti metti quella standars
+    if ([[NSFileManager defaultManager] fileExistsAtPath:[NSString stringWithFormat:@"%@/%@.ico", app.directoryUser, metadata.fileID]])
+        iconHeader = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/%@.ico", app.directoryUser, metadata.fileID]];
+    else
+        iconHeader = [UIImage imageNamed:metadata.iconName];
     
+    [actionSheet addButtonWithTitle: metadata.fileNamePrint
+                              image: iconHeader
+                    backgroundColor: COLOR_TABBAR
+                             height: 50.0
+                               type: AHKActionSheetButtonTypeDisabled
+                            handler: nil
+    ];
+
     // ONLY Root Favorites : Remove file/folder Favorites
     if (_serverUrl == nil && [_pageType isEqualToString:k_pageOfflineFavorites]) {
         
@@ -445,6 +450,33 @@
             [self.tableView setEditing:NO animated:YES];
                                     
             [self reloadDatasource];
+        }];
+    }
+    
+    // Share
+    if (_metadata.cryptated == NO && app.hasServerShareSupport) {
+        
+        [actionSheet addButtonWithTitle:NSLocalizedString(@"_share_", nil)
+                                  image:[UIImage imageNamed:image_actionSheetShare]
+                        backgroundColor:[UIColor whiteColor]
+                                 height: 50.0
+                                   type:AHKActionSheetButtonTypeDefault
+                                handler:^(AHKActionSheet *as) {
+                                    
+                                    // close swipe
+                                    [self setEditing:NO animated:YES];
+                                    
+                                    [app.activeMain openWindowShare:metadata];
+                                }];
+    }
+
+    // NO Directory - NO Template
+    if (metadata.directory == NO && [metadata.type isEqualToString:k_metadataType_template] == NO) {
+        
+        [actionSheet addButtonWithTitle:NSLocalizedString(@"_open_in_", nil) image:[UIImage imageNamed:image_actionSheetOpenIn] backgroundColor:[UIColor whiteColor] height: 50.0 type:AHKActionSheetButtonTypeDefault handler:^(AHKActionSheet *as) {
+            
+            [self.tableView setEditing:NO animated:YES];
+            [self openWith:metadata];
         }];
     }
     
@@ -571,6 +603,9 @@
 {
     CCCellOffline *cell = (CCCellOffline *)[tableView dequeueReusableCellWithIdentifier:@"OfflineCell" forIndexPath:indexPath];
     CCMetadata *metadata;
+    
+    // separator
+    cell.separatorInset = UIEdgeInsetsMake(0.f, 60.f, 0.f, 0.f);
     
     // Initialize
     cell.statusImageView.image = nil;

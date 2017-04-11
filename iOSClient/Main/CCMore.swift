@@ -26,52 +26,114 @@ import UIKit
 
 class CCMore: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
+    @IBOutlet weak var imageLogo: UIImageView!
+    @IBOutlet weak var imageAvatar: UIImageView!
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var labelQuota: UILabel!
     @IBOutlet weak var progressQuota: UIProgressView!
 
-    let section = ["Main", "Menu", "Settings"]
-    let items = [["A", "B", "C"], ["A", "B", "C"], ["A", "B", "C", "D"]]
+    let itemsMenuLabelText = [["_transfers_","_activity_"], ["_settings_"]]
+    let itemsMenuImage = [["transfers","activity"], ["settings"]]
     
     let appDelegate = UIApplication.shared.delegate as! AppDelegate
     
-    var externalSite: [TableExternalSites]?
+    var menuExternalSite: [TableExternalSites]?
+    var tableAccont : TableAccount?
     
     override func viewDidLoad() {
         
         super.viewDidLoad()
         
-        // This view controller itself will provide the delegate methods and row data for the table view.
-        tableView.delegate = self
-        tableView.dataSource = self
+        self.tableView.delegate = self
+        self.tableView.dataSource = self
+        
+        CCAspect.aspectNavigationControllerBar(self.navigationController?.navigationBar, encrypted: false, online: appDelegate.reachability.isReachable(), hidden: true)
+        CCAspect.aspectTabBar(self.tabBarController?.tabBar, hidden: false)
     }
     
-    override func viewDidAppear(_ animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         
-        // Get External Site
-        externalSite = CCCoreData.getAllTableExternalSites(with:  NSPredicate(format: "(account == '\(appDelegate.activeAccount!))")) as? [TableExternalSites]
+        self.tableAccont = CCCoreData.getActiveAccount()
+        self.menuExternalSite = CCCoreData.getAllTableExternalSites(with:  NSPredicate(format: "(account == '\(appDelegate.activeAccount!)')")) as? [TableExternalSites]
         
+        if (self.tableAccont != nil) {
+        
+            self.progressQuota.progress = Float((self.tableAccont?.quotaRelative)!) / 100
+        
+            let quota : String = CCUtility.transformedSize(Double((self.tableAccont?.quotaTotal)!))
+            let quotaUsed : String = CCUtility.transformedSize(Double((self.tableAccont?.quotaUsed)!))
+        
+            self.labelQuota.text = String.localizedStringWithFormat(NSLocalizedString("_quota_using_", comment: ""), quotaUsed, quota)
+        }
+        
+        // Avatar
+        let avatar : UIImage? = UIImage.init(contentsOfFile: "\(appDelegate.directoryUser!)/avatar.png")
+        
+        if (avatar != nil) {
+            
+            //avatar = CCGraphics.scale(avatar, to: CGSize(width: 50, height: 50))
+            //let avatarView : APAvatarImageView = APAvatarImageView.init(image: CCGraphics.scale(avatar, to: CGSize(width: 50, height: 50)), borderColor: UIColor.white, borderWidth: 0.5)
+            self.imageAvatar.image = avatar
+            
+        } else {
+            
+            self.imageAvatar.image = UIImage.init(named: "avatar")
+        }
+        
+        /*
+        if (avatar) {
+            
+            avatar =  [CCGraphics scaleImage:avatar toSize:CGSizeMake(50, 50)];
+            APAvatarImageView *avatarImageView = [[APAvatarImageView alloc] initWithImage:avatar borderColor:[UIColor lightGrayColor] borderWidth:0.5];
+            
+            CGSize imageSize = avatarImageView.bounds.size;
+            UIGraphicsBeginImageContextWithOptions(imageSize, NO, 0);
+            CGContextRef context = UIGraphicsGetCurrentContext();
+            [avatarImageView.layer renderInContext:context];
+            avatar = UIGraphicsGetImageFromCurrentImageContext();
+            UIGraphicsEndImageContext();
+        }
+        */
+        
+        // Aspect
+        CCAspect.aspectNavigationControllerBar(self.navigationController?.navigationBar, encrypted: false, online: appDelegate.reachability.isReachable(), hidden: true)
+        CCAspect.aspectTabBar(self.tabBarController?.tabBar, hidden: false)
+
         tableView.reloadData()
     }
     
     func numberOfSections(in tableView: UITableView) -> Int {
-        return self.section.count
+        
+        if (self.menuExternalSite == nil) {
+            return 2
+        } else {
+            return 3
+        }
+    }
+    
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        
+        var height : CGFloat
+        
+        if (section == 0) {
+            height = 10
+        } else {
+            height = 30
+        }
+
+        return height
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return self.items[section].count
+        return self.itemsMenuLabelText[section].count
     }
     
-    // create a cell for each table view row
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath) as! CCCellMore
         
-        // cell.textLabel?.text = "Section \(indexPath.section) Row \(indexPath.row)"
-        //let fruitName = fruits[indexPath.row]
-        //cell.textLabel?.text = fruitName
-        //cell.detailTextLabel?.text = "Delicious!"
-        //cell.imageView?.image = UIImage(named: fruitName)
+        cell.imageIcon?.image = UIImage.init(named: self.itemsMenuImage[indexPath.section][indexPath.row])
+        cell.labelText?.text = NSLocalizedString(self.itemsMenuLabelText[indexPath.section][indexPath.row], comment: "")
         
         return cell
     }
@@ -79,6 +141,7 @@ class CCMore: UIViewController, UITableViewDelegate, UITableViewDataSource {
     // method to run when table view cell is tapped
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         print("You tapped cell number \(indexPath.row).")
+         self.navigationController?.performSegue(withIdentifier: "segueSettings", sender: self)
     }
 }
 
