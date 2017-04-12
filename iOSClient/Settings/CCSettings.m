@@ -26,6 +26,9 @@
 #import "CCMain.h"
 #import "OCCapabilities.h"
 #import "CCSynchronize.h"
+#import "CCAdvanced.h"
+#import "CCManageCryptoCloud.h"
+#import "CCManageAccount.h"
 
 #define alertViewEsci 1
 #define alertViewAzzeraCache 2
@@ -107,15 +110,7 @@
     row = [XLFormRowDescriptor formRowDescriptorWithTag:@"changecredentials" rowType:XLFormRowDescriptorTypeButton title:NSLocalizedString(@"_change_credentials_", nil)];
     [row.cellConfig setObject:[UIFont systemFontOfSize:15.0]forKey:@"textLabel.font"];
     [row.cellConfig setObject:[UIImage imageNamed:image_settingsCredentials] forKey:@"imageView.image"];
-    row.action.formSegueIdentifier = @"CCManageAccountSegue";
-    [section addFormRow:row];
-    
-    // quota
-    row = [XLFormRowDescriptor formRowDescriptorWithTag:@"quota" rowType:XLFormRowDescriptorTypeButton title:@""];
-    [row.cellConfig setObject:[UIFont systemFontOfSize:15.0]forKey:@"textLabel.font"];
-    [row.cellConfig setObject:@(NSTextAlignmentCenter) forKey:@"textLabel.textAlignment"];
-    [row.cellConfig setObject:[UIColor blackColor] forKey:@"textLabel.textColor"];
-    row.action.formSelector = @selector(quota:);
+    row.action.viewControllerClass = [CCManageAccount class];
     [section addFormRow:row];
     
     // Section : USER INFORMATION -------------------------------------------
@@ -123,11 +118,10 @@
     section = [XLFormSectionDescriptor formSectionWithTitle:NSLocalizedString(@"_user_information_", nil)];
     [form addFormSection:section];
     
-    // Display Name
-    row = [XLFormRowDescriptor formRowDescriptorWithTag:@"userdisplayname" rowType:XLFormRowDescriptorTypeInfo];
+    // Full Name
+    row = [XLFormRowDescriptor formRowDescriptorWithTag:@"userfullname" rowType:XLFormRowDescriptorTypeInfo title:NSLocalizedString(@"_user_full_name_", nil)];
     [row.cellConfig setObject:[UIFont systemFontOfSize:15.0]forKey:@"textLabel.font"];
     [row.cellConfig setObject:[UIFont systemFontOfSize:15.0]forKey:@"detailTextLabel.font"];
-    row.cellConfig[@"textLabel.numberOfLines"] = @0;
     [section addFormRow:row];
     
     // Address
@@ -171,17 +165,6 @@
     row.action.formSegueIdentifier = @"CCManageCameraUploadSegue";
     [section addFormRow:row];
 
-    // Section OPTIMIZATIONS ------------------------------------------------
-    
-    section = [XLFormSectionDescriptor formSection];
-    [form addFormSection:section];
-    
-    row = [XLFormRowDescriptor formRowDescriptorWithTag:@"optimizations" rowType:XLFormRowDescriptorTypeButton title:NSLocalizedString(@"_optimizations_", nil)];
-    [row.cellConfig setObject:[UIFont systemFontOfSize:15.0]forKey:@"textLabel.font"];
-    [row.cellConfig setObject:[UIImage imageNamed:image_settingsOptimizations] forKey:@"imageView.image"];
-    row.action.formSegueIdentifier = @"CCManageOptimizationsSegue";
-    [section addFormRow:row];
-
     // Section FOLDERS FAVORITES OFFLINE ------------------------------------
     
     section = [XLFormSectionDescriptor formSection];
@@ -203,7 +186,7 @@
     row = [XLFormRowDescriptor formRowDescriptorWithTag:@"cryptocloud" rowType:XLFormRowDescriptorTypeButton title:NSLocalizedString(@"_crypto_cloud_system_", nil)];
     [row.cellConfig setObject:[UIFont systemFontOfSize:15.0]forKey:@"textLabel.font"];
     [row.cellConfig setObject:[UIImage imageNamed:image_settingsCryptoCloud] forKey:@"imageView.image"];
-    row.action.formSegueIdentifier = @"CCManageCryptoCloudSegue";
+    row.action.viewControllerClass = [CCManageCryptoCloud class];
     [section addFormRow:row];
 #endif
     
@@ -211,6 +194,7 @@
 
     section = [XLFormSectionDescriptor formSectionWithTitle:NSLocalizedString(@"_information_", nil)];
     [form addFormSection:section];
+    
     NSString *versionApp = [NSString stringWithFormat:@"%@.%@", [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"], [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleVersion"]];
     section.footerTitle = [NSString stringWithFormat:k_textCopyright, versionApp];
     
@@ -226,13 +210,6 @@
     };
     [section addFormRow:row];
     
-    // Help
-    row = [XLFormRowDescriptor formRowDescriptorWithTag:@"help" rowType:XLFormRowDescriptorTypeButton title:NSLocalizedString(@"_help_", nil)];
-    [row.cellConfig setObject:[UIFont systemFontOfSize:15.0]forKey:@"textLabel.font"];
-    [row.cellConfig setObject:[UIImage imageNamed:image_settingsHelp] forKey:@"imageView.image"];
-    row.action.formSegueIdentifier = @"CCManageHelpSegue";
-    [section addFormRow:row];
-
     // Contact us mail
     row = [XLFormRowDescriptor formRowDescriptorWithTag:@"sendmail" rowType:XLFormRowDescriptorTypeButton title:NSLocalizedString(@"_contact_by_email_", nil)];
     [row.cellConfig setObject:COLOR_BRAND forKey:@"textLabel.textColor"];
@@ -242,57 +219,18 @@
     row.action.formSelector = @selector(sendMail:);
     [section addFormRow:row];
    
-    // Section CLEAR CACHE -------------------------------------------------
+    // Section Advanced -------------------------------------------------
     
     section = [XLFormSectionDescriptor formSection];
     [form addFormSection:section];
     
-    // Clear cache
-    row = [XLFormRowDescriptor formRowDescriptorWithTag:@"azzeracache" rowType:XLFormRowDescriptorTypeButton title:NSLocalizedString(@"_clear_cache_no_size_", nil)];
+    // Advanced
+    row = [XLFormRowDescriptor formRowDescriptorWithTag:@"advanced" rowType:XLFormRowDescriptorTypeButton title:NSLocalizedString(@"_advanced_", nil)];
     [row.cellConfig setObject:[UIFont systemFontOfSize:15.0]forKey:@"textLabel.font"];
-    [row.cellConfig setObject:COLOR_BRAND forKey:@"textLabel.textColor"];
-    [row.cellConfig setObject:@(NSTextAlignmentLeft) forKey:@"textLabel.textAlignment"];
-    [row.cellConfig setObject:[UIImage imageNamed:image_settingsClearCache] forKey:@"imageView.image"];
-    row.action.formSelector = @selector(azzeraCache:);
-    [section addFormRow:row];
-
-    // Section EXIT --------------------------------------------------------
-    
-    section = [XLFormSectionDescriptor formSection];
-    [form addFormSection:section];
-    
-    // Exit
-    row = [XLFormRowDescriptor formRowDescriptorWithTag:@"esci" rowType:XLFormRowDescriptorTypeButton title:[CCUtility localizableBrand:@"_exit_" table:nil]];
-    [row.cellConfig setObject:@(NSTextAlignmentLeft) forKey:@"textLabel.textAlignment"];
-    [row.cellConfig setObject:[UIColor redColor] forKey:@"textLabel.textColor"];
-    [row.cellConfig setObject:[UIFont systemFontOfSize:15.0]forKey:@"textLabel.font"];
-    [row.cellConfig setObject:[UIImage imageNamed:image_settingsExit] forKey:@"imageView.image"];
-    row.action.formSelector = @selector(esci:);
+    [row.cellConfig setObject:[UIImage imageNamed:image_settingsAdvanced] forKey:@"imageView.image"];
+    row.action.viewControllerClass = [CCAdvanced class];
     [section addFormRow:row];
     
-#ifdef DEBUG
-    /*
-    // Section : debug
-    
-    section = [XLFormSectionDescriptor formSectionWithTitle:@"Debug"];
-    [form addFormSection:section];
-    
-    row = [XLFormRowDescriptor formRowDescriptorWithTag:@"adminRemoveVersion" rowType:XLFormRowDescriptorTypeButton title:@"Remove Version"];
-    [row.cellConfig setObject:[UIColor redColor] forKey:@"textLabel.textColor"];
-    [row.cellConfig setObject:[UIFont systemFontOfSize:15.0]forKey:@"textLabel.font"];
-    [row.cellConfig setObject:[UIImage imageNamed:image_settingsAdmin] forKey:@"imageView.image"];
-    row.action.formSelector = @selector(adminRemoveVersion:);
-    [section addFormRow:row];
-    
-    row = [XLFormRowDescriptor formRowDescriptorWithTag:@"quickActionPhotos" rowType:XLFormRowDescriptorTypeButton title:@"Quick Action Photos"];
-    [row.cellConfig setObject:[UIColor redColor] forKey:@"textLabel.textColor"];
-    [row.cellConfig setObject:[UIFont systemFontOfSize:15.0]forKey:@"textLabel.font"];
-    [row.cellConfig setObject:[UIImage imageNamed:image_settingsAdmin] forKey:@"imageView.image"];
-    row.action.formSelector = @selector(quickActionPhotos:);
-    [section addFormRow:row];
-    */
-#endif
-
     self.form = form;
 }
 
@@ -300,7 +238,6 @@
 {
     [super viewDidLoad];
     
-    self.hud = [[CCHud alloc] initWithView:[[[UIApplication sharedApplication] delegate] window]];
     self.title = NSLocalizedString(@"_settings_", nil);
     
     // Color
@@ -318,7 +255,6 @@
     [CCAspect aspectTabBar:self.tabBarController.tabBar hidden:NO];
     
     [self reloadForm];
-    [self recalculateSize];    
 }
 
 // E' apparsa
@@ -326,59 +262,6 @@
 {
     [super viewDidAppear:animated];
 }
-
-#pragma --------------------------------------------------------------------------------------------
-#pragma mark === TableView ===
-#pragma --------------------------------------------------------------------------------------------
-
--(UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section
-{
-    if (section == 1) {
-        
-        UIView *view = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, self.tableView.frame.size.width, 0)];
-        view.backgroundColor = [UIColor clearColor];
-        
-        UIProgressView *progressView = [[UIProgressView alloc] initWithProgressViewStyle:UIProgressViewStyleDefault];
-        progressView.frame = CGRectMake(10, -23, self.tableView.frame.size.width-10-10, 0);
-        progressView.trackTintColor = [UIColor colorWithRed:247.0/255.0 green:247.0/255.0 blue:247.0/255.0 alpha:0.6];
-        progressView.progressTintColor = COLOR_PROGRESS_BAR_QUOTA;
-        progressView.layer.borderWidth = 0.05;
-        progressView.layer.borderColor = [COLOR_BRAND CGColor];
-        CGAffineTransform transform = CGAffineTransformMakeScale(1.0f, 10.0f);
-        progressView.transform = transform;
-        progressView.progress = [_tableAccount.quotaRelative floatValue] / 100;
-        
-        [view addSubview:progressView];
-        
-        return view;
-    }
-    
-    return nil;
-}
-
-#pragma --------------------------------------------------------------------------------------------
-#pragma mark === Admin ===
-#pragma --------------------------------------------------------------------------------------------
-
-/*
-- (void)adminRemoveVersion:(XLFormRowDescriptor *)sender
-{
-    [self deselectFormRow:sender];
-    
-    [CCUtility adminRemoveVersion];
-    
-    exit(0);
-}
-
-- (void)quickActionPhotos:(XLFormRowDescriptor *)sender
-{
-    NSString *bundleId = [NSBundle mainBundle].bundleIdentifier;
-    
-     UIApplicationShortcutItem *shortcutPhotos = [[UIApplicationShortcutItem alloc] initWithType:[NSString stringWithFormat:@"%@.photos", bundleId] localizedTitle:@"" localizedSubtitle:nil icon:nil userInfo:nil];
-    
-    [app handleShortCutItem:shortcutPhotos];
-}
-*/
 
 #pragma --------------------------------------------------------------------------------------------
 #pragma mark === Chiamate dal Form ===
@@ -398,9 +281,8 @@
     XLFormRowDescriptor *rowVersionServer = [self.form formRowWithTag:@"versionserver"];
     XLFormRowDescriptor *rowUrlCloud = [self.form formRowWithTag:@"urlcloud"];
     XLFormRowDescriptor *rowUserNameCloud = [self.form formRowWithTag:@"usernamecloud"];
-    XLFormRowDescriptor *rowQuota = [self.form formRowWithTag:@"quota"];
 
-    XLFormRowDescriptor *rowUserDisplayName = [self.form formRowWithTag:@"userdisplayname"];
+    XLFormRowDescriptor *rowUserFullName = [self.form formRowWithTag:@"userfullname"];
     XLFormRowDescriptor *rowUserAddress = [self.form formRowWithTag:@"useraddress"];
     XLFormRowDescriptor *rowUserPhone = [self.form formRowWithTag:@"userphone"];
     XLFormRowDescriptor *rowUserEmail = [self.form formRowWithTag:@"useremail"];
@@ -424,47 +306,14 @@
     if ([CCUtility getOnlyLockDir]) [rowOnlyLockDir setValue:@1]; else [rowOnlyLockDir setValue:@0];
     if ([CCUtility getFavoriteOffline]) [rowFavoriteOffline setValue:@1]; else [rowFavoriteOffline setValue:@0];
     
-    // Avatar
-    UIImage *avatar = [[UIImage alloc] initWithContentsOfFile:[NSString stringWithFormat:@"%@/avatar.png", app.directoryUser]];
-    if (avatar) {
-        
-        avatar =  [CCGraphics scaleImage:avatar toSize:CGSizeMake(50, 50)];
-        APAvatarImageView *avatarImageView = [[APAvatarImageView alloc] initWithImage:avatar borderColor:[UIColor lightGrayColor] borderWidth:0.5];
-        
-        CGSize imageSize = avatarImageView.bounds.size;
-        UIGraphicsBeginImageContextWithOptions(imageSize, NO, 0);
-        CGContextRef context = UIGraphicsGetCurrentContext();
-        [avatarImageView.layer renderInContext:context];
-        avatar = UIGraphicsGetImageFromCurrentImageContext();
-        UIGraphicsEndImageContext();
-    }
-    
     _tableAccount = [CCCoreData getActiveAccount];
     
     rowVersionServer.value = [NSString stringWithFormat:@"%lu.%lu.%lu",(unsigned long)[_tableAccount.versionMajor integerValue], (unsigned long)[_tableAccount.versionMinor integerValue], (unsigned long)[_tableAccount.versionMicro integerValue]];
     rowUrlCloud.value = app.activeUrl;
     rowUserNameCloud.value = app.activeUser;
-    NSString *quota = [CCUtility transformedSize:[_tableAccount.quotaTotal doubleValue]];
-    //NSString *quotaAvailable = [CCUtility transformedSize:[_tableAccount.quotaFree doubleValue]];
-    NSString *quotaUsed = [CCUtility transformedSize:[_tableAccount.quotaUsed doubleValue]];
-    rowQuota.title = [NSString stringWithFormat:NSLocalizedString(@"_quota_using_", nil), quotaUsed, quota];
-    //rowQuota.title = [NSString stringWithFormat:@"%@ / %@ %@", quota, quotaAvailable, NSLocalizedString(@"_available_", nil)];
     
-    if (avatar || _tableAccount.displayName.length > 0) {
-        
-        rowUserDisplayName.title = _tableAccount.displayName;
-        rowUserDisplayName.disabled = @YES;
-        if (avatar)
-            [rowUserDisplayName.cellConfig setObject:avatar forKey:@"imageView.image"];
-        else
-            [rowUserDisplayName.cellConfig setObject:[UIImage imageNamed:image_avatar] forKey:@"imageView.image"];
-
-    } else {
-        
-        rowUserDisplayName.title = @"";
-        rowUserDisplayName.disabled = @NO;
-        [rowUserDisplayName.cellConfig setObject:[UIImage imageNamed:image_avatar] forKey:@"imageView.image"];
-    }
+    rowUserFullName.value = _tableAccount.displayName;
+    if ([_tableAccount.displayName isEqualToString:@""]) rowUserFullName.hidden = @YES;
     
     rowUserAddress.value = _tableAccount.address;
     if ([_tableAccount.address isEqualToString:@""]) rowUserAddress.hidden = @YES;
@@ -486,24 +335,6 @@
     [self.tableView reloadData];
     
     self.form.delegate = self;
-}
-
-- (void)recalculateSize
-{
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-
-        self.form.delegate = nil;
-
-        XLFormRowDescriptor *rowAzzeraCache = [self.form formRowWithTag:@"azzeracache"];
-
-        NSString *size = [CCUtility transformedSize:[[self getUserDirectorySize] longValue]];
-        rowAzzeraCache.title = [NSString stringWithFormat:NSLocalizedString(@"_clear_cache_", nil), size];
-        //rowAzzeraCache.title = NSLocalizedString(@"_clear_cache_no_size_", nil);
-        
-        [self.tableView performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO];
-
-        self.form.delegate = self;
-    });
 }
 
 - (void)formRowDescriptorValueHasChanged:(XLFormRowDescriptor *)rowDescriptor oldValue:(id)oldValue newValue:(id)newValue
@@ -681,37 +512,6 @@
     
 }
 
-- (void)esci:(XLFormRowDescriptor *)sender
-{
-    [self deselectFormRow:sender];
-    UIAlertView * alertView =[[UIAlertView alloc ] initWithTitle:[CCUtility localizableBrand:@"_exit_" table:nil]
-                                                         message:[CCUtility localizableBrand:@"_want_exit_" table:nil]
-                                                        delegate:self
-                                               cancelButtonTitle:NSLocalizedString(@"_cancel_", nil)
-                                               otherButtonTitles: nil];
-    alertView.tag = alertViewEsci;
-    [alertView addButtonWithTitle:NSLocalizedString(@"_proceed_", nil)];
-    [alertView show];
-}
-
-- (void)azzeraCache:(XLFormRowDescriptor *)sender
-{
-    [self deselectFormRow:sender];
-    UIAlertView * alertView =[[UIAlertView alloc ] initWithTitle:NSLocalizedString(@"_delete_cache_",nil)
-                                                         message:NSLocalizedString(@"_want_delete_cache_", nil)
-                                                        delegate:self
-                                               cancelButtonTitle:NSLocalizedString(@"_cancel_", nil)
-                                               otherButtonTitles: nil];
-    alertView.tag = alertViewAzzeraCache;
-    [alertView addButtonWithTitle:NSLocalizedString(@"_proceed_", nil)];
-    [alertView show];
-}
-
-- (void)quota:(XLFormRowDescriptor *)sender
-{
-    [self deselectFormRow:sender];
-}
-
 - (void)synchronizeFavorites
 {
     NSArray *recordsTableMetadata = [CCCoreData  getTableMetadataWithPredicate:[NSPredicate predicateWithFormat:@"(account == %@) AND (favorite == 1)", app.activeAccount] context:nil];
@@ -789,84 +589,6 @@
 - (void)sendMailEncryptPass
 {
     [CCUtility sendMailEncryptPass:[CCUtility getEmail] validateEmail:NO form:self];
-}
-
-#pragma --------------------------------------------------------------------------------------------
-#pragma mark === AlertView ===
-#pragma --------------------------------------------------------------------------------------------
-
-- (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex
-{
-    // Remove ALL
-    if (buttonIndex == 1 && alertView.tag == alertViewEsci)
-    {
-        [self.hud visibleIndeterminateHud];
-        
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.01 * NSEC_PER_SEC), dispatch_get_main_queue(), ^(void) {
-
-            [app cancelAllOperations];
-            [[CCNetworking sharedNetworking] settingSessionsDownload:YES upload:YES taskStatus:k_taskStatusCancel activeAccount:app.activeAccount activeUser:app.activeUser activeUrl:app.activeUrl];
-        
-            [[NSURLCache sharedURLCache] setMemoryCapacity:0];
-            [[NSURLCache sharedURLCache] setDiskCapacity:0];
-            
-            [[CCNetworking sharedNetworking] invalidateAndCancelAllSession];
-        
-            [CCCoreData flushAllDatabase];
-        
-            [CCUtility deleteAllChainStore];
-            
-            [self emptyDocumentsDirectory];
-        
-            [self emptyLibraryDirectory];
-        
-            [self emptyGroupApplicationSupport];
-            
-            NSArray* tmpDirectory = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:NSTemporaryDirectory() error:NULL];
-            for (NSString *file in tmpDirectory)
-                [[NSFileManager defaultManager] removeItemAtPath:[NSString stringWithFormat:@"%@%@", NSTemporaryDirectory(), file] error:NULL];
-            
-            [self.hud hideHud];
-            
-            exit(0);
-        });
-    }
-    
-    // Clear Cache
-    if (buttonIndex == 1 && alertView.tag == alertViewAzzeraCache)
-    {
-        [self.hud visibleHudTitle:NSLocalizedString(@"_remove_cache_", nil) mode:MBProgressHUDModeIndeterminate color:nil];
-        
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.01 * NSEC_PER_SEC), dispatch_get_main_queue(), ^(void) {
-            
-            [app cancelAllOperations];
-            [[CCNetworking sharedNetworking] settingSessionsDownload:YES upload:YES taskStatus:k_taskStatusCancel activeAccount:app.activeAccount activeUser:app.activeUser activeUrl:app.activeUrl];
-
-            [[NSURLCache sharedURLCache] setMemoryCapacity:0];
-            [[NSURLCache sharedURLCache] setDiskCapacity:0];
-            
-            [CCCoreData flushTableAutomaticUploadAccount:app.activeAccount selector:nil];
-            [CCCoreData flushTableDirectoryAccount:app.activeAccount];
-            [CCCoreData flushTableLocalFileAccount:app.activeAccount];
-            [CCCoreData flushTableMetadataAccount:app.activeAccount];
-            [CCCoreData flushTableActivityAccount:app.activeAccount];
-            
-            [self emptyUserDirectoryUser:app.activeUser url:app.activeUrl];
-        
-            [self emptyLocalDirectory];
-            
-            NSArray* tmpDirectory = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:NSTemporaryDirectory() error:NULL];
-            for (NSString *file in tmpDirectory) 
-                [[NSFileManager defaultManager] removeItemAtPath:[NSString stringWithFormat:@"%@%@", NSTemporaryDirectory(), file] error:NULL];
-                
-            [self recalculateSize];
-                
-            // Inizialized home
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"initializeMain" object:nil];
-                                
-            [self.hud hideHud];
-        });
-    }
 }
 
 #pragma --------------------------------------------------------------------------------------------
@@ -986,103 +708,5 @@
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
-#pragma --------------------------------------------------------------------------------------------
-#pragma mark == Utility ==
-#pragma --------------------------------------------------------------------------------------------
-
-- (void)emptyGroupApplicationSupport
-{
-    NSString *file;
-    NSURL *dirGroup = [[NSFileManager defaultManager] containerURLForSecurityApplicationGroupIdentifier:k_capabilitiesGroups];
-    NSString *dirIniziale = [[dirGroup URLByAppendingPathComponent:appApplicationSupport] path];
-    
-    NSDirectoryEnumerator *enumerator = [[NSFileManager defaultManager] enumeratorAtPath:dirIniziale];
-    
-    while (file = [enumerator nextObject])
-        [[NSFileManager defaultManager] removeItemAtPath:[NSString stringWithFormat:@"%@/%@", dirIniziale, file] error:nil];
-}
-
-- (void)emptyLibraryDirectory
-{
-    NSString *file;
-    NSString *dirIniziale;
-    
-    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSUserDomainMask, YES);
-    dirIniziale = [paths objectAtIndex:0];
-    
-    NSDirectoryEnumerator *enumerator = [[NSFileManager defaultManager] enumeratorAtPath:dirIniziale];
-    
-    while (file = [enumerator nextObject])
-        [[NSFileManager defaultManager] removeItemAtPath:[NSString stringWithFormat:@"%@/%@", dirIniziale, file] error:nil];
-}
-
-- (void)emptyDocumentsDirectory
-{
-    NSString *file;
-    NSString *dirIniziale;
-    
-    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-    dirIniziale = [paths objectAtIndex:0];
-    
-    NSDirectoryEnumerator *enumerator = [[NSFileManager defaultManager] enumeratorAtPath:dirIniziale];
-    
-    while (file = [enumerator nextObject])
-        [[NSFileManager defaultManager] removeItemAtPath:[NSString stringWithFormat:@"%@/%@", dirIniziale, file] error:nil];
-}
-
-- (void)emptyUserDirectoryUser:(NSString *)user url:(NSString *)url
-{
-    NSString *file;
-    NSString *dirIniziale;
-    
-    dirIniziale = [CCUtility getDirectoryActiveUser:user activeUrl:url];
-    
-    NSDirectoryEnumerator *enumerator = [[NSFileManager defaultManager] enumeratorAtPath:dirIniziale];
-    
-    while (file = [enumerator nextObject]) {
-        
-        NSString *ext = [[file pathExtension] lowercaseString];
-        
-        // Do not remove ICO
-        if ([ext isEqualToString:@"ico"])
-            continue;
-        
-        [[NSFileManager defaultManager] removeItemAtPath:[NSString stringWithFormat:@"%@/%@", dirIniziale, file] error:nil];
-    }
-}
-
-- (void)emptyLocalDirectory
-{
-    NSString *file;
-    NSString *dirIniziale;
-    
-    dirIniziale = [CCUtility getDirectoryLocal];
-    
-    NSDirectoryEnumerator *enumerator = [[NSFileManager defaultManager] enumeratorAtPath:dirIniziale];
-    
-    while (file = [enumerator nextObject])
-        [[NSFileManager defaultManager] removeItemAtPath:[NSString stringWithFormat:@"%@/%@", dirIniziale, file] error:nil];
-}
-
-- (NSNumber *)getUserDirectorySize
-{
-    NSString *directoryUser = [CCUtility getDirectoryActiveUser:app.activeUser activeUrl:app.activeUrl];
-    NSURL *directoryURL = [NSURL fileURLWithPath:directoryUser];
-    unsigned long long count = 0;
-    NSNumber *value = nil;
-    
-    if (! directoryURL) return 0;
-    
-    // Get dimension Document
-    for (NSURL *url in [[NSFileManager defaultManager] enumeratorAtURL:directoryURL includingPropertiesForKeys:@[NSURLFileSizeKey] options:0 errorHandler:NULL]) {
-        if ([url getResourceValue:&value forKey:NSURLFileSizeKey error:nil]) {
-            count += [value longLongValue];
-        } else {
-            return nil;
-        }
-    }
-    
-    return @(count);
-}
 
 @end

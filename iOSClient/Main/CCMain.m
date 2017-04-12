@@ -26,7 +26,7 @@
 #import "AppDelegate.h"
 #import "CCPhotosCameraUpload.h"
 #import "CCSynchronize.h"
-#import "CCControlCenterTransferCell.h"
+#import "CCTransfersCell.h"
 #import <OCCommunicationLib/OCActivity.h>
 #import <OCCommunicationLib/OCNotifications.h>
 #import <OCCommunicationLib/OCNotificationsAction.h>
@@ -188,9 +188,6 @@
     
     // Title
     [self setTitle];
-        
-    // List Transfers
-    //app.controlCenter = (CCControlCenter *)self.navigationController;
     
     // Search
     self.definesPresentationContext = YES;
@@ -475,10 +472,6 @@
 
 - (void)setTitle
 {
-    // PopGesture in progress [swipe gesture to switch between views]
-    if (app.controlCenter.isPopGesture)
-        return;
-
     // Color text self.navigationItem.title
     [CCAspect aspectNavigationControllerBar:self.navigationController.navigationBar encrypted:_isFolderEncrypted online:[app.reachability isReachable] hidden:NO];
 
@@ -623,7 +616,7 @@
     [app.reMainMenu close];
     
     // Close Menu Logo
-    [CCMenu dismissMenu];
+    [CCMenuAccount dismissMenu];
 }
 
 #pragma --------------------------------------------------------------------------------------------
@@ -1063,7 +1056,7 @@
         [CCCoreData addActivityServer:activity account:app.activeAccount];
     
     // Reload Activity Data Source
-    [app.controlCenterActivity reloadDatasource];
+    [app.activeActivity reloadDatasource];
 }
 
 - (void)getActivityServerFailure:(CCMetadataNet *)metadataNet message:(NSString *)message errorCode:(NSInteger)errorCode
@@ -2630,7 +2623,7 @@
     
     if (indexPath) {
         
-        CCControlCenterTransferCell *cell = (CCControlCenterTransferCell *)[self.tableView cellForRowAtIndexPath:indexPath];
+        CCTransfersCell *cell = (CCTransfersCell *)[self.tableView cellForRowAtIndexPath:indexPath];
         
         if (cryptated) cell.progressView.progressTintColor = COLOR_CRYPTOCLOUD;
         else cell.progressView.progressTintColor = COLOR_TEXT_ANTHRACITE;
@@ -3275,8 +3268,8 @@
             rect.origin.y = rect.origin.y + originY;
             rect.size.height = rect.size.height - originY;
             
-            [CCMenu setTitleFont:[UIFont systemFontOfSize:12.0]];
-            [CCMenu showMenuInView:self.navigationController.view fromRect:rect menuItems:menuArray withOptions:options];
+            [CCMenuAccount setTitleFont:[UIFont systemFontOfSize:12.0]];
+            [CCMenuAccount showMenuInView:self.navigationController.view fromRect:rect menuItems:menuArray withOptions:options];
         }
         
         return;
@@ -3340,8 +3333,8 @@
     rect.origin.y = rect.origin.y + originY;
     rect.size.height = rect.size.height - originY;
     
-    [CCMenu setTitleFont:[UIFont systemFontOfSize:12.0]];
-    [CCMenu showMenuInView:self.navigationController.view fromRect:rect menuItems:menuArray withOptions:options];
+    [CCMenuAccount setTitleFont:[UIFont systemFontOfSize:12.0]];
+    [CCMenuAccount showMenuInView:self.navigationController.view fromRect:rect menuItems:menuArray withOptions:options];
     
 #endif
 }
@@ -3645,7 +3638,6 @@
         
         // Backgroun reMenu (Gesture)
         [_reMenuBackgroundView removeFromSuperview];
-        [app.controlCenter disableSingleFingerTap];
         [_reMenuBackgroundView removeGestureRecognizer:_singleFingerTap];
     }];
 }
@@ -3662,7 +3654,6 @@
         
         // Backgroun reMenu & (Gesture)
         [self createReMenuBackgroundView:app.reMainMenu];
-        [app.controlCenter enableSingleFingerTap:@selector(toggleReMainMenu) target:self];
         _singleFingerTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(toggleReMainMenu)];
         [_reMenuBackgroundView addGestureRecognizer:_singleFingerTap];
     }
@@ -4805,14 +4796,14 @@
     if ([serverUrl isEqualToString:_serverUrl] == NO || _serverUrl == nil) {
         
         if ([selector isEqualToString:selectorDownloadSynchronize]) {
-            [app.controlCenterTransfer reloadDatasource];
+            [app.activeTransfers reloadDatasource];
         } else {
             CCMain *main = [app.listMainVC objectForKey:serverUrl];
             if (main) {
                 [main reloadDatasource];
             } else {
                 [self tableViewReload];
-                [app.controlCenterTransfer reloadDatasource];
+                [app.activeTransfers reloadDatasource];
             }
         }
         
@@ -4822,7 +4813,7 @@
     // Offline folder ?
     _isOfflineServerUrl = [CCCoreData isOfflineDirectoryServerUrl:_serverUrl activeAccount:app.activeAccount];
     
-    [app.controlCenterTransfer reloadDatasource];
+    [app.activeTransfers reloadDatasource];
     
     // Settaggio variabili per le ottimizzazioni
     _directoryGroupBy = [CCUtility getGroupBySettings];

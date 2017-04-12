@@ -28,12 +28,13 @@ class CCMore: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
     @IBOutlet weak var imageLogo: UIImageView!
     @IBOutlet weak var imageAvatar: UIImageView!
+    @IBOutlet weak var labelUsername: UILabel!
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var labelQuota: UILabel!
     @IBOutlet weak var progressQuota: UIProgressView!
 
-    let itemsMenuLabelText = [["_transfers_","_activity_"], ["_settings_"]]
-    let itemsMenuImage = [["transfers","activity"], ["settings"]]
+    let itemsMenuLabelText = [["_transfers_","_activity_","_local_storage_"], ["_settings_"]]
+    let itemsMenuImage = [["moreTransfers","moreActivity","moreLocalStorage"], ["moreSettings"]]
     
     let appDelegate = UIApplication.shared.delegate as! AppDelegate
     
@@ -47,8 +48,7 @@ class CCMore: UIViewController, UITableViewDelegate, UITableViewDataSource {
         self.tableView.delegate = self
         self.tableView.dataSource = self
         
-        CCAspect.aspectNavigationControllerBar(self.navigationController?.navigationBar, encrypted: false, online: appDelegate.reachability.isReachable(), hidden: true)
-        CCAspect.aspectTabBar(self.tabBarController?.tabBar, hidden: false)
+        self.imageLogo.image = UIImage.init(named: image_brandLogoMenu)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -58,6 +58,7 @@ class CCMore: UIViewController, UITableViewDelegate, UITableViewDataSource {
         
         if (self.tableAccont != nil) {
         
+            self.labelUsername.text = self.tableAccont?.user
             self.progressQuota.progress = Float((self.tableAccont?.quotaRelative)!) / 100
         
             let quota : String = CCUtility.transformedSize(Double((self.tableAccont?.quotaTotal)!))
@@ -70,30 +71,13 @@ class CCMore: UIViewController, UITableViewDelegate, UITableViewDataSource {
         let avatar : UIImage? = UIImage.init(contentsOfFile: "\(appDelegate.directoryUser!)/avatar.png")
         
         if (avatar != nil) {
-            
-            //avatar = CCGraphics.scale(avatar, to: CGSize(width: 50, height: 50))
-            //let avatarView : APAvatarImageView = APAvatarImageView.init(image: CCGraphics.scale(avatar, to: CGSize(width: 50, height: 50)), borderColor: UIColor.white, borderWidth: 0.5)
+        
             self.imageAvatar.image = avatar
             
         } else {
             
-            self.imageAvatar.image = UIImage.init(named: "avatar")
+            self.imageAvatar.image = UIImage.init(named: "moreAvatar")
         }
-        
-        /*
-        if (avatar) {
-            
-            avatar =  [CCGraphics scaleImage:avatar toSize:CGSizeMake(50, 50)];
-            APAvatarImageView *avatarImageView = [[APAvatarImageView alloc] initWithImage:avatar borderColor:[UIColor lightGrayColor] borderWidth:0.5];
-            
-            CGSize imageSize = avatarImageView.bounds.size;
-            UIGraphicsBeginImageContextWithOptions(imageSize, NO, 0);
-            CGContextRef context = UIGraphicsGetCurrentContext();
-            [avatarImageView.layer renderInContext:context];
-            avatar = UIGraphicsGetImageFromCurrentImageContext();
-            UIGraphicsEndImageContext();
-        }
-        */
         
         // Aspect
         CCAspect.aspectNavigationControllerBar(self.navigationController?.navigationBar, encrypted: false, online: appDelegate.reachability.isReachable(), hidden: true)
@@ -113,35 +97,77 @@ class CCMore: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         
-        var height : CGFloat
-        
         if (section == 0) {
-            height = 10
+            return 10
         } else {
-            height = 30
+            return 30
         }
-
-        return height
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        
         return self.itemsMenuLabelText[section].count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath) as! CCCellMore
+
+        // change color selection
+        let selectionColor : UIView = UIView.init()
+        selectionColor.backgroundColor = Constant.GlobalConstants.k_Color_SelectBackgrond
+        cell.selectedBackgroundView = selectionColor
         
+        // data
         cell.imageIcon?.image = UIImage.init(named: self.itemsMenuImage[indexPath.section][indexPath.row])
         cell.labelText?.text = NSLocalizedString(self.itemsMenuLabelText[indexPath.section][indexPath.row], comment: "")
+        
+        // Menu Function
+        if (indexPath.section == 0) {
+            cell.labelText.textColor = Constant.GlobalConstants.k_Color_Nextcloud
+        }
+        // Menu External Site
+        if (indexPath.section == 1 && self.menuExternalSite != nil) {
+            
+        }
+        // Menu Settings
+        if ((indexPath.section == 1 && self.menuExternalSite == nil) || (indexPath.section == 2 && self.menuExternalSite != nil)) {
+            cell.labelText.textColor = Constant.GlobalConstants.k_Color_GrayMenuMore
+        }
+        
         
         return cell
     }
 
     // method to run when table view cell is tapped
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        print("You tapped cell number \(indexPath.row).")
-         self.navigationController?.performSegue(withIdentifier: "segueSettings", sender: self)
+        
+        // Menu Function
+        if (indexPath.section == 0) {
+            
+            if (indexPath.row == 0) {
+                self.navigationController?.performSegue(withIdentifier: "segueTransfers", sender: self)
+            }
+            if (indexPath.row == 1) {
+                self.navigationController?.performSegue(withIdentifier: "segueActivity", sender: self)
+            }
+            if (indexPath.row == 2) {
+                self.navigationController?.performSegue(withIdentifier: "segueLocalStorage", sender: self)
+            }
+        }
+        
+        // Menu External Site
+        if (indexPath.section == 1 && self.menuExternalSite != nil) {
+            
+        }
+        
+        // Menu Settings
+        if ((indexPath.section == 1 && self.menuExternalSite == nil) || (indexPath.section == 2 && self.menuExternalSite != nil)) {
+            
+            if (indexPath.row == 0) {
+                self.navigationController?.performSegue(withIdentifier: "segueSettings", sender: self)
+            }
+        }
     }
 }
 

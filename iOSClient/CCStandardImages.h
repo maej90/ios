@@ -70,8 +70,9 @@
 
 #define image_home                              @"home"
 
-
 #define image_lock                              @"lock"
+
+#define image_NextcloudMenuChangeAccount        @"typeCloudNextcloud"
 
 #define image_MenuDirectoryOnTop                @"menuDirectoryOnTop"
 #define image_MenuGroupByAlphabetic             @"MenuGroupByAlphabetic"
@@ -114,6 +115,7 @@
 #define image_seleziona                         @"seleziona"
 #define image_saveSelectedFiles                 @"saveSelectedFiles"
 #define image_settingsActivityHigh              @"settingsActivityHigh"
+#define image_settingsAdvanced                  @"settingsAdvanced"
 #define image_settingsIntroduction              @"settingsIntroduction"
 #define image_settingsSendActivity              @"settingsSendActivity"
 #define image_settingsClearActivity             @"settingsClearActivity"
@@ -171,3 +173,4 @@
 #define image_WiFiSmall                         @"WiFiSmall"
 
 #define image_file_xls                          @"file_xls"
+
