@@ -32,11 +32,13 @@
 #define image_actionSheetFavorite               @"actionSheetFavorite"
 #define image_actionSheetLocal                  @"localStorage"
 #define image_actionSheetRemoveLocal            @"actionSheetRemoveLocal"
-#define image_activeCameraUpload                @"activeCameraUpload"
 #define image_avatar                            @"avatar"
 
 #define image_bkfull                            @"bkfull"
 #define image_bkempty                           @"bkempty"
+
+#define image_buttonBlu                         @"buttonBlu"
+#define image_buttonWhite                       @"buttonWhite"
 
 #define image_checked                           @"checked"
 
@@ -125,7 +127,6 @@
 #define image_settingsAccountModify             @"settingsAccountModify"
 #define image_settingsAccountNextcloud          @"settingsAccountNextcloud"
 #define image_settingsAcknowledgements          @"settingsAcknowledgements"
-#define image_settingsAdmin                     @"settingsAdmin"
 #define image_settingsCameraUpload              @"settingsCameraUpload"
 #define image_settingsClearCache                @"settingsClearCache"
 #define image_settingsCredentials               @"settingsCredentials"

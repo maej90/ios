@@ -835,7 +835,7 @@
     NSArray *tableDirectoryes = [self getDirectoryIDsFromBeginsWithServerUrl:serverUrl activeAccount:activeAccount];
     
     for (TableDirectory *record in tableDirectoryes) {
-        
+                
         NSArray *records = [TableMetadata MR_findAllWithPredicate:[NSPredicate predicateWithFormat:@"(account == %@) AND (directoryID == %@) AND ((session == NULL) OR (session == '')) AND (type == 'file') AND ((typeFile == %@) OR (typeFile == %@))", activeAccount, record.directoryID, k_metadataTypeFile_image, k_metadataTypeFile_video] inContext:context];
         
         if ([records count] > 0)
@@ -1049,7 +1049,12 @@
 
 + (NSArray *)getDirectoryIDsFromBeginsWithServerUrl:(NSString *)serverUrl activeAccount:(NSString *)activeAccount
 {
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(serverUrl BEGINSWITH %@) AND (account == %@)", serverUrl, activeAccount];
+    NSString *serverUrlBeginWith = serverUrl;
+    
+    if (![serverUrl hasSuffix:@"/"])
+        serverUrlBeginWith = [serverUrl stringByAppendingString:@"/"];
+        
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"((serverUrl == %@) OR (serverUrl BEGINSWITH %@)) AND (account == %@)", serverUrl, serverUrlBeginWith, activeAccount];
     
     return [TableDirectory MR_findAllWithPredicate:predicate];
 }
@@ -1519,14 +1524,14 @@
     TableAutomaticUpload *record = nil;
     
     // Record exists ?
-    record = [TableAutomaticUpload MR_findFirstWithPredicate:[NSPredicate predicateWithFormat:@"(account == %@) AND (identifier == %@)", account, metadataNet.identifier] inContext:context];
+    record = [TableAutomaticUpload MR_findFirstWithPredicate:[NSPredicate predicateWithFormat:@"(account == %@) AND (assetLocalIdentifier == %@)", account, metadataNet.assetLocalIdentifier] inContext:context];
     if (record)
         return NO;
     
     record = [TableAutomaticUpload MR_createEntityInContext:context];
         
     record.account = account;
-    record.identifier = metadataNet.identifier;
+    record.assetLocalIdentifier = metadataNet.assetLocalIdentifier;
     record.lock = [NSNumber numberWithBool:NO];
     record.date = [NSDate date];
     record.fileName = metadataNet.fileName;
@@ -1552,7 +1557,7 @@
         CCMetadataNet *metadataNet = [CCMetadataNet new];
         
         metadataNet.action = actionUploadAsset;                             // Default
-        metadataNet.identifier = record.identifier;
+        metadataNet.assetLocalIdentifier = record.assetLocalIdentifier;
         metadataNet.fileName = record.fileName;
         metadataNet.priority = [record.priority longValue];
         metadataNet.selector = record.selector;
@@ -1578,11 +1583,11 @@
     return [TableAutomaticUpload MR_findAllWithPredicate:predicate];
 }
 
-+ (void)unlockTableAutomaticUploadForAccount:(NSString *)account identifier:(NSString *)identifier
++ (void)unlockTableAutomaticUploadForAccount:(NSString *)account assetLocalIdentifier:(NSString *)assetLocalIdentifier
 {
     NSManagedObjectContext *context = [NSManagedObjectContext MR_context];
     
-    TableAutomaticUpload *record = [TableAutomaticUpload MR_findFirstWithPredicate:[NSPredicate predicateWithFormat:@"(account == %@) AND (identifier == %@)", account, identifier] inContext:context];
+    TableAutomaticUpload *record = [TableAutomaticUpload MR_findFirstWithPredicate:[NSPredicate predicateWithFormat:@"(account == %@) AND (assetLocalIdentifier == %@)", account, assetLocalIdentifier] inContext:context];
     
     if (record) {
         
@@ -1592,11 +1597,11 @@
     }
 }
 
-+ (void)deleteTableAutomaticUploadForAccount:(NSString *)account identifier:(NSString *)identifier
++ (void)deleteTableAutomaticUploadForAccount:(NSString *)account assetLocalIdentifier:(NSString *)assetLocalIdentifier
 {
     NSManagedObjectContext *context = [NSManagedObjectContext MR_context];
     
-    TableAutomaticUpload *record = [TableAutomaticUpload MR_findFirstWithPredicate:[NSPredicate predicateWithFormat:@"(account == %@) AND (identifier == %@)", account, identifier] inContext:context];
+    TableAutomaticUpload *record = [TableAutomaticUpload MR_findFirstWithPredicate:[NSPredicate predicateWithFormat:@"(account == %@) AND (assetLocalIdentifier == %@)", account, assetLocalIdentifier] inContext:context];
     
     if (record) {
         [record MR_deleteEntityInContext:context];
@@ -1977,6 +1982,7 @@
         record.lang = externalSites.lang;
         record.name = externalSites.name;
         record.url = externalSites.url;
+        record.type = externalSites.type;
     }];
 }
 
@@ -2080,7 +2086,7 @@
     if ([metadata.fileName length]) recordMetadata.fileName = metadata.fileName;
     if ([metadata.fileName length]) recordMetadata.fileNameData = [CCUtility trasformedFileNamePlistInCrypto:metadata.fileName];
     if ([metadata.fileNamePrint length]) recordMetadata.fileNamePrint = metadata.fileNamePrint;
-    if ([metadata.localIdentifier length]) recordMetadata.localIdentifier = metadata.localIdentifier;
+    if ([metadata.assetLocalIdentifier length]) recordMetadata.assetLocalIdentifier = metadata.assetLocalIdentifier;
     if ([metadata.model length]) recordMetadata.model = metadata.model;
     if ([metadata.nameCurrentDevice length]) recordMetadata.nameCurrentDevice = metadata.nameCurrentDevice;
     if ([metadata.permissions length]) recordMetadata.permissions = metadata.permissions;
@@ -2129,7 +2135,7 @@
     metadata.fileNameData = recordMetadata.fileNameData;
     metadata.fileNamePrint = recordMetadata.fileNamePrint;
     metadata.iconName = recordMetadata.iconName;
-    metadata.localIdentifier = recordMetadata.localIdentifier;
+    metadata.assetLocalIdentifier = recordMetadata.assetLocalIdentifier;
     metadata.model = recordMetadata.model;
     metadata.nameCurrentDevice = recordMetadata.nameCurrentDevice;
     metadata.permissions = recordMetadata.permissions;
@@ -2153,11 +2159,6 @@
     
     return metadata;
 }
-
-#pragma --------------------------------------------------------------------------------------------
-#pragma mark ===== Routine for migrate =====
-#pragma --------------------------------------------------------------------------------------------
-
 
 #pragma --------------------------------------------------------------------------------------------
 #pragma mark ===== Utility Database =====

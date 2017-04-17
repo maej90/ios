@@ -2,8 +2,8 @@
   "images" : [
     {
       "idiom" : "universal",
-      "scale" : "1x",
-      "filename" : "settingsCameraUpload.png"
+      "filename" : "settingsCameraUpload.png",
+      "scale" : "1x"
     },
     {
       "idiom" : "universal",
@@ -12,8 +12,8 @@
     },
     {
       "idiom" : "universal",
-      "scale" : "3x",
-      "filename" : "settingsCameraUpload@3x.png"
+      "filename" : "settingsCameraUpload@2x-1.png",
+      "scale" : "3x"
     }
   ],
   "info" : {

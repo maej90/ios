@@ -177,9 +177,11 @@
 - (void)createToolbar
 {
     _toolbar = [[UIToolbar alloc] initWithFrame:CGRectMake(0, self.view.bounds.size.height - TOOLBAR_HEIGHT, self.view.bounds.size.width, TOOLBAR_HEIGHT)];
+    
     UIBarButtonItem *flexible = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:self action:nil];
     UIBarButtonItem *fixedSpaceMini = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace target:self action:nil];
     fixedSpaceMini.width = 25;
+    
     _buttonAction = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:image_actionSheetOpenIn] style:UIBarButtonItemStylePlain target:self action:@selector(actionButtonPressed:)];
     _buttonShare  = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:image_actionSheetShare] style:UIBarButtonItemStylePlain target:self action:@selector(shareButtonPressed:)];
     _buttonDelete = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemTrash target:self action:@selector(deleteButtonPressed:)];
@@ -187,6 +189,8 @@
     [_toolbar setItems:[NSArray arrayWithObjects: flexible, _buttonDelete, fixedSpaceMini, _buttonShare, fixedSpaceMini, _buttonAction,  nil]];
     [_toolbar setAutoresizingMask:UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleTopMargin];
     
+    _toolbar.barTintColor = COLOR_TABBAR;
+
     [self.view addSubview:_toolbar];
 }
 
@@ -351,7 +355,6 @@
             [self.webView  loadHTMLString:[NSString stringWithFormat:@"<div style='font-size:%@;font-family:%@;'><pre>%@",@"20",@"Sans-Serif",dataFile] baseURL:nil];
         }
         
-        
     } else if ([ext isEqualToString:@"TXT"] ) {
         
         NSMutableURLRequest *headRequest = [NSMutableURLRequest requestWithURL:[NSURL fileURLWithPath:fileName]];
@@ -447,7 +450,7 @@
 {
     CCMetadata *metadata = [self.dataSourceImagesVideos objectAtIndex:index];
     
-    NSString *titleDir = metadata.fileNamePrint; //[NSString stringWithFormat:@"%lu %@ %lu", (unsigned long)index+1, NSLocalizedString(@"of", nil), (unsigned long)self.photos.count];
+    NSString *titleDir = metadata.fileNamePrint;
     self.title = titleDir;
     
     return titleDir;
@@ -517,11 +520,6 @@
                     // Location ??
                     [self setLocationCaptionPhoto:photo fileID:metadata.fileID];
                     
-                    if (!photo.caption) {
-                        // Remove title foto caption
-                        //photo.caption = metadata.fileNamePrint;
-                    }
-                    
                     [self.photos replaceObjectAtIndex:index withObject:photo];
                     
                 } else {
@@ -532,8 +530,7 @@
                         
                     } else {
                         
-                        NSURL *url = [[NSBundle mainBundle] URLForResource:@"loading" withExtension:@"gif"];
-                        [self.photos replaceObjectAtIndex:index withObject:[MWPhoto photoWithImage:[UIImage animatedImageWithAnimatedGIFURL:url]]];
+                        [self.photos replaceObjectAtIndex:index withObject:[MWPhoto photoWithImage:[CCUtility drawText:[NSLocalizedString(@"_loading_", nil) stringByAppendingString:@"..."] inImage:[UIImage imageNamed:image_buttonWhite] colorText:[UIColor lightGrayColor]]]];
                     }
                 }
             }
@@ -550,7 +547,6 @@
                     NSURL *url = [NSURL fileURLWithPath:toPath];
                     
                     MWPhoto *video = [MWPhoto photoWithImage:[CCGraphics thumbnailImageForVideo:url atTime:1.0]];
-                    video.caption = metadata.fileNamePrint;
                     video.videoURL = url;
                     
                     [self.photos replaceObjectAtIndex:index withObject:video];
@@ -563,8 +559,7 @@
                         
                     } else {
                         
-                        NSURL *url = [[NSBundle mainBundle] URLForResource:@"loading" withExtension:@"gif"];
-                        [self.photos replaceObjectAtIndex:index withObject:[MWPhoto photoWithImage:[UIImage animatedImageWithAnimatedGIFURL:url]]];
+                        [self.photos replaceObjectAtIndex:index withObject:[MWPhoto photoWithImage:[CCUtility drawText:[NSLocalizedString(@"_loading_", nil) stringByAppendingString:@"..."] inImage:[UIImage imageNamed:image_buttonWhite] colorText:[UIColor lightGrayColor]]]];
                     }
                 }
             }
@@ -733,7 +728,7 @@
 - (void)downloadPhotoBrowserFailure:(NSInteger)errorCode
 {
     [app messageNotification:@"_download_selected_files_" description:@"_error_download_photobrowser_" visible:YES delay:k_dismissAfterSecond type:TWMessageBarMessageTypeError];
-    
+
     [self.photoBrowser reloadData];
 }
 

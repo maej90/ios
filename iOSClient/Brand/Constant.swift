@@ -43,7 +43,11 @@ class Constant: NSObject {
         
         static let k_Color_NavigationBar_Text: UIColor = UIColor.white
         
-        static let k_Color_GrayMenuMore: UIColor = UIColor(red: 129.0/255.0, green: 129.0/255.0, blue: 129.0/255.0, alpha: 1.0)     // 
+        static let k_Color_MoreNormal: UIColor = .black
+        
+        static let k_Color_MoreSettings: UIColor = UIColor(red: 128.0/255.0, green: 128.0/255.0, blue: 128.0/255.0, alpha: 1.0)
+        
+        static let k_Color_Table_Background: UIColor = UIColor.white
         
         // Response searchList
         

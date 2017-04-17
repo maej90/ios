@@ -69,6 +69,8 @@
 {
     [super viewWillAppear:animated];
     
+    self.tableView.backgroundColor = COLOR_TABLE_BACKGROUND;
+    
     // Color
     [CCAspect aspectNavigationControllerBar:self.navigationController.navigationBar encrypted:NO online:[app.reachability isReachable] hidden:NO];
     [CCAspect aspectTabBar:self.tabBarController.tabBar hidden:NO];

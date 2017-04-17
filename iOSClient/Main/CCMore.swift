@@ -31,11 +31,13 @@ class CCMore: UIViewController, UITableViewDelegate, UITableViewDataSource {
     @IBOutlet weak var labelUsername: UILabel!
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var labelQuota: UILabel!
+    @IBOutlet weak var labelQuotaExternalSite: UILabel!
     @IBOutlet weak var progressQuota: UIProgressView!
 
-    let itemsMenuLabelText = [["_transfers_","_activity_","_local_storage_"], ["_settings_"]]
-    let itemsMenuImage = [["moreTransfers","moreActivity","moreLocalStorage"], ["moreSettings"]]
-    
+    var functionMenu = [OCExternalSites]()
+    var settingsMenu = [OCExternalSites]()
+    var quotaMenu = [OCExternalSites]()
+
     let appDelegate = UIApplication.shared.delegate as! AppDelegate
     
     var menuExternalSite: [TableExternalSites]?
@@ -45,26 +47,94 @@ class CCMore: UIViewController, UITableViewDelegate, UITableViewDataSource {
         
         super.viewDidLoad()
         
-        self.tableView.delegate = self
-        self.tableView.dataSource = self
+        tableView.delegate = self
+        tableView.dataSource = self
         
-        self.imageLogo.image = UIImage.init(named: image_brandLogoMenu)
+        tableView.separatorColor = Constant.GlobalConstants.k_Color_Seperator
+        
+        imageLogo.image = UIImage.init(named: image_brandMenuMoreBackground)
+        
+        let tap = UITapGestureRecognizer(target: self, action: #selector(tapLabelQuotaExternalSite))
+        labelQuotaExternalSite.isUserInteractionEnabled = true
+        labelQuotaExternalSite.addGestureRecognizer(tap)
     }
     
     override func viewWillAppear(_ animated: Bool) {
         
-        self.tableAccont = CCCoreData.getActiveAccount()
-        self.menuExternalSite = CCCoreData.getAllTableExternalSites(with:  NSPredicate(format: "(account == '\(appDelegate.activeAccount!)')")) as? [TableExternalSites]
+        // Clear
+        functionMenu.removeAll()
+        settingsMenu.removeAll()
+        quotaMenu.removeAll()
+        labelQuotaExternalSite.text = ""
         
-        if (self.tableAccont != nil) {
+        // Internal
+        var item = OCExternalSites.init()
+        item.name = "_transfers_"
+        item.icon = "moreTransfers"
+        item.url = "segueTransfers"
+        functionMenu.append(item)
         
-            self.labelUsername.text = self.tableAccont?.user
-            self.progressQuota.progress = Float((self.tableAccont?.quotaRelative)!) / 100
+        item = OCExternalSites.init()
+        item.name = "_activity_"
+        item.icon = "moreActivity"
+        item.url = "segueActivity"
+        functionMenu.append(item)
+        
+        item = OCExternalSites.init()
+        item.name = "_local_storage_"
+        item.icon = "moreLocalStorage"
+        item.url = "segueLocalStorage"
+        functionMenu.append(item)
+        
+        item = OCExternalSites.init()
+        item.name = "_settings_"
+        item.icon = "moreSettings"
+        item.url = "segueSettings"
+        settingsMenu.append(item)
+
+        // External 
+        menuExternalSite = CCCoreData.getAllTableExternalSites(with:  NSPredicate(format: "(account == '\(appDelegate.activeAccount!)')")) as? [TableExternalSites]
+        
+        if (menuExternalSite != nil) {
+            for table in menuExternalSite! {
+            
+                item = OCExternalSites.init()
+            
+                item.name = table.name
+                item.url = table.url
+                item.icon = table.icon
+            
+                if (table.type == "link") {
+                    item.icon = "moreExternalSite"
+                    functionMenu.append(item)
+                }
+                if (table.type == "settings") {
+                    item.icon = "moreSettingsExternalSite"
+                    settingsMenu.append(item)
+                }
+                if (table.type == "quota") {
+                    quotaMenu.append(item)
+                }
+            }
+        }
+        
+        // Quota
+        tableAccont = CCCoreData.getActiveAccount()
+        if (tableAccont != nil) {
+        
+            labelUsername.text = self.tableAccont?.user
+            progressQuota.progress = Float((self.tableAccont?.quotaRelative)!) / 100
         
             let quota : String = CCUtility.transformedSize(Double((self.tableAccont?.quotaTotal)!))
             let quotaUsed : String = CCUtility.transformedSize(Double((self.tableAccont?.quotaUsed)!))
         
-            self.labelQuota.text = String.localizedStringWithFormat(NSLocalizedString("_quota_using_", comment: ""), quotaUsed, quota)
+            labelQuota.text = String.localizedStringWithFormat(NSLocalizedString("_quota_using_", comment: ""), quotaUsed, quota)
+        }
+        
+        if (quotaMenu.count > 0) {
+            
+            let item = quotaMenu[0]
+            labelQuotaExternalSite.text = item.name
         }
         
         // Avatar
@@ -72,11 +142,11 @@ class CCMore: UIViewController, UITableViewDelegate, UITableViewDataSource {
         
         if (avatar != nil) {
         
-            self.imageAvatar.image = avatar
+            imageAvatar.image = avatar
             
         } else {
             
-            self.imageAvatar.image = UIImage.init(named: "moreAvatar")
+            imageAvatar.image = UIImage.init(named: "moreAvatar")
         }
         
         // Aspect
@@ -88,11 +158,7 @@ class CCMore: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
     func numberOfSections(in tableView: UITableView) -> Int {
         
-        if (self.menuExternalSite == nil) {
-            return 2
-        } else {
-            return 3
-        }
+        return 2
     }
     
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
@@ -106,35 +172,51 @@ class CCMore: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
-        return self.itemsMenuLabelText[section].count
+        var cont = 0
+        
+        // Menu Normal
+        if (section == 0) {
+            cont = functionMenu.count
+        }
+        // Menu Settings
+        if (section == 1) {
+            cont = settingsMenu.count
+        }
+        
+        return cont
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath) as! CCCellMore
 
-        // change color selection
+        // change color selection and disclosure indicator
         let selectionColor : UIView = UIView.init()
         selectionColor.backgroundColor = Constant.GlobalConstants.k_Color_SelectBackgrond
         cell.selectedBackgroundView = selectionColor
         
-        // data
-        cell.imageIcon?.image = UIImage.init(named: self.itemsMenuImage[indexPath.section][indexPath.row])
-        cell.labelText?.text = NSLocalizedString(self.itemsMenuLabelText[indexPath.section][indexPath.row], comment: "")
+        cell.accessoryType = UITableViewCellAccessoryType.disclosureIndicator
         
-        // Menu Function
+        // Menu Normal
         if (indexPath.section == 0) {
-            cell.labelText.textColor = Constant.GlobalConstants.k_Color_Nextcloud
-        }
-        // Menu External Site
-        if (indexPath.section == 1 && self.menuExternalSite != nil) {
             
-        }
-        // Menu Settings
-        if ((indexPath.section == 1 && self.menuExternalSite == nil) || (indexPath.section == 2 && self.menuExternalSite != nil)) {
-            cell.labelText.textColor = Constant.GlobalConstants.k_Color_GrayMenuMore
+            let item = functionMenu[indexPath.row]
+            
+            cell.imageIcon?.image = UIImage.init(named: item.icon)
+            cell.labelText?.text = NSLocalizedString(item.name, comment: "")
+            cell.labelText.textColor = Constant.GlobalConstants.k_Color_MoreNormal
+
         }
         
+        // Menu Settings
+        if (indexPath.section == 1) {
+            
+            let item = settingsMenu[indexPath.row]
+            
+            cell.imageIcon?.image = UIImage.init(named: item.icon)
+            cell.labelText?.text = NSLocalizedString(item.name, comment: "")
+            cell.labelText.textColor = Constant.GlobalConstants.k_Color_MoreSettings
+        }
         
         return cell
     }
@@ -142,30 +224,57 @@ class CCMore: UIViewController, UITableViewDelegate, UITableViewDataSource {
     // method to run when table view cell is tapped
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
+        var item: OCExternalSites = OCExternalSites.init()
+        
         // Menu Function
         if (indexPath.section == 0) {
             
-            if (indexPath.row == 0) {
-                self.navigationController?.performSegue(withIdentifier: "segueTransfers", sender: self)
-            }
-            if (indexPath.row == 1) {
-                self.navigationController?.performSegue(withIdentifier: "segueActivity", sender: self)
-            }
-            if (indexPath.row == 2) {
-                self.navigationController?.performSegue(withIdentifier: "segueLocalStorage", sender: self)
-            }
-        }
-        
-        // Menu External Site
-        if (indexPath.section == 1 && self.menuExternalSite != nil) {
-            
+            item = functionMenu[indexPath.row]
         }
         
         // Menu Settings
-        if ((indexPath.section == 1 && self.menuExternalSite == nil) || (indexPath.section == 2 && self.menuExternalSite != nil)) {
+        if (indexPath.section == 1) {
             
-            if (indexPath.row == 0) {
-                self.navigationController?.performSegue(withIdentifier: "segueSettings", sender: self)
+            item = settingsMenu[indexPath.row]
+        }
+        
+        if (item.url.contains("segue") && !item.url.contains("//")) {
+            
+            self.navigationController?.performSegue(withIdentifier: item.url, sender: self)
+        }
+        
+        if (item.url.contains("//")) {
+            
+            if (self.splitViewController?.isCollapsed)! {
+                
+                let webVC = SwiftWebVC(urlString: item.url)
+                self.navigationController?.pushViewController(webVC, animated: true)
+                self.navigationController?.navigationBar.isHidden = false
+                
+            } else {
+                
+                let webVC = SwiftModalWebVC(urlString: item.url)
+                self.present(webVC, animated: true, completion: nil)
+            }
+        }
+    }
+    
+    func tapLabelQuotaExternalSite() {
+        
+        if (quotaMenu.count > 0) {
+            
+            let item = quotaMenu[0]
+            
+            if (self.splitViewController?.isCollapsed)! {
+                
+                let webVC = SwiftWebVC(urlString: item.url)
+                self.navigationController?.pushViewController(webVC, animated: true)
+                self.navigationController?.navigationBar.isHidden = false
+                
+            } else {
+                
+                let webVC = SwiftModalWebVC(urlString: item.url)
+                self.present(webVC, animated: true, completion: nil)
             }
         }
     }

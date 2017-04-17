@@ -39,7 +39,6 @@
     NSMutableArray *_queueMetadatas;
     NSMutableArray *_selectedMetadatas;
     NSUInteger _numSelectedMetadatas;
-    BOOL _AutomaticCameraUploadInProgress;      // START/STOP new request : initStateCameraUpload
     
     CCSectionDataSourceMetadata *_sectionDataSource;
     
@@ -304,10 +303,7 @@
 {
     if ([CCCoreData getCameraUploadActiveAccount:app.activeAccount] == NO) {
     
-        UIImage *imageButton = [UIImage imageNamed:image_activeCameraUpload];
-        UIImage *image = [CCUtility drawText:NSLocalizedString(@"_activate_camera_upload_", nil) inImage:imageButton];
-        
-        return image;
+        return [CCUtility drawText:NSLocalizedString(@"_activate_camera_upload_", nil) inImage:[UIImage imageNamed:image_buttonBlu] colorText:[UIColor whiteColor]];        
         
     } else return nil;
 }
@@ -1069,8 +1065,8 @@
     CCManageAsset *manageAsset = [[CCManageAsset alloc] init];
     NSMutableArray *newItemsToUpload;
     
-    // CHECK : initStateCameraUpload
-    if (_AutomaticCameraUploadInProgress)
+    // Is loading new Asset ?
+    if (app.automaticCheckAssetInProgress)
         return;
     
     // Check Asset : NEW or FULL
@@ -1090,8 +1086,8 @@
     if ([newItemsToUpload count] == 0)
         return;
     
-    // STOP new request : initStateCameraUpload
-    _AutomaticCameraUploadInProgress = YES;
+    // STOP
+    app.automaticCheckAssetInProgress = YES;
     
     // Disable idle timer
     [[UIApplication sharedApplication] setIdleTimerDisabled: YES];
@@ -1181,7 +1177,7 @@
         CCMetadataNet *metadataNet = [[CCMetadataNet alloc] initWithAccount:app.activeAccount];
             
         metadataNet.action = actionUploadAsset;
-        metadataNet.identifier = asset.localIdentifier;
+        metadataNet.assetLocalIdentifier = asset.localIdentifier;
         if (assetsFull) {
             metadataNet.selector = selectorUploadAutomaticAll;
             metadataNet.selectorPost = selectorUploadRemovePhoto;
@@ -1198,7 +1194,7 @@
         
         if (![CCCoreData addTableAutomaticUpload:metadataNet account:app.activeAccount]) {
             
-            [CCCoreData addActivityClient:fileName fileID:metadataNet.identifier action:k_activityDebugActionAutomaticUpload selector:metadataNet.selector note:@"File already present in Table automatic Upload" type:k_activityTypeInfo verbose:k_activityVerboseHigh account:app.activeAccount activeUrl:app.activeUrl];
+            [CCCoreData addActivityClient:fileName fileID:metadataNet.assetLocalIdentifier action:k_activityDebugActionAutomaticUpload selector:metadataNet.selector note:@"File already present in Table automatic Upload" type:k_activityTypeInfo verbose:k_activityVerboseHigh account:app.activeAccount activeUrl:app.activeUrl];
             
             [self endLoadingAssets];
 
@@ -1209,19 +1205,13 @@
         NSString *media = @"";
         if (assetMediaType == PHAssetMediaTypeImage) media = @"Image";
         if (assetMediaType == PHAssetMediaTypeVideo) media = @"Video";
-        [CCCoreData addActivityClient:fileName fileID:metadataNet.identifier action:k_activityDebugActionAutomaticUpload selector:metadataNet.selector note:[NSString stringWithFormat:@"Add Automatic Upload on Session: %@, Media Type: %@, Asset Data: %@", session, media, [NSDateFormatter localizedStringFromDate:assetDate dateStyle:NSDateFormatterMediumStyle timeStyle:NSDateFormatterMediumStyle]] type:k_activityTypeInfo verbose:k_activityVerboseHigh account:app.activeAccount activeUrl:app.activeUrl];
+        [CCCoreData addActivityClient:fileName fileID:metadataNet.assetLocalIdentifier action:k_activityDebugActionAutomaticUpload selector:metadataNet.selector note:[NSString stringWithFormat:@"Add Automatic Upload on Session: %@, Media Type: %@, Asset Data: %@", session, media, [NSDateFormatter localizedStringFromDate:assetDate dateStyle:NSDateFormatterMediumStyle timeStyle:NSDateFormatterMediumStyle]] type:k_activityTypeInfo verbose:k_activityVerboseHigh account:app.activeAccount activeUrl:app.activeUrl];
         
         // Upldate Camera Upload data  
         if ([metadataNet.selector isEqualToString:selectorUploadAutomatic])
             [CCCoreData setCameraUploadDateAssetType:assetMediaType assetDate:assetDate activeAccount:app.activeAccount];
     }
     
-    // start upload
-    if (assetsFull)
-        [app performSelectorOnMainThread:@selector(loadTableAutomaticUploadForSelector:) withObject:selectorUploadAutomaticAll waitUntilDone:NO];
-    else
-        [app performSelectorOnMainThread:@selector(loadTableAutomaticUploadForSelector:) withObject:selectorUploadAutomatic waitUntilDone:NO];
-
     // end loading
     [self endLoadingAssets];
     
@@ -1233,8 +1223,8 @@
 {
     [_hud hideHud];
     
-    // START new request : initStateCameraUpload
-    _AutomaticCameraUploadInProgress = NO;
+    // START
+    app.automaticCheckAssetInProgress = NO;
     
     // Enable idle timer
     [[UIApplication sharedApplication] setIdleTimerDisabled:NO];

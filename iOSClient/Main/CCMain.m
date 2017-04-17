@@ -90,6 +90,10 @@
     NSString *_searchFileName;
     NSMutableArray *_searchResultMetadatas;
     NSString *_depth;
+    
+    // Login
+    CCLoginWeb *_loginWeb;
+    CCLogin *_loginVC;
 }
 @end
 
@@ -212,7 +216,6 @@
     
     // Hide Search Filed on Load
     [self.tableView setContentOffset:CGPointMake(0, self.searchController.searchBar.frame.size.height - self.tableView.contentOffset.y)];
-    
 }
 
 // Apparirà
@@ -450,6 +453,7 @@
 {
     _refreshControl = [UIRefreshControl new];
     _refreshControl.tintColor = COLOR_REFRESH_CONTROL;
+    _refreshControl.backgroundColor = [UIColor colorWithRed:235.0/255.0 green:235.0/255.0 blue:235.0/255.0 alpha:1.0];
     [_refreshControl addTarget:self action:@selector(refreshControlTarget) forControlEvents:UIControlEventValueChanged];
     [self setRefreshControl:_refreshControl];
 }
@@ -984,12 +988,19 @@
 - (void)changePasswordAccount
 {
 #ifdef LOGIN_WEB
-#else
-    CCLogin *loginVC = [[UIStoryboard storyboardWithName:@"CCLogin" bundle:nil] instantiateViewControllerWithIdentifier:@"CCLoginNextcloud"];
-    loginVC.delegate = self;
-    loginVC.loginType = loginModifyPasswordUser;
+    _loginWeb = [CCLoginWeb new];
+    _loginWeb.delegate = self;
+    _loginWeb.loginType = loginModifyPasswordUser;
     
-    [self presentViewController:loginVC animated:YES completion:nil];
+    dispatch_async(dispatch_get_main_queue(), ^ {
+        [_loginWeb presentModalWithDefaultTheme:self];
+    });
+#else
+    _loginVC = [[UIStoryboard storyboardWithName:@"CCLogin" bundle:nil] instantiateViewControllerWithIdentifier:@"CCLoginNextcloud"];
+    _loginVC.delegate = self;
+    _loginVC.loginType = loginModifyPasswordUser;
+    
+    [self presentViewController:_loginVC animated:YES completion:nil];
 #endif
 }
 
@@ -1536,9 +1547,9 @@
 
 - (void)uploadFileFailure:(CCMetadataNet *)metadataNet fileID:(NSString *)fileID serverUrl:(NSString *)serverUrl selector:(NSString *)selector message:(NSString *)message errorCode:(NSInteger)errorCode
 {
-    // Automatic upload
-    if([selector isEqualToString:selectorUploadAutomatic] || [selector isEqualToString:selectorUploadAutomaticAll])
-        [app performSelectorOnMainThread:@selector(loadTableAutomaticUploadForSelector:) withObject:selector waitUntilDone:NO];
+    // Automatic upload All
+    if([selector isEqualToString:selectorUploadAutomaticAll])
+        [app performSelectorOnMainThread:@selector(loadAutomaticUpload) withObject:nil waitUntilDone:NO];
     
     // Read File test do not exists
     if (errorCode == k_CCErrorFileUploadNotFound && fileID) {
@@ -1561,9 +1572,9 @@
 
 - (void)uploadFileSuccess:(CCMetadataNet *)metadataNet fileID:(NSString *)fileID serverUrl:(NSString *)serverUrl selector:(NSString *)selector selectorPost:(NSString *)selectorPost
 {
-    // Automatic upload
-    if([selector isEqualToString:selectorUploadAutomatic] || [selector isEqualToString:selectorUploadAutomaticAll])
-        [app performSelectorOnMainThread:@selector(loadTableAutomaticUploadForSelector:) withObject:selector waitUntilDone:NO];
+    // Automatic upload All
+    if([selector isEqualToString:selectorUploadAutomaticAll])
+        [app performSelectorOnMainThread:@selector(loadAutomaticUpload) withObject:nil waitUntilDone:NO];
     
     if ([selectorPost isEqualToString:selectorReadFolderForced] ) {
             
@@ -1638,7 +1649,7 @@
             CCMetadataNet *metadataNet = [[CCMetadataNet alloc] initWithAccount:app.activeAccount];
             
             metadataNet.action = actionReadFile;
-            metadataNet.identifier = asset.localIdentifier;
+            metadataNet.assetLocalIdentifier = asset.localIdentifier;
             metadataNet.cryptated = cryptated;
             metadataNet.fileName = fileName;
             metadataNet.priority = NSOperationQueuePriorityNormal;
@@ -3209,72 +3220,6 @@
     if (app.reSelectMenu.isOpen || app.reMainMenu.isOpen)
         return;
     
-    NSMutableArray *menuArray = [NSMutableArray new];
-    
-    NSArray *externalSites = [CCCoreData getAllTableExternalSitesWithPredicate:[NSPredicate predicateWithFormat:@"(account == %@)", app.activeAccount]];
-    
-    // External Sites Present
-    
-    if([externalSites count] > 0) {
-        
-        CCMenuItem *item;
-        
-        for (TableExternalSites *tableExternalSites in externalSites) {
-            
-            // NSString *currentLanguageiOS = [[NSLocale preferredLanguages] objectAtIndex:0];
-            
-            // Verify lang
-            //if ([tableExternalSites.lang isEqualToString:@""] || [tableExternalSites.lang isEqualToString:currentLanguageiOS]) {
-            
-                item = [CCMenuItem new];
-                
-                item.title = tableExternalSites.name;
-                item.image = [UIImage imageNamed:image_MenuExternalSites];
-                item.target = self;
-                item.action = @selector(goToWebVC:);
-                item.argument = tableExternalSites.url;
-                [menuArray addObject:item];
-            //}
-        }
-        
-        if ([menuArray count] > 0) {
-            
-            OptionalConfiguration options;
-            Color textColor, backgroundColor;
-            
-            textColor.R = 0;
-            textColor.G = 0;
-            textColor.B = 0;
-            
-            backgroundColor.R = 1;
-            backgroundColor.G = 1;
-            backgroundColor.B = 1;
-            
-            NSInteger originY = 60;
-            
-            options.arrowSize = 9;
-            options.marginXSpacing = 7;
-            options.marginYSpacing = 10;
-            options.intervalSpacing = 20;
-            options.menuCornerRadius = 6.5;
-            options.maskToBackground = NO;
-            options.shadowOfMenu = YES;
-            options.hasSeperatorLine = YES;
-            options.seperatorLineHasInsets = YES;
-            options.textColor = textColor;
-            options.menuBackgroundColor = backgroundColor;
-            
-            CGRect rect = self.view.frame;
-            rect.origin.y = rect.origin.y + originY;
-            rect.size.height = rect.size.height - originY;
-            
-            [CCMenuAccount setTitleFont:[UIFont systemFontOfSize:12.0]];
-            [CCMenuAccount showMenuInView:self.navigationController.view fromRect:rect menuItems:menuArray withOptions:options];
-        }
-        
-        return;
-    }
-
 #ifndef OPTION_MULTIUSER_DISABLE
     
     if ([app.netQueue operationCount] > 0 || [app.netQueueDownload operationCount] > 0 || [app.netQueueDownloadWWan operationCount] > 0 || [app.netQueueUpload operationCount] > 0 || [app.netQueueUploadWWan operationCount] > 0 || [CCCoreData countTableAutomaticUploadForAccount:app.activeAccount selector:nil] > 0) {
@@ -3284,7 +3229,7 @@
     }
     
     NSArray *listTableAccount = [CCCoreData getAllTableAccount];
-   
+    NSMutableArray *menuArray = [NSMutableArray new];
     
     for (TableAccount *record in listTableAccount) {
      
@@ -3358,20 +3303,6 @@
         
         [_ImageTitleHomeCryptoCloud setUserInteractionEnabled:YES];
     });
-}
-
-- (void)goToWebVC:(CCMenuItem *)sender
-{
-    if (self.splitViewController.isCollapsed) {
-        
-        SwiftWebVC *webVC = [[SwiftWebVC alloc] initWithUrlString:sender.argument];
-        [self.navigationController pushViewController:webVC animated:YES];
-        
-    } else {
-        
-        SwiftModalWebVC *webVC = [[SwiftModalWebVC alloc] initWithUrlString:sender.argument];
-        [self presentViewController:webVC animated:YES completion:nil];
-    }
 }
 
 #pragma --------------------------------------------------------------------------------------------
@@ -5146,9 +5077,6 @@
     // è una directory
     if (metadata.directory) {
         
-        NSString *directoryServerUrl = [CCUtility stringAppendServerUrl:serverUrl addFileName:metadata.fileNameData];
-
-        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
         cell.labelInfoFile.text = [CCUtility dateDiff:metadata.date];
         
         lunghezzaFile = @" ";
@@ -5162,17 +5090,6 @@
             cell.offlineImageView.image = [UIImage imageNamed:image_favorite];
         }
         
-        // Animation synchronized gif
-        if ([[CCSynchronize sharedSynchronize] synchronizeFolderAnimationDirectory:[[NSArray alloc] initWithObjects:directoryServerUrl, nil] setGraphicsFolder:NO]) {
-            
-            NSURL *myURL;
-            
-            if (metadata.cryptated) myURL = [[NSBundle mainBundle] URLForResource: @"synchronizedcrypto" withExtension:@"gif"];
-            else myURL = [[NSBundle mainBundle] URLForResource: @"synchronized" withExtension:@"gif"];
-            
-            //cell.synchronizedImageView.image = [UIImage animatedImageWithAnimatedGIFURL:myURL];
-        }
-
     } else {
     
         // File                

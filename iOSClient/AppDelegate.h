@@ -43,8 +43,8 @@
 
 @interface AppDelegate : UIResponder <UIApplicationDelegate, BKPasscodeLockScreenManagerDelegate, BKPasscodeViewControllerDelegate, LMMediaPlayerViewDelegate, TWMessageBarStyleSheet, CCNetworkingDelegate>
 
-// Timer 5 sec.
-@property (nonatomic, strong) NSTimer *timerVerifyProcess;
+// Timer Process
+@property (nonatomic, strong) NSTimer *timerProcess;
 
 // For LMMediaPlayerView
 @property (strong, nonatomic) UIWindow *window;
@@ -60,7 +60,7 @@
 @property double currentLatitude;
 @property double currentLongitude;
 
-// ownCloud & Nextcloud
+// Nextcloud
 @property BOOL hasServerForbiddenCharactersSupport;
 @property BOOL hasServerShareSupport;
 @property BOOL hasServerShareeSupport;
@@ -89,6 +89,9 @@
 @property (nonatomic, strong) NSMutableDictionary *sharesID;
 @property (nonatomic, strong) NSMutableDictionary *sharesLink;
 @property (nonatomic, strong) NSMutableDictionary *sharesUserAndGroup;
+
+// Check new Asset Photos/Video in progress 
+@property BOOL automaticCheckAssetInProgress;
 
 // UploadFromOtherUpp
 @property (nonatomic, strong) NSString *fileNameUpload;
@@ -160,9 +163,9 @@
 - (void)addNetworkingOperationQueue:(NSOperationQueue *)netQueue delegate:(id)delegate metadataNet:(CCMetadataNet *)metadataNet;
 
 - (NSMutableArray *)verifyExistsInQueuesDownloadSelector:(NSString *)selector;
-- (NSMutableArray *)verifyExistsInQueuesUploadSelector:(NSString *)selector;
 
-- (void)loadTableAutomaticUploadForSelector:(NSString *)selector;
+- (void)loadAutomaticUpload;
+
 - (BOOL)createFolderSubFolderAutomaticUploadFolderPhotos:(NSString *)folderPhotos useSubFolder:(BOOL)useSubFolder assets:(NSArray *)assets selector:(NSString *)selector;
 - (void)dropAutomaticUploadWithSelector:(NSString *)selector;
 

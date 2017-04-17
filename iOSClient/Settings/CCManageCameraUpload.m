@@ -180,6 +180,8 @@
 {
     [super viewWillAppear:animated];
     
+    self.tableView.backgroundColor = COLOR_TABLE_BACKGROUND;
+
     // Color
     [CCAspect aspectNavigationControllerBar:self.navigationController.navigationBar encrypted:NO online:[app.reachability isReachable] hidden:NO];
     [CCAspect aspectTabBar:self.tabBarController.tabBar hidden:NO];
@@ -465,10 +467,6 @@
     {
         case 0:
             sectionName = [CCUtility localizableBrand:@"_photo_folder_photocamera_" table:nil];
-            break;
-        case 2:
-            if ([CCCoreData getCameraUploadActiveAccount:app.activeAccount]) sectionName = [CCUtility localizableBrand:@"_upload_automatic_videos_footer_" table:nil ];
-            else sectionName = @"";
             break;
         case 3:
             if ([CCCoreData getCameraUploadActiveAccount:app.activeAccount]) sectionName = [CCUtility localizableBrand:@"_photo_folder_background_" table:nil];

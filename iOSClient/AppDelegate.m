@@ -178,16 +178,19 @@
     _netQueueUploadWWan.name = k_upload_queuewwan;
     _netQueueUploadWWan.maxConcurrentOperationCount = k_maxConcurrentOperationDownloadUpload;
     
+    // Check new Asset Photos/Video in progress  
+    _automaticCheckAssetInProgress = NO;
+    
     // Add notification change session
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(sessionChanged:) name:k_networkingSessionNotification object:nil];
         
     // Initialization Share
-    self.sharesID = [[NSMutableDictionary alloc] init];
-    self.sharesLink = [[NSMutableDictionary alloc] init];
-    self.sharesUserAndGroup = [[NSMutableDictionary alloc] init];
+    self.sharesID = [NSMutableDictionary new];
+    self.sharesLink = [NSMutableDictionary new];
+    self.sharesUserAndGroup = [NSMutableDictionary new];
     
     // Initialization Notification
-    self.listOfNotifications = [[NSMutableArray alloc] init];
+    self.listOfNotifications = [NSMutableArray new];
     
     // Verify Session in progress and Init date task
     self.sessionDateLastDownloadTasks = [NSDate date];
@@ -274,7 +277,7 @@
     }
     
     // Start timer Verify Process
-    self.timerVerifyProcess = [NSTimer scheduledTimerWithTimeInterval:5.0 target:self selector:@selector(verifyProcess) userInfo:nil repeats:YES];
+    self.timerProcess = [NSTimer scheduledTimerWithTimeInterval:k_timerProcess target:self selector:@selector(process) userInfo:nil repeats:YES];
     
     // Registration Push Notification
     UIUserNotificationType types = UIUserNotificationTypeSound | UIUserNotificationTypeBadge | UIUserNotificationTypeAlert;
@@ -304,22 +307,6 @@
     
     
     return YES;
-}
-
-//
-// L' applicazione è diventata attiva
-//
-- (void)applicationDidBecomeActive:(UIApplication *)application
-{
-    // After 5 sec. for wait load app.activeMain start if exists in Table Automatic Upload + All
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 5.0 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
-        
-        if ([CCCoreData countTableAutomaticUploadForAccount:self.activeAccount selector:selectorUploadAutomatic] > 0)
-            [self performSelectorOnMainThread:@selector(loadTableAutomaticUploadForSelector:) withObject:selectorUploadAutomatic waitUntilDone:NO];
-        
-        if ([CCCoreData countTableAutomaticUploadForAccount:self.activeAccount selector:selectorUploadAutomaticAll] > 0)
-            [self performSelectorOnMainThread:@selector(loadTableAutomaticUploadForSelector:) withObject:selectorUploadAutomaticAll waitUntilDone:NO];
-    });
 }
 
 //
@@ -416,23 +403,23 @@
 }
 
 #pragma --------------------------------------------------------------------------------------------
-#pragma mark ===== Verify Process 5 seconds =====
+#pragma mark ===== Process k_timerProcess seconds =====
 #pragma --------------------------------------------------------------------------------------------
 
-- (void)verifyProcess
+- (void)process
 {
-// BACKGROND & FOREGROUND
-    
-    [[CCSynchronize sharedSynchronize] synchronizeFolderAnimationDirectory:nil setGraphicsFolder:YES];
+    // BACKGROND & FOREGROUND
 
-// ONLY BACKGROUND
     
     if ([[UIApplication sharedApplication] applicationState] == UIApplicationStateBackground) {
-    
+
+        // ONLY BACKGROUND
        
     } else {
 
-// ONLY FOREFROUND
+        // ONLY FOREFROUND
+        
+        [app performSelectorOnMainThread:@selector(loadAutomaticUpload) withObject:nil waitUntilDone:NO];
     
     }
 }
@@ -1270,113 +1257,99 @@
     return metadatasNet;
 }
 
-- (NSMutableArray *)verifyExistsInQueuesUploadSelector:(NSString *)selector
+- (void)loadAutomaticUpload
 {
-    NSMutableArray *metadatasNet = [[NSMutableArray alloc] init];
+    CCMetadataNet *metadataNet;
     
-    for (OCnetworking *operation in [self.netQueueUpload operations])
-        if ([operation.metadataNet.selector isEqualToString:selector])
-            [metadatasNet addObject:[operation.metadataNet copy]];
-        
-    for (OCnetworking *operation in [self.netQueueUploadWWan operations])
-        if ([operation.metadataNet.selector isEqualToString:selector])
-            [metadatasNet addObject:[operation.metadataNet copy]];
-    
-    return metadatasNet;
-}
-
-- (void)loadTableAutomaticUploadForSelector:(NSString *)selector
-{
-    // Only one
-    if ([[self verifyExistsInQueuesUploadSelector:selector] count] > 1) {
+    // Is loading new Asset ?
+    if (_automaticCheckAssetInProgress)
         return;
-    }
     
-    // verify Lock pending
-    [self verifyLockTableAutomaticUpload];
-    
-    // Verify num error if selectorUploadAutomaticAll
-    if ([selector isEqualToString:selectorUploadAutomaticAll]) {
-    
-        NSUInteger count = [TableMetadata MR_countOfEntitiesWithPredicate:[NSPredicate predicateWithFormat:@"(account == %@) AND (sessionSelector == %@) AND ((sessionTaskIdentifier == %i) OR (sessionTaskIdentifierPlist == %i))", app.activeAccount, selectorUploadAutomaticAll,k_taskIdentifierError, k_taskIdentifierError]];
-                
-        if (count >= 10) {
-            
-            [app messageNotification:@"_error_" description:@"_too_errors_automatic_all_" visible:YES delay:k_dismissAfterSecond type:TWMessageBarMessageTypeError];
-            
-            return;
-        }
-    }
-    
-    // Get Record on Table Automatic Upload
-    CCMetadataNet *metadataNet = [CCCoreData getTableAutomaticUploadForAccount:self.activeAccount selector:selector];
-
-    // For UploadAutomatic create the folder for Photos & if request the subfolders
-    if ([selector isEqualToString:selectorUploadAutomatic] && metadataNet) {
-        
-        NSString *folderPhotos = [CCCoreData getCameraUploadFolderNamePathActiveAccount:app.activeAccount activeUrl:app.activeUrl];
-        BOOL useSubFolder = [CCCoreData getCameraUploadCreateSubfolderActiveAccount:app.activeAccount];
-
-        PHFetchResult *result = [PHAsset fetchAssetsWithLocalIdentifiers:@[metadataNet.identifier] options:nil];
-
-        if (!result.count) {
-            
-            [CCCoreData addActivityClient:metadataNet.fileName fileID:metadataNet.identifier action:k_activityDebugActionUpload selector:selector note:@"Internal error image/video not found" type:k_activityTypeFailure verbose:k_activityVerboseHigh account:_activeAccount activeUrl:_activeUrl];
-            
-            [CCCoreData deleteTableAutomaticUploadForAccount:_activeAccount identifier:metadataNet.identifier];
-            
-            [self updateApplicationIconBadgeNumber];
-            
-            [self performSelectorOnMainThread:@selector(loadTableAutomaticUploadForSelector:) withObject:selector waitUntilDone:NO];
-            
-            return;
-        }
-        
-        if(![self createFolderSubFolderAutomaticUploadFolderPhotos:folderPhotos useSubFolder:useSubFolder assets:[[NSArray alloc] initWithObjects:result[0], nil] selector:selectorUploadAutomatic]) {
-            
-            [CCCoreData unlockTableAutomaticUploadForAccount:_activeAccount identifier:metadataNet.identifier];
-            
-            return;
-        }
-    }
-    
-    if (metadataNet) {
-        
-        NSOperationQueue *queue;
-        
-        if ([metadataNet.session containsString:@"wwan"])
-            queue = app.netQueueUploadWWan;
-        else
-            queue = app.netQueueUpload;
-        
-        [self addNetworkingOperationQueue:queue delegate:app.activeMain metadataNet:metadataNet];
-        
-        // Delete record on Table Automatic Upload
-        [CCCoreData deleteTableAutomaticUploadForAccount:self.activeAccount identifier:metadataNet.identifier];
-    }
-}
-
-- (void)verifyLockTableAutomaticUpload
-{
-    NSArray *UploadAutomaticInQueue = [self verifyExistsInQueuesUploadSelector:selectorUploadAutomatic];
-    NSArray *UploadAutomaticAllInQueue = [self verifyExistsInQueuesUploadSelector:selectorUploadAutomaticAll];
-    NSMutableArray *UploadInQueue = [NSMutableArray new];
-    [UploadInQueue addObjectsFromArray:UploadAutomaticInQueue];
-    [UploadInQueue addObjectsFromArray:UploadAutomaticAllInQueue];
-    
+    NSArray *uploadInQueue = [CCCoreData getTableMetadataUploadAccount:app.activeAccount];
     NSArray *recordAutomaticUploadInLock = [CCCoreData getAllLockTableAutomaticUploadForAccount:_activeAccount];
     
     for (TableAutomaticUpload *tableAutomaticUpload in recordAutomaticUploadInLock) {
         
         BOOL recordFound = NO;
         
-        for (CCMetadataNet *metadataNet in UploadInQueue) {
-            if (metadataNet.identifier == tableAutomaticUpload.identifier)
+        for (CCMetadataNet *metadataNet in uploadInQueue) {
+            if (metadataNet.assetLocalIdentifier == tableAutomaticUpload.assetLocalIdentifier)
                 recordFound = YES;
         }
         
         if (!recordFound)
-            [CCCoreData unlockTableAutomaticUploadForAccount:_activeAccount identifier:tableAutomaticUpload.identifier];
+            [CCCoreData unlockTableAutomaticUploadForAccount:_activeAccount assetLocalIdentifier:tableAutomaticUpload.assetLocalIdentifier];
+    }
+
+    // ------------------------- <selectorUploadAutomatic> -------------------------
+    do {
+        metadataNet = [CCCoreData getTableAutomaticUploadForAccount:self.activeAccount selector:selectorUploadAutomatic];
+        if (metadataNet) {
+
+            // For UploadAutomatic create the folder for Photos & if request the subfolders
+            NSString *folderPhotos = [CCCoreData getCameraUploadFolderNamePathActiveAccount:app.activeAccount activeUrl:app.activeUrl];
+            BOOL useSubFolder = [CCCoreData getCameraUploadCreateSubfolderActiveAccount:app.activeAccount];
+
+            PHFetchResult *result = [PHAsset fetchAssetsWithLocalIdentifiers:@[metadataNet.assetLocalIdentifier] options:nil];
+
+            if (result.count) {
+                
+                if(![self createFolderSubFolderAutomaticUploadFolderPhotos:folderPhotos useSubFolder:useSubFolder assets:[[NSArray alloc] initWithObjects:result[0], nil] selector:selectorUploadAutomatic]) {
+                    
+                    [CCCoreData unlockTableAutomaticUploadForAccount:_activeAccount assetLocalIdentifier:metadataNet.assetLocalIdentifier];
+                    
+                    break;
+                }
+                
+                [[CCNetworking sharedNetworking] uploadFileFromAssetLocalIdentifier:metadataNet.assetLocalIdentifier fileName:metadataNet.fileName serverUrl:metadataNet.serverUrl cryptated:metadataNet.cryptated session:metadataNet.session taskStatus:metadataNet.taskStatus selector:metadataNet.selector selectorPost:metadataNet.selectorPost errorCode:metadataNet.errorCode delegate:app.activeMain];
+                
+            } else {
+                
+                [CCCoreData addActivityClient:metadataNet.fileName fileID:metadataNet.assetLocalIdentifier action:k_activityDebugActionUpload selector:selectorUploadAutomatic note:@"Internal error image/video not found [0]" type:k_activityTypeFailure verbose:k_activityVerboseHigh account:_activeAccount activeUrl:_activeUrl];
+                
+                [CCCoreData deleteTableAutomaticUploadForAccount:_activeAccount assetLocalIdentifier:metadataNet.assetLocalIdentifier];
+                
+                [self updateApplicationIconBadgeNumber];
+            }
+        }
+        
+    } while (metadataNet);
+    
+    // ------------------------- <selectorUploadAutomaticAll> -------------------------
+    
+    // Verify Max Upload Automatic All
+    NSUInteger count = [TableMetadata MR_countOfEntitiesWithPredicate:[NSPredicate predicateWithFormat:@"(account == %@) AND (sessionSelector == %@) AND ((sessionTaskIdentifier > 0) OR (sessionTaskIdentifierPlist > 0))", app.activeAccount, selectorUploadAutomaticAll]];
+    
+    if (count > 1)
+        return;
+    
+    // Verify num error
+    NSUInteger errorCount = [TableMetadata MR_countOfEntitiesWithPredicate:[NSPredicate predicateWithFormat:@"(account == %@) AND (sessionSelector == %@) AND ((sessionTaskIdentifier == %i) OR (sessionTaskIdentifierPlist == %i))", app.activeAccount, selectorUploadAutomaticAll,k_taskIdentifierError, k_taskIdentifierError]];
+    
+    if (errorCount >= 10) {
+        
+        [app messageNotification:@"_error_" description:@"_too_errors_automatic_all_" visible:YES delay:k_dismissAfterSecond type:TWMessageBarMessageTypeError];
+        
+        return;
+    }
+    
+    metadataNet = [CCCoreData getTableAutomaticUploadForAccount:self.activeAccount selector:selectorUploadAutomaticAll];
+    if (metadataNet) {
+        
+        PHFetchResult *result = [PHAsset fetchAssetsWithLocalIdentifiers:@[metadataNet.assetLocalIdentifier] options:nil];
+        
+        if (result.count) {
+            
+            [[CCNetworking sharedNetworking] uploadFileFromAssetLocalIdentifier:metadataNet.assetLocalIdentifier fileName:metadataNet.fileName serverUrl:metadataNet.serverUrl cryptated:metadataNet.cryptated session:metadataNet.session taskStatus:metadataNet.taskStatus selector:metadataNet.selector selectorPost:metadataNet.selectorPost errorCode:metadataNet.errorCode delegate:app.activeMain];
+            
+        } else {
+            
+            [CCCoreData addActivityClient:metadataNet.fileName fileID:metadataNet.assetLocalIdentifier action:k_activityDebugActionUpload selector:selectorUploadAutomatic note:@"Internal error image/video not found [0]" type:k_activityTypeFailure verbose:k_activityVerboseHigh account:_activeAccount activeUrl:_activeUrl];
+            
+            [CCCoreData deleteTableAutomaticUploadForAccount:_activeAccount assetLocalIdentifier:metadataNet.assetLocalIdentifier];
+            
+            [self updateApplicationIconBadgeNumber];
+        }
     }
 }
 
@@ -1407,9 +1380,6 @@
             
             [self.timerVerifySessionInProgress invalidate];
         }
-        
-        // Verify Lock in Table Automatic Upload
-        //[self verifyLockTableAutomaticUpload];
     }
 }
 
