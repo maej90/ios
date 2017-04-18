@@ -33,8 +33,10 @@
 
 @interface CCFavorites () <CCActionsDeleteDelegate, CCActionsSettingFavoriteDelegate>
 {
-    NSArray *dataSource;
+    NSArray *_dataSource;
     BOOL _reloadDataSource;
+    
+    CCHud *_hudDeterminate;
 }
 @end
 
@@ -61,7 +63,7 @@
     [self.tableView registerNib:[UINib nibWithNibName:@"CCFavoritesCell" bundle:nil] forCellReuseIdentifier:@"Cell"];
 
     // dataSource
-    dataSource = [NSMutableArray new];
+    _dataSource = [NSMutableArray new];
     
     // Metadata
     _metadata = [CCMetadata new];
@@ -70,7 +72,7 @@
     self.tableView.separatorColor = COLOR_SEPARATOR_TABLE;
     self.tableView.emptyDataSetDelegate = self;
     self.tableView.emptyDataSetSource = self;
-    self.tableView.allowsMultipleSelectionDuringEditing = NO;
+    self.tableView.delegate = self;
     
     // calculate _serverUrl
     if (!_serverUrl)
@@ -240,9 +242,19 @@
 {
     _metadata = [CCCoreData getMetadataWithPreficate:[NSPredicate predicateWithFormat:@"(fileID == %@) AND (account == %@)", fileID, app.activeAccount] context:nil];
     
-    // File exists
-    if ([self shouldPerformSegue])
-        [self performSegueWithIdentifier:@"segueDetail" sender:self];
+    if ([_metadata.typeFile isEqualToString: k_metadataTypeFile_compress]) {
+        
+        [self performSelector:@selector(unZipFile:) withObject:_metadata.fileID];
+        
+    } else if ([_metadata.typeFile isEqualToString: k_metadataTypeFile_unknown]) {
+        
+        [self openWith:_metadata];
+        
+    } else {
+        
+        if ([self shouldPerformSegue])
+            [self performSegueWithIdentifier:@"segueDetail" sender:self];
+    }
     
     [app updateApplicationIconBadgeNumber];
 }
@@ -336,14 +348,44 @@
     [self presentViewController:alertController animated:YES completion:nil];
 }
 
--(void)cellButtonDownWasTapped:(id)sender
+#pragma --------------------------------------------------------------------------------------------
+#pragma mark ===== UnZipFile =====
+#pragma --------------------------------------------------------------------------------------------
+
+- (void)unZipFile:(NSString *)fileID
 {
-    CGPoint touchPoint = [sender convertPoint:CGPointZero toView:self.tableView];
-    NSIndexPath *indexPath = [self.tableView indexPathForRowAtPoint:touchPoint];
-    CCMetadata *metadata = [CCMetadata new];
+    [_hudDeterminate visibleHudTitle:NSLocalizedString(@"_unzip_in_progress_", nil) mode:MBProgressHUDModeDeterminate color:nil];
+    
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        
+        NSString *fileZip = [NSString stringWithFormat:@"%@/%@", app.directoryUser, fileID];
+        
+        [SSZipArchive unzipFileAtPath:fileZip toDestination:[CCUtility getDirectoryLocal] overwrite:YES password:nil progressHandler:^(NSString *entry, unz_file_info zipInfo, long entryNumber, long total) {
+            
+            dispatch_async(dispatch_get_main_queue(), ^{
+                float progress = (float) entryNumber / (float)total;
+                [_hudDeterminate progress:progress];
+            });
+            
+        } completionHandler:^(NSString *path, BOOL succeeded, NSError *error) {
+            
+            dispatch_async(dispatch_get_main_queue(), ^{
+                
+                [_hudDeterminate hideHud];
+                
+                if (succeeded) [app messageNotification:@"_info_" description:@"_file_unpacked_" visible:YES delay:k_dismissAfterSecond type:TWMessageBarMessageTypeSuccess];
+                else [app messageNotification:@"_error_" description:[NSString stringWithFormat:@"Error %ld", (long)error.code] visible:YES delay:k_dismissAfterSecond type:TWMessageBarMessageTypeError];
+            });
+            
+        }];
+    });
+}
+
+- (void)requestMoreMetadata:(CCMetadata *)metadata indexPath:(NSIndexPath *)indexPath
+{
     UIImage *iconHeader;
     
-    metadata = [dataSource objectAtIndex:indexPath.row];
+    metadata = [_dataSource objectAtIndex:indexPath.row];
     
     AHKActionSheet *actionSheet = [[AHKActionSheet alloc] initWithView:self.view title:nil];
     
@@ -417,13 +459,39 @@
         }];
     }
     
-    [actionSheet addButtonWithTitle:NSLocalizedString(@"_delete_", nil) image:[UIImage imageNamed:image_delete] backgroundColor:[UIColor whiteColor] height: 50.0 type:AHKActionSheetButtonTypeDestructive handler:^(AHKActionSheet *as) {
-        
-        [self requestDeleteMetadata:metadata indexPath:indexPath];
-    }];
-
-    
     [actionSheet show];
+}
+
+#pragma mark -
+#pragma --------------------------------------------------------------------------------------------
+#pragma mark ===== Swipe Tablet -> menu =====
+#pragma --------------------------------------------------------------------------------------------
+
+- (UITableViewCellEditingStyle)tableView:(UITableView *)tableView editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return UITableViewCellEditingStyleDelete;
+}
+
+- (NSString *)tableView:(UITableView *)tableView titleForSwipeAccessoryButtonForRowAtIndexPath:(NSIndexPath *)indexPath {
+    return NSLocalizedString(@"_more_", nil);
+}
+
+- (void)tableView:(UITableView *)tableView swipeAccessoryButtonPushedForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    [self requestMoreMetadata:[_dataSource objectAtIndex:indexPath.row] indexPath:indexPath];
+}
+
+- (NSString *)tableView:(UITableView *)tableView titleForDeleteConfirmationButtonForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return NSLocalizedString(@"_delete_", nil);
+}
+
+- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if (editingStyle == UITableViewCellEditingStyleDelete) {
+                
+        [self requestDeleteMetadata:[_dataSource objectAtIndex:indexPath.row] indexPath:indexPath];
+    }
 }
 
 #pragma --------------------------------------------------------------------------------------------
@@ -434,7 +502,7 @@
 {
     CCMetadata *metadata;
     
-    NSManagedObject *record = [dataSource objectAtIndex:indexPath.row];
+    NSManagedObject *record = [_dataSource objectAtIndex:indexPath.row];
     metadata = [CCCoreData getMetadataWithPreficate:[NSPredicate predicateWithFormat:@"(fileID == %@) AND (account == %@)", [record valueForKey:@"fileID"], app.activeAccount] context:nil];
 
     return metadata;
@@ -466,7 +534,7 @@
     for (NSString *fileID in fileIDs)
         [metadatas addObject:[sectionDataSource.allRecordsDataSource objectForKey:fileID]];
         
-    dataSource = [NSArray arrayWithArray:metadatas];
+    _dataSource = [NSArray arrayWithArray:metadatas];
     
     [self.tableView reloadData];
 }
@@ -483,7 +551,7 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return [dataSource count];
+    return [_dataSource count];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -503,7 +571,7 @@
     selectionColor.backgroundColor = COLOR_SELECT_BACKGROUND;
     cell.selectedBackgroundView = selectionColor;
     
-    metadata = [dataSource objectAtIndex:indexPath.row];
+    metadata = [_dataSource objectAtIndex:indexPath.row];
         
     cell.fileImageView.image = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/%@.ico", app.directoryUser, metadata.fileID]];
         
@@ -512,9 +580,6 @@
     
     if (cell.fileImageView.image == nil && metadata.thumbnailExists)
         [[CCActions sharedInstance] downloadTumbnail:metadata delegate:self];
-    
-    // ButtonDown Tapped
-    [cell.buttonDown addTarget:self action:@selector(cellButtonDownWasTapped:) forControlEvents:UIControlEventTouchUpInside];
     
     // encrypted color
     if (metadata.cryptated) {
@@ -579,19 +644,17 @@
         return;
     
     // File
-    if (([_metadata.type isEqualToString: k_metadataType_file] || [_metadata.type isEqualToString: k_metadataType_local]) && _metadata.directory == NO) {
+    if (([_metadata.type isEqualToString: k_metadataType_file]) && _metadata.directory == NO) {
         
+        // File do not exists
+        NSString *serverUrl = [CCCoreData getServerUrlFromDirectoryID:_metadata.directoryID activeAccount:_metadata.account];
+
         if ([[NSFileManager defaultManager] fileExistsAtPath:[NSString stringWithFormat:@"%@/%@", app.directoryUser, _metadata.fileID]]) {
             
-            // File exists
-            if ([self shouldPerformSegue])
-                [self performSegueWithIdentifier:@"segueDetail" sender:self];
-
+            [self downloadFileSuccess:_metadata.fileID serverUrl:serverUrl selector:selectorLoadFileView selectorPost:nil];
+            
         } else {
             
-            // File do not exists
-            NSString *serverUrl = [CCCoreData getServerUrlFromDirectoryID:_metadata.directoryID activeAccount:_metadata.account];
-
             [[CCNetworking sharedNetworking] downloadFile:_metadata serverUrl:serverUrl downloadData:YES downloadPlist:NO selector:selectorLoadFileView selectorPost:nil session:k_download_session taskStatus:k_taskStatusResume delegate:self];
         }
     }
@@ -653,7 +716,7 @@
     
     NSMutableArray *allRecordsDataSourceImagesVideos = [NSMutableArray new];
     
-    for (CCMetadata *metadata in dataSource) {
+    for (CCMetadata *metadata in _dataSource) {
         if ([metadata.typeFile isEqualToString: k_metadataTypeFile_image] || [metadata.typeFile isEqualToString: k_metadataTypeFile_video])
             [allRecordsDataSourceImagesVideos addObject:metadata];
     }

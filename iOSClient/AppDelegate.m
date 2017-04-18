@@ -180,6 +180,7 @@
     
     // Check new Asset Photos/Video in progress  
     _automaticCheckAssetInProgress = NO;
+    _automaticUploadInProgress = NO;
     
     // Add notification change session
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(sessionChanged:) name:k_networkingSessionNotification object:nil];
@@ -1261,9 +1262,12 @@
 {
     CCMetadataNet *metadataNet;
     
-    // Is loading new Asset ?
-    if (_automaticCheckAssetInProgress)
+    // Is loading new Asset or this  ?
+    if (_automaticCheckAssetInProgress || _automaticUploadInProgress)
         return;
+    
+    // START Automatic Upload in progress
+    _automaticUploadInProgress = YES;
     
     NSArray *uploadInQueue = [CCCoreData getTableMetadataUploadAccount:app.activeAccount];
     NSArray *recordAutomaticUploadInLock = [CCCoreData getAllLockTableAutomaticUploadForAccount:_activeAccount];
@@ -1282,53 +1286,50 @@
     }
 
     // ------------------------- <selectorUploadAutomatic> -------------------------
-    do {
-        metadataNet = [CCCoreData getTableAutomaticUploadForAccount:self.activeAccount selector:selectorUploadAutomatic];
-        if (metadataNet) {
-
-            // For UploadAutomatic create the folder for Photos & if request the subfolders
-            NSString *folderPhotos = [CCCoreData getCameraUploadFolderNamePathActiveAccount:app.activeAccount activeUrl:app.activeUrl];
-            BOOL useSubFolder = [CCCoreData getCameraUploadCreateSubfolderActiveAccount:app.activeAccount];
-
-            PHFetchResult *result = [PHAsset fetchAssetsWithLocalIdentifiers:@[metadataNet.assetLocalIdentifier] options:nil];
-
-            if (result.count) {
-                
-                if(![self createFolderSubFolderAutomaticUploadFolderPhotos:folderPhotos useSubFolder:useSubFolder assets:[[NSArray alloc] initWithObjects:result[0], nil] selector:selectorUploadAutomatic]) {
-                    
-                    [CCCoreData unlockTableAutomaticUploadForAccount:_activeAccount assetLocalIdentifier:metadataNet.assetLocalIdentifier];
-                    
-                    break;
-                }
-                
-                [[CCNetworking sharedNetworking] uploadFileFromAssetLocalIdentifier:metadataNet.assetLocalIdentifier fileName:metadataNet.fileName serverUrl:metadataNet.serverUrl cryptated:metadataNet.cryptated session:metadataNet.session taskStatus:metadataNet.taskStatus selector:metadataNet.selector selectorPost:metadataNet.selectorPost errorCode:metadataNet.errorCode delegate:app.activeMain];
-                
-            } else {
-                
-                [CCCoreData addActivityClient:metadataNet.fileName fileID:metadataNet.assetLocalIdentifier action:k_activityDebugActionUpload selector:selectorUploadAutomatic note:@"Internal error image/video not found [0]" type:k_activityTypeFailure verbose:k_activityVerboseHigh account:_activeAccount activeUrl:_activeUrl];
-                
-                [CCCoreData deleteTableAutomaticUploadForAccount:_activeAccount assetLocalIdentifier:metadataNet.assetLocalIdentifier];
-                
-                [self updateApplicationIconBadgeNumber];
-            }
-        }
+    
+    metadataNet = [CCCoreData getTableAutomaticUploadForAccount:self.activeAccount selector:selectorUploadAutomatic];
+    
+    while (metadataNet) {
         
-    } while (metadataNet);
+        PHFetchResult *result = [PHAsset fetchAssetsWithLocalIdentifiers:@[metadataNet.assetLocalIdentifier] options:nil];
+        
+        if (result.count) {
+            
+            [[CCNetworking sharedNetworking] uploadFileFromAssetLocalIdentifier:metadataNet.assetLocalIdentifier fileName:metadataNet.fileName serverUrl:metadataNet.serverUrl cryptated:metadataNet.cryptated session:metadataNet.session taskStatus:metadataNet.taskStatus selector:metadataNet.selector selectorPost:metadataNet.selectorPost errorCode:metadataNet.errorCode delegate:app.activeMain];
+            
+        } else {
+            
+            [CCCoreData addActivityClient:metadataNet.fileName fileID:metadataNet.assetLocalIdentifier action:k_activityDebugActionUpload selector:selectorUploadAutomatic note:@"Internal error image/video not found [0]" type:k_activityTypeFailure verbose:k_activityVerboseHigh account:_activeAccount activeUrl:_activeUrl];
+            
+            [CCCoreData deleteTableAutomaticUploadForAccount:_activeAccount assetLocalIdentifier:metadataNet.assetLocalIdentifier];
+            
+            [self updateApplicationIconBadgeNumber];
+        }
+
+        metadataNet = [CCCoreData getTableAutomaticUploadForAccount:self.activeAccount selector:selectorUploadAutomatic];
+    }
     
     // ------------------------- <selectorUploadAutomaticAll> -------------------------
     
-    // Verify Max Upload Automatic All
-    NSUInteger count = [TableMetadata MR_countOfEntitiesWithPredicate:[NSPredicate predicateWithFormat:@"(account == %@) AND (sessionSelector == %@) AND ((sessionTaskIdentifier > 0) OR (sessionTaskIdentifierPlist > 0))", app.activeAccount, selectorUploadAutomaticAll]];
-    
-    if (count > 1)
-        return;
-    
-    // Verify num error
+    // Verify num error MAX 10 after STOP
     NSUInteger errorCount = [TableMetadata MR_countOfEntitiesWithPredicate:[NSPredicate predicateWithFormat:@"(account == %@) AND (sessionSelector == %@) AND ((sessionTaskIdentifier == %i) OR (sessionTaskIdentifierPlist == %i))", app.activeAccount, selectorUploadAutomaticAll,k_taskIdentifierError, k_taskIdentifierError]];
     
     if (errorCount >= 10) {
         
         [app messageNotification:@"_error_" description:@"_too_errors_automatic_all_" visible:YES delay:k_dismissAfterSecond type:TWMessageBarMessageTypeError];
+        
+        // STOP Im progress
+        _automaticUploadInProgress = NO;
+        
+        return;
+    }
+    
+    NSUInteger count = [TableMetadata MR_countOfEntitiesWithPredicate:[NSPredicate predicateWithFormat:@"(account == %@) AND (sessionSelector == %@) AND ((sessionTaskIdentifier > 0) OR (sessionTaskIdentifierPlist > 0))", app.activeAccount, selectorUploadAutomaticAll]];
+    
+    if (count >= k_maxConcurrentOperationDownloadUpload) {
+        
+        // STOP Im progress
+        _automaticUploadInProgress = NO;
         
         return;
     }
@@ -1351,6 +1352,9 @@
             [self updateApplicationIconBadgeNumber];
         }
     }
+    
+    // STOP Im progress
+    _automaticUploadInProgress = NO;
 }
 
 - (void)verifyDownloadUploadInProgress
