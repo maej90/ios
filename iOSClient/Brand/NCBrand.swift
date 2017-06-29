@@ -81,7 +81,7 @@ class NCBrandOptions: NSObject {
     public var folderDefaultAutoUpload:         String = "Photos"
     
     // Capabilities Group
-    public let capabilitiesGroups:              String = "group.it.twsweb.Crypto-Cloud"
+    public let capabilitiesGroups:              String = "group.com.dev.clarodrive"
     
     // Options
     public let use_login_web:                   Bool = false
