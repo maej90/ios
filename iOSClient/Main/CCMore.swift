@@ -24,7 +24,7 @@
 
 import UIKit
 
-class CCMore: UIViewController, UITableViewDelegate, UITableViewDataSource, CCLoginDelegate {
+class CCMore: UIViewController, UITableViewDelegate, UITableViewDataSource, CCLoginDelegate, CCLoginDelegateWeb {
 
     @IBOutlet weak var themingBackground: UIImageView!
     @IBOutlet weak var themingAvatar: UIImageView!
@@ -175,14 +175,12 @@ class CCMore: UIViewController, UITableViewDelegate, UITableViewDataSource, CCLo
     
     func changeTheming() {
         
-        // Theming Background
-        let theminBackgroundFile = UIImage.init(contentsOfFile: "\(appDelegate.directoryUser!)/themingBackground.png")
-        if (theminBackgroundFile != nil) {
+        if let theminBackgroundFile = UIImage.init(contentsOfFile: "\(appDelegate.directoryUser!)/themingBackground.png") {
             themingBackground.image = theminBackgroundFile
         } else {
             themingBackground.image = UIImage.init(named: "themingBackground")
         }
-
+        
         if (self.isViewLoaded && (self.view.window != nil)) {
             appDelegate.changeTheming(self)
         }
@@ -190,44 +188,34 @@ class CCMore: UIViewController, UITableViewDelegate, UITableViewDataSource, CCLo
     
     func changeUserProfile() {
      
-        let themingAvatarFile : UIImage? = UIImage.init(contentsOfFile: "\(appDelegate.directoryUser!)/avatar.png")
-        
-        if (themingAvatarFile != nil) {
-            
+        if let themingAvatarFile = UIImage.init(contentsOfFile: "\(appDelegate.directoryUser!)/avatar.png") {
             themingAvatar.image = themingAvatarFile
-            
         } else {
-            
             themingAvatar.image = UIImage.init(named: "moreAvatar")
         }
         
         // Display Name user & Quota
-        tabAccount = NCManageDatabase.sharedInstance.getAccountActive()
-        if (tabAccount != nil) {
-            
-            if let displayName = tabAccount?.displayName {
-                if displayName.isEmpty {
-                    labelUsername.text = tabAccount!.user
-                }
-                else{
-                    labelUsername.text = tabAccount!.displayName
-                }
-            }
-            else{
-                labelUsername.text = tabAccount!.user
-            }
-            
-            // fix CCMore.swift line 208 Version 2.17.2 (00005)
-            if (tabAccount?.quotaRelative != nil && tabAccount?.quotaTotal != nil && tabAccount?.quotaUsed != nil) {
+        guard let tabAccount = NCManageDatabase.sharedInstance.getAccountActive() else {
+            return
+        }
+        
+        if tabAccount.displayName.isEmpty {
+            labelUsername.text = tabAccount.user
+        }
+        else{
+            labelUsername.text = tabAccount.displayName
+        }
+        
+        // fix CCMore.swift line 208 Version 2.17.2 (00005)
+        if (tabAccount.quotaRelative != 0 && tabAccount.quotaTotal != 0 && tabAccount.quotaUsed != 0) {
                 
-                progressQuota.progress = Float((tabAccount?.quotaRelative)!) / 100
-                progressQuota.progressTintColor = NCBrandColor.sharedInstance.brand
+            progressQuota.progress = Float(tabAccount.quotaRelative) / 100
+            progressQuota.progressTintColor = NCBrandColor.sharedInstance.brand
                 
-                let quota : String = CCUtility.transformedSize(Double((tabAccount?.quotaTotal)!))
-                let quotaUsed : String = CCUtility.transformedSize(Double((tabAccount?.quotaUsed)!))
+            let quota : String = CCUtility.transformedSize(Double(tabAccount.quotaTotal))
+            let quotaUsed : String = CCUtility.transformedSize(Double(tabAccount.quotaUsed))
                 
-                labelQuota.text = String.localizedStringWithFormat(NSLocalizedString("_quota_using_", comment: ""), quotaUsed, quota)
-            }
+            labelQuota.text = String.localizedStringWithFormat(NSLocalizedString("_quota_using_", comment: ""), quotaUsed, quota)
         }
     }
     
@@ -398,6 +386,10 @@ class CCMore: UIViewController, UITableViewDelegate, UITableViewDataSource, CCLo
     }
 
     func loginSuccess(_ loginType: NSInteger) {
+        
+        if (UInt32(loginType) != loginModifyPasswordUser.rawValue) {
+            NCAutoUpload.sharedInstance().alignPhotoLibrary()
+        }
         
         NotificationCenter.default.post(name: NSNotification.Name(rawValue: "initializeMain"), object: nil)
         

@@ -70,10 +70,11 @@
 
 + (void)setIntro:(NSString *)version;
 
-+ (void)setActiveAccountShareExt:(NSString *)activeAccount;
-+ (void)setCryptatedShareExt:(BOOL)cryptated;
-+ (void)setServerUrlShareExt:(NSString *)serverUrl;
-+ (void)setTitleServerUrlShareExt:(NSString *)titleServerUrl;
++ (void)setActiveAccountExt:(NSString *)activeAccount;
++ (void)setCryptatedExt:(BOOL)cryptated;
++ (void)setServerUrlExt:(NSString *)serverUrl;
++ (void)setTitleServerUrlExt:(NSString *)titleServerUrl;
++ (void)setFileNameExt:(NSString *)fileName;
 
 + (void)setEmail:(NSString *)email;
 
@@ -82,12 +83,16 @@
 + (void)setDirectoryOnTop:(BOOL)directoryOnTop;
 
 + (void)setFileNameMask:(NSString *)mask key:(NSString *)key;
++ (void)setFileNameType:(BOOL)prefix key:(NSString *)key;
 
 + (void)setCreateMenuEncrypted:(BOOL)encrypted;
 
 + (void)setFavoriteOffline:(BOOL)offline;
 
 + (void)setActivityVerboseHigh:(BOOL)debug;
+
++ (void)setShowHiddenFiles:(BOOL)show;
+
 
 // GET
 
@@ -112,10 +117,11 @@
 + (BOOL)getIntro:(NSString *)version;
 + (NSString *)getIncrementalNumber;
 
-+ (NSString *)getActiveAccountShareExt;
-+ (BOOL)getCryptatedShareExt;
-+ (NSString *)getServerUrlShareExt;
-+ (NSString *)getTitleServerUrlShareExt;
++ (NSString *)getActiveAccountExt;
++ (BOOL)getCryptatedExt;
++ (NSString *)getServerUrlExt;
++ (NSString *)getTitleServerUrlExt;
++ (NSString *)getFileNameExt;
 
 + (NSString *)getEmail;
 
@@ -124,6 +130,7 @@
 + (BOOL)getDirectoryOnTop;
 
 + (NSString *)getFileNameMask:(NSString *)key;
++ (BOOL)getFileNameType:(NSString *)key;
 
 + (BOOL)getCreateMenuEncrypted;
 
@@ -131,11 +138,14 @@
 
 + (BOOL)getActivityVerboseHigh;
 
++ (BOOL)getShowHiddenFiles;
+
 // ===== Varius =====
 
 + (NSString *)getUserAgent;
 
 + (NSString *)dateDiff:(NSDate *) convertedDate;
++ (NSDate *)dateEnUsPosixFromCloud:(NSString *)dateString;
 + (NSString *)transformedSize:(double)value;
 
 + (NSString *)removeForbiddenCharactersServer:(NSString *)fileName;
@@ -144,7 +154,7 @@
 + (NSString *)stringAppendServerUrl:(NSString *)serverUrl addFileName:(NSString *)addFileName;
 
 + (NSString *)createRandomString:(int)numChars;
-+ (NSString *)createFileNameFromAsset:(PHAsset *)asset key:(NSString *)key;
++ (NSString *)createFileName:fileName fileDate:(NSDate *)fileDate fileType:(PHAssetMediaType)fileType keyFileName:(NSString *)keyFileName keyFileNameType:(NSString *)keyFileNameType;
 
 + (NSString *)getHomeServerUrlActiveUrl:(NSString *)activeUrl;
 + (NSString *)getDirectoryActiveUser:(NSString *)activeUser activeUrl:(NSString *)activeUrl;
@@ -167,7 +177,9 @@
 
 // ===== CCMetadata =====
 
-+ (tableMetadata *)trasformedOCFileToCCMetadata:(OCFileDto *)itemDto fileNamePrint:(NSString *)fileNamePrint serverUrl:(NSString *)serverUrl directoryID:(NSString *)directoryID autoUploadFileName:(NSString *)autoUploadFileName autoUploadDirectory:(NSString *)autoUploadDirectory activeAccount:(NSString *)activeAccount directoryUser:(NSString *)directoryUser;
++ (tableMetadata *)createMetadataWithAccount:(NSString *)account date:(NSDate *)date directory:(BOOL)directory fileID:(NSString *)fileID directoryID:(NSString *)directoryID fileName:(NSString *)fileName etag:(NSString *)etag size:(double)size status:(double)status;
+
++ (tableMetadata *)trasformedOCFileToCCMetadata:(OCFileDto *)itemDto fileName:(NSString *)fileName fileNamePrint:(NSString *)fileNamePrint serverUrl:(NSString *)serverUrl directoryID:(NSString *)directoryID autoUploadFileName:(NSString *)autoUploadFileName autoUploadDirectory:(NSString *)autoUploadDirectory activeAccount:(NSString *)activeAccount directoryUser:(NSString *)directoryUser;
 
 + (tableMetadata *)insertInformationPlist:(tableMetadata *)metadata directoryUser:(NSString *)directoryUser;
 

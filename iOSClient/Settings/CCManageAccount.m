@@ -24,11 +24,12 @@
 #import "CCManageAccount.h"
 #import "AppDelegate.h"
 #import "CCLogin.h"
+#import "NCAutoUpload.h"
 #import "NCBridgeSwift.h"
 
 #define actionSheetCancellaAccount 1
 
-@interface CCManageAccount ()
+@interface CCManageAccount () <CCLoginDelegate, CCLoginDelegateWeb>
 {
     tableAccount *_tableAccount;
 
@@ -188,6 +189,10 @@
 
 - (void)loginSuccess:(NSInteger)loginType
 {
+    // Align Photo Library
+    if (loginType != loginModifyPasswordUser)
+        [[NCAutoUpload sharedInstance] alignPhotoLibrary];
+
     if (loginType == loginAddForced)
         [[NSNotificationCenter defaultCenter] postNotificationOnMainThreadName:@"initializeMain" object:nil];
 }
@@ -314,7 +319,7 @@
     
     [[NCManageDatabase sharedInstance] clearTable:[tableAccount class] account:account];
     [[NCManageDatabase sharedInstance] clearTable:[tableActivity class] account:account];
-    [[NCManageDatabase sharedInstance] clearTable:[tableAutoUpload class] account:account];
+    [[NCManageDatabase sharedInstance] clearTable:[tableQueueUpload class] account:account];
     [[NCManageDatabase sharedInstance] clearTable:[tableCapabilities class] account:account];
     [[NCManageDatabase sharedInstance] clearTable:[tableDirectory class] account:app.activeAccount];
     [[NCManageDatabase sharedInstance] clearTable:[tableExternalSites class] account:account];
@@ -346,7 +351,7 @@
 
 - (void)ChangeDefaultAccount:(NSString *)account
 {
-    if ([app.netQueue operationCount] > 0 || [app.netQueueDownload operationCount] > 0 || [app.netQueueDownloadWWan operationCount] > 0 || [app.netQueueUpload operationCount] > 0 || [app.netQueueUploadWWan operationCount] > 0 || [[NCManageDatabase sharedInstance] countAutoUploadWithSession:nil] > 0) {
+    if ([app.netQueue operationCount] > 0 || [app.netQueueDownload operationCount] > 0 || [app.netQueueDownloadWWan operationCount] > 0 || [app.netQueueUpload operationCount] > 0 || [app.netQueueUploadWWan operationCount] > 0 || [[NCManageDatabase sharedInstance] countQueueUploadWithSession:nil] > 0) {
         
         [app messageNotification:@"_transfers_in_queue_" description:nil visible:YES delay:k_dismissAfterSecond type:TWMessageBarMessageTypeInfo errorCode:0];
         [self UpdateForm];

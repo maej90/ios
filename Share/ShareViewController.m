@@ -77,31 +77,31 @@
         }
 
         
-        if ([_activeAccount isEqualToString:[CCUtility getActiveAccountShareExt]]) {
+        if ([_activeAccount isEqualToString:[CCUtility getActiveAccountExt]]) {
             
             // load
             
-            _serverUrl = [CCUtility getServerUrlShareExt];
+            _serverUrl = [CCUtility getServerUrlExt];
             
-            _destinyFolderButton.title = [NSString stringWithFormat:NSLocalizedString(@"_destiny_folder_", nil), [CCUtility getTitleServerUrlShareExt]];
+            _destinyFolderButton.title = [NSString stringWithFormat:NSLocalizedString(@"_destiny_folder_", nil), [CCUtility getTitleServerUrlExt]];
             
             if (_isCryptoCloudMode)
-                _localCryptated = [CCUtility getCryptatedShareExt];
+                _localCryptated = [CCUtility getCryptatedExt];
             
         } else {
             
             // Default settings
             
-            [CCUtility setActiveAccountShareExt:self.activeAccount];
+            [CCUtility setActiveAccountExt:self.activeAccount];
 
             _serverUrl  = [CCUtility getHomeServerUrlActiveUrl:self.activeUrl];
-            [CCUtility setServerUrlShareExt:_serverUrl];
+            [CCUtility setServerUrlExt:_serverUrl];
 
             _destinyFolderButton.title = [NSString stringWithFormat:NSLocalizedString(@"_destiny_folder_", nil), NSLocalizedString(@"_home_", nil)];
-            [CCUtility setTitleServerUrlShareExt:NSLocalizedString(@"_home_", nil)];
+            [CCUtility setTitleServerUrlExt:NSLocalizedString(@"_home_", nil)];
 
             _localCryptated = NO;
-            [CCUtility setCryptatedShareExt:NO];
+            [CCUtility setCryptatedExt:NO];
         }
     }
 
@@ -165,9 +165,11 @@
 
     // Theming
     tableCapabilities *capabilities = [[NCManageDatabase sharedInstance] getCapabilites];
-    if ([NCBrandOptions sharedInstance].use_themingColor && capabilities.themingColor.length > 0)
-        [NCBrandColor sharedInstance].brand = [CCGraphics colorFromHexString:capabilities.themingColor];
-
+    if ([NCBrandOptions sharedInstance].use_themingColor && capabilities.themingColor.length > 0) {
+        UIColor *newColor = [CCGraphics colorFromHexString:capabilities.themingColor];
+        if (newColor)
+            [NCBrandColor sharedInstance].brand = newColor;
+    }
     self.navigationController.navigationBar.barTintColor = [NCBrandColor sharedInstance].brand;
     self.navigationController.navigationBar.tintColor = [NCBrandColor sharedInstance].navigationBarText;
     
@@ -211,14 +213,14 @@
     
     if (title) {
         self.destinyFolderButton.title = [NSString stringWithFormat:NSLocalizedString(@"_destiny_folder_", nil), title];
-        [CCUtility setTitleServerUrlShareExt:title];
+        [CCUtility setTitleServerUrlExt:title];
     } else {
         self.destinyFolderButton.title = [NSString stringWithFormat:NSLocalizedString(@"_destiny_folder_", nil), NSLocalizedString(@"_home_", nil)];
-        [CCUtility setTitleServerUrlShareExt:NSLocalizedString(@"_home_", nil)];
+        [CCUtility setTitleServerUrlExt:NSLocalizedString(@"_home_", nil)];
     }
     
-    [CCUtility setActiveAccountShareExt:self.activeAccount];
-    [CCUtility setServerUrlShareExt:_serverUrl];
+    [CCUtility setActiveAccountExt:self.activeAccount];
+    [CCUtility setServerUrlExt:_serverUrl];
 }
 
 - (IBAction)destinyFolderButtonTapped:(UIBarButtonItem *)sender
@@ -256,9 +258,7 @@
         
         [self addNetworkingQueue:metadataNet];
         
-        [self.hud visibleHudTitle:NSLocalizedString(@"_uploading_", nil) mode:MBProgressHUDModeDeterminateHorizontalBar color:self.view.tintColor];
-       
-        [self.hud AddButtonCancelWithTarget:self selector:@"cancelTransfer"];
+        [self.hud visibleHudTitle:NSLocalizedString(@"_uploading_", nil) mode:MBProgressHUDModeDeterminate color:[NCBrandColor sharedInstance].brand];
     }
     else
         [self closeShareViewController];
@@ -281,14 +281,9 @@
     if (self.localCryptated) self.localCryptated = NO;
     else self.localCryptated = YES;
     
-    [CCUtility setCryptatedShareExt:self.localCryptated];
+    [CCUtility setCryptatedExt:self.localCryptated];
 
     [self navigationBarToolBar];
-}
-
-- (void)cancelTransfer
-{
-    [_networkingOperationQueue cancelAllOperations];
 }
 
 #pragma --------------------------------------------------------------------------------------------

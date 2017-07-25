@@ -180,7 +180,7 @@
 
 - (void)uploadAsset
 {
-    [[CCNetworking sharedNetworking] uploadFileFromAssetLocalIdentifier:_metadataNet.assetLocalIdentifier fileName:_metadataNet.fileName serverUrl:_metadataNet.serverUrl cryptated:_metadataNet.cryptated session:_metadataNet.session taskStatus:_metadataNet.taskStatus selector:_metadataNet.selector selectorPost:_metadataNet.selectorPost errorCode:_metadataNet.errorCode delegate:self];
+    [[CCNetworking sharedNetworking] uploadFileFromAssetLocalIdentifier:_metadataNet delegate:self];
 }
 
 - (void)uploadTemplate
@@ -289,6 +289,7 @@
     [communication readFolder:_metadataNet.serverUrl withUserSessionToken:nil onCommunication:communication successRequest:^(NSHTTPURLResponse *response, NSArray *items, NSString *redirectedServer, NSString *token) {
         
         NSMutableArray *metadatas = [NSMutableArray new];
+        BOOL showHiddenFiles = [CCUtility getShowHiddenFiles];
         
         // Check items > 0
         if ([items count] == 0) {
@@ -334,22 +335,20 @@
                 serverUrlFolder = @"..";
                 directoryIDFolder = @"00000000-0000-0000-0000-000000000000";
             
-                metadataFolder = [CCUtility trasformedOCFileToCCMetadata:itemDtoFolder fileNamePrint:@"" serverUrl:serverUrlFolder directoryID:directoryIDFolder autoUploadFileName:autoUploadFileName autoUploadDirectory:autoUploadDirectory activeAccount:_metadataNet.account directoryUser:directoryUser];
-                
-                metadataFolder.fileName = @".";
-                metadataFolder.fileNameData = @".";
-                metadataFolder.fileNamePrint = @".";
+                metadataFolder = [CCUtility trasformedOCFileToCCMetadata:itemDtoFolder fileName:@"." fileNamePrint:@"." serverUrl:serverUrlFolder directoryID:directoryIDFolder autoUploadFileName:autoUploadFileName autoUploadDirectory:autoUploadDirectory activeAccount:_metadataNet.account directoryUser:directoryUser];
                 
             } else {
             
                 serverUrlFolder = [CCUtility deletingLastPathComponentFromServerUrl:_metadataNet.serverUrl];
                 directoryIDFolder = [[NCManageDatabase sharedInstance] getDirectoryID:serverUrlFolder];
-                
-                metadataFolder = [CCUtility trasformedOCFileToCCMetadata:itemDtoFolder fileNamePrint:@"" serverUrl:serverUrlFolder directoryID:directoryIDFolder autoUploadFileName:autoUploadFileName autoUploadDirectory:autoUploadDirectory activeAccount:_metadataNet.account directoryUser:directoryUser];
-                
-                metadataFolder.fileName = [_metadataNet.serverUrl lastPathComponent];
-                metadataFolder.fileNameData = [_metadataNet.serverUrl lastPathComponent];
-                metadataFolder.fileNamePrint = [_metadataNet.serverUrl lastPathComponent];
+                if (!directoryIDFolder) {
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        
+                        if ([self.delegate respondsToSelector:@selector(readFolderSuccess:metadataFolder:metadatas:)])
+                            [self.delegate readFolderSuccess:_metadataNet metadataFolder:metadataFolder metadatas:metadatas];
+                    });
+                }
+                metadataFolder = [CCUtility trasformedOCFileToCCMetadata:itemDtoFolder fileName:[_metadataNet.serverUrl lastPathComponent] fileNamePrint:[_metadataNet.serverUrl lastPathComponent] serverUrl:serverUrlFolder directoryID:directoryIDFolder autoUploadFileName:autoUploadFileName autoUploadDirectory:autoUploadDirectory activeAccount:_metadataNet.account directoryUser:directoryUser];
             }
         
             NSArray *itemsSortedArray = [items sortedArrayUsingComparator:^NSComparisonResult(id a, id b) {
@@ -369,6 +368,10 @@
                 if (_isCryptoCloudMode == NO && [CCUtility isFileCryptated:fileName])
                     continue;
                 
+                // Skip hidden files
+                if (!showHiddenFiles && [[fileName substringToIndex:1] isEqualToString:@"."])
+                    continue;
+                
                 if (itemDto.isDirectory) {
                         
                     fileName = [fileName substringToIndex:[fileName length] - 1];
@@ -386,7 +389,7 @@
                 }
                 // ------------------------
                 
-                [metadatas addObject:[CCUtility trasformedOCFileToCCMetadata:itemDto fileNamePrint:itemDto.fileName serverUrl:_metadataNet.serverUrl directoryID:directoryID autoUploadFileName:autoUploadFileName autoUploadDirectory:autoUploadDirectory activeAccount:_metadataNet.account directoryUser:directoryUser]];
+                [metadatas addObject:[CCUtility trasformedOCFileToCCMetadata:itemDto fileName:itemDto.fileName fileNamePrint:itemDto.fileName serverUrl:_metadataNet.serverUrl directoryID:directoryID autoUploadFileName:autoUploadFileName autoUploadDirectory:autoUploadDirectory activeAccount:_metadataNet.account directoryUser:directoryUser]];
             }
             
             dispatch_async(dispatch_get_main_queue(), ^{
@@ -451,6 +454,7 @@
     [communication search:path folder:folder fileName: [NSString stringWithFormat:@"%%%@%%", _metadataNet.fileName] depth:_metadataNet.options dateLastModified:dateLastModified withUserSessionToken:nil onCommunication:communication successRequest:^(NSHTTPURLResponse *response, NSArray *items, NSString *redirectedServer, NSString *token) {
         
         NSMutableArray *metadatas = [NSMutableArray new];
+        BOOL showHiddenFiles = [CCUtility getShowHiddenFiles];
         
         NSString *autoUploadFileName = [[NCManageDatabase sharedInstance] getAccountAutoUploadFileName];
         NSString *autoUploadDirectory = [[NCManageDatabase sharedInstance] getAccountAutoUploadDirectory:_activeUrl];
@@ -460,6 +464,8 @@
         
             for(OCFileDto *itemDto in items) {
             
+                NSString *serverUrl;
+
                 itemDto.fileName = [itemDto.fileName stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
             
                 // Not in Crypto Cloud file
@@ -468,6 +474,10 @@
                     fileName = [fileName substringToIndex:[fileName length] - 1];
                 
                 if ([CCUtility isFileCryptated:fileName])
+                    continue;
+                
+                // Skip hidden files
+                if (!showHiddenFiles && [[fileName substringToIndex:1] isEqualToString:@"."])
                     continue;
             
                 // ----- BUG #942 ---------
@@ -479,21 +489,28 @@
                 }
                 // ------------------------
             
-                NSString *serverUrl = [NSString stringWithFormat:@"%@/files/%@", dav, _activeUser];
-                serverUrl = [itemDto.filePath stringByReplacingOccurrencesOfString:serverUrl withString:@""];
-            
+                NSRange firstInstance = [itemDto.filePath rangeOfString:[NSString stringWithFormat:@"%@/files/%@", dav, _activeUser]];
+                NSRange finalRange = NSMakeRange(firstInstance.location + firstInstance.length, itemDto.filePath.length-(firstInstance.location + firstInstance.length));
+                if (finalRange.location != NSNotFound && finalRange.location + finalRange.length <= itemDto.filePath.length) {
+                    // It's safe to use range on str
+                    serverUrl = [itemDto.filePath substringWithRange:finalRange];
+                } else {
+                    continue;
+                }
+                
                 /* TRIM */
                 if ([serverUrl hasPrefix:@"/"])
                     serverUrl = [serverUrl substringFromIndex:1];
                 if ([serverUrl hasSuffix:@"/"])
                     serverUrl = [serverUrl substringToIndex:[serverUrl length] - 1];
-                /*      */
+                /* ---- */
             
                 serverUrl = [CCUtility stringAppendServerUrl:[_activeUrl stringByAppendingString:webDAV] addFileName:serverUrl];
-            
+                serverUrl = [serverUrl stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+
                 NSString *directoryID = [[NCManageDatabase sharedInstance] addDirectoryWithServerUrl:serverUrl permissions:itemDto.permissions];
 
-                [metadatas addObject:[CCUtility trasformedOCFileToCCMetadata:itemDto fileNamePrint:itemDto.fileName serverUrl:serverUrl directoryID:directoryID autoUploadFileName:autoUploadFileName autoUploadDirectory:autoUploadDirectory activeAccount:_metadataNet.account directoryUser:directoryUser]];
+                [metadatas addObject:[CCUtility trasformedOCFileToCCMetadata:itemDto fileName:itemDto.fileName fileNamePrint:itemDto.fileName serverUrl:serverUrl directoryID:directoryID autoUploadFileName:autoUploadFileName autoUploadDirectory:autoUploadDirectory activeAccount:_metadataNet.account directoryUser:directoryUser]];
             }
     
             dispatch_async(dispatch_get_main_queue(), ^{
@@ -569,7 +586,6 @@
         
         [self complete];
     }];
-
 }
 
 #pragma --------------------------------------------------------------------------------------------
@@ -589,6 +605,7 @@
     [communication listingFavorites:path folder:folder withUserSessionToken:nil onCommunication:communication successRequest:^(NSHTTPURLResponse *response, NSArray *items, NSString *redirectedServer, NSString *token) {
         
         NSMutableArray *metadatas = [NSMutableArray new];
+        BOOL showHiddenFiles = [CCUtility getShowHiddenFiles];
         
         NSString *autoUploadFileName = [[NCManageDatabase sharedInstance] getAccountAutoUploadFileName];
         NSString *autoUploadDirectory = [[NCManageDatabase sharedInstance] getAccountAutoUploadDirectory:_activeUrl];
@@ -609,6 +626,8 @@
         
         for(OCFileDto *itemDto in items) {
             
+            NSString *serverUrl;
+            
             itemDto.fileName = [itemDto.fileName stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
             itemDto.filePath = [itemDto.filePath stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
 
@@ -620,6 +639,10 @@
             if ([CCUtility isFileCryptated:fileName])
                 continue;
             
+            // Skip hidden files
+            if (!showHiddenFiles && [[fileName substringToIndex:1] isEqualToString:@"."])
+                continue;
+            
             // ----- BUG #942 ---------
             if ([itemDto.etag length] == 0) {
 #ifndef EXTENSION
@@ -629,9 +652,16 @@
             }
             // ------------------------
             
-            NSString *serverUrl = [NSString stringWithFormat:@"%@/files/%@", dav, _activeUser];
-            serverUrl = [itemDto.filePath stringByReplacingOccurrencesOfString:serverUrl withString:@""];
+            NSRange firstInstance = [itemDto.filePath rangeOfString:[NSString stringWithFormat:@"%@/files/%@", dav, _activeUser]];
+            NSRange finalRange = NSMakeRange(firstInstance.location + firstInstance.length, itemDto.filePath.length-(firstInstance.location + firstInstance.length));
             
+            if (finalRange.location != NSNotFound && finalRange.location + finalRange.length <= itemDto.filePath.length) {
+                // It's safe to use range on str
+                serverUrl = [itemDto.filePath substringWithRange:finalRange];
+            } else {
+                continue;
+            }
+
             /* TRIM */
             if ([serverUrl hasPrefix:@"/"])
                 serverUrl = [serverUrl substringFromIndex:1];
@@ -640,10 +670,11 @@
             /*      */
             
             serverUrl = [CCUtility stringAppendServerUrl:[_activeUrl stringByAppendingString:webDAV] addFileName:serverUrl];
-            
+            serverUrl = [serverUrl stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+
             NSString *directoryID = [[NCManageDatabase sharedInstance] addDirectoryWithServerUrl:serverUrl permissions:itemDto.permissions];
             
-            [metadatas addObject:[CCUtility trasformedOCFileToCCMetadata:itemDto fileNamePrint:itemDto.fileName serverUrl:serverUrl directoryID:directoryID autoUploadFileName:autoUploadFileName autoUploadDirectory:autoUploadDirectory activeAccount:_metadataNet.account directoryUser:directoryUser]];
+            [metadatas addObject:[CCUtility trasformedOCFileToCCMetadata:itemDto fileName:itemDto.fileName fileNamePrint:itemDto.fileName serverUrl:serverUrl directoryID:directoryID autoUploadFileName:autoUploadFileName autoUploadDirectory:autoUploadDirectory activeAccount:_metadataNet.account directoryUser:directoryUser]];
         }
         
         if ([self.delegate respondsToSelector:@selector(listingFavoritesSuccess:metadatas:)])
@@ -690,6 +721,11 @@
     [communication setUserAgent:[CCUtility getUserAgent]];
     
     [communication createFolder:nameFolderURL onCommunication:communication withForbiddenCharactersSupported:YES successRequest:^(NSHTTPURLResponse *response, NSString *redirectedServer) {
+        
+        NSDictionary *fields = [response allHeaderFields];
+
+        _metadataNet.fileID = [CCUtility removeForbiddenCharactersFileSystem:[fields objectForKey:@"OC-FileId"]];
+        _metadataNet.date = [CCUtility dateEnUsPosixFromCloud:[fields objectForKey:@"Date"]];
         
         if ([self.delegate respondsToSelector:@selector(createFolderSuccess:)])
             [self.delegate createFolderSuccess:_metadataNet];
@@ -922,18 +958,25 @@
             tableMetadata *metadata = [tableMetadata new];
             
             OCFileDto *itemDto = [items objectAtIndex:0];
-            itemDto.fileName = _metadataNet.fileName;
             
             NSString *directoryID = [[NCManageDatabase sharedInstance] getDirectoryID:_metadataNet.serverUrl];
-            NSString *autoUploadFileName = [[NCManageDatabase sharedInstance] getAccountAutoUploadFileName];
-            NSString *autoUploadDirectory = [[NCManageDatabase sharedInstance] getAccountAutoUploadDirectory:_activeUrl];
+            if (directoryID) {
+            
+                NSString *autoUploadFileName = [[NCManageDatabase sharedInstance] getAccountAutoUploadFileName];
+                NSString *autoUploadDirectory = [[NCManageDatabase sharedInstance] getAccountAutoUploadDirectory:_activeUrl];
 
-            NSString *directoryUser = [CCUtility getDirectoryActiveUser:_activeUser activeUrl:_activeUrl];
+                NSString *directoryUser = [CCUtility getDirectoryActiveUser:_activeUser activeUrl:_activeUrl];
         
-            metadata = [CCUtility trasformedOCFileToCCMetadata:itemDto fileNamePrint:_metadataNet.fileNamePrint serverUrl:_metadataNet.serverUrl directoryID:directoryID autoUploadFileName:autoUploadFileName autoUploadDirectory:autoUploadDirectory activeAccount:_metadataNet.account directoryUser:directoryUser];
+                metadata = [CCUtility trasformedOCFileToCCMetadata:itemDto fileName:_metadataNet.fileName fileNamePrint:_metadataNet.fileNamePrint serverUrl:_metadataNet.serverUrl directoryID:directoryID autoUploadFileName:autoUploadFileName autoUploadDirectory:autoUploadDirectory activeAccount:_metadataNet.account directoryUser:directoryUser];
                         
-            if([self.delegate respondsToSelector:@selector(readFileSuccess:metadata:)])
-                [self.delegate readFileSuccess:_metadataNet metadata:metadata];
+                if([self.delegate respondsToSelector:@selector(readFileSuccess:metadata:)])
+                    [self.delegate readFileSuccess:_metadataNet metadata:metadata];
+                
+            } else {
+                
+                if([self.delegate respondsToSelector:@selector(readFileFailure:message:errorCode:)])
+                    [self.delegate readFileFailure:_metadataNet message:@"Directory not found" errorCode:0];
+            }
         }
         
         // BUG 1038
@@ -942,6 +985,8 @@
 #ifndef EXTENSION
             [app messageNotification:@"Server error" description:@"Read File WebDAV : [items NULL] please fix" visible:YES delay:k_dismissAfterSecond type:TWMessageBarMessageTypeError errorCode:0];
 #endif
+            if([self.delegate respondsToSelector:@selector(readFileFailure:message:errorCode:)])
+                [self.delegate readFileFailure:_metadataNet message:@"Read File WebDAV : [items NULL] please fix" errorCode:0];
         }
         
         [self complete];

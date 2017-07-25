@@ -155,6 +155,16 @@
     [row.cellConfig setObject:[UIFont systemFontOfSize:15.0]forKey:@"textLabel.font"];
     [section addFormRow:row];
 
+    // Auto Upload file name
+    
+    section = [XLFormSectionDescriptor formSection];
+    [form addFormSection:section];
+    
+    row = [XLFormRowDescriptor formRowDescriptorWithTag:@"autoUploadFileName" rowType:XLFormRowDescriptorTypeButton title:NSLocalizedString(@"_autoupload_filenamemask_", nil)];
+    [row.cellConfig setObject:[UIFont systemFontOfSize:15.0]forKey:@"textLabel.font"];
+    row.action.viewControllerClass = [NCManageAutoUploadFileName class];
+    [section addFormRow:row];
+    
     // end
     
     section = [XLFormSectionDescriptor formSection];
@@ -206,11 +216,7 @@
         
         if ([[rowDescriptor.value valueData] boolValue] == YES) {
                         
-            // Create Folder
-            if (app.activeMain)
-                [app.activeMain createFolderAutoUpload];
-            
-            [[NCManageDatabase sharedInstance] setAccountAutoUploadFiled:@"autoUpload" state:YES];
+            [[NCManageDatabase sharedInstance] setAccountAutoUploadProperty:@"autoUpload" state:YES];
             
             // Default
             [[NCManageDatabase sharedInstance] setAccountAutoUploadFileName:nil];
@@ -218,19 +224,19 @@
             
             // verifichiamo che almeno uno dei servizi (foto video) siano attivi, in caso contrario attiviamo le foto
             if (account.autoUploadImage == NO && account.autoUploadVideo == NO) {
-                [[NCManageDatabase sharedInstance] setAccountAutoUploadFiled:@"autoUploadImage" state:YES];
-                [[NCManageDatabase sharedInstance] setAccountAutoUploadFiled:@"autoUploadVideo" state:YES];
+                [[NCManageDatabase sharedInstance] setAccountAutoUploadProperty:@"autoUploadImage" state:YES];
+                [[NCManageDatabase sharedInstance] setAccountAutoUploadProperty:@"autoUploadVideo" state:YES];
             }
             
             [[NCAutoUpload sharedInstance] alignPhotoLibrary];
             
         } else {
             
-            [[NCManageDatabase sharedInstance] setAccountAutoUploadFiled:@"autoUpload" state:NO];
-            [[NCManageDatabase sharedInstance] setAccountAutoUploadFiled:@"autoUploadFull" state:NO];
+            [[NCManageDatabase sharedInstance] setAccountAutoUploadProperty:@"autoUpload" state:NO];
+            [[NCManageDatabase sharedInstance] setAccountAutoUploadProperty:@"autoUploadFull" state:NO];
 
             // remove
-            [[NCManageDatabase sharedInstance] clearTable:[tableAutoUpload class] account:app.activeAccount];
+            [[NCManageDatabase sharedInstance] clearTable:[tableQueueUpload class] account:app.activeAccount];
         }
         
         [self reloadForm];
@@ -249,7 +255,7 @@
                 UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"_autoupload_background_title_", nil) message:NSLocalizedString(@"_autoupload_background_msg_", nil) delegate:nil cancelButtonTitle:nil otherButtonTitles:NSLocalizedString(@"_ok_", nil), nil];
                 [alertView show];
                     
-                [[NCManageDatabase sharedInstance] setAccountAutoUploadFiled:@"autoUploadBackground" state:YES];
+                [[NCManageDatabase sharedInstance] setAccountAutoUploadProperty:@"autoUploadBackground" state:YES];
                     
             } else {
                  
@@ -258,7 +264,7 @@
             
         } else {
             
-            [[NCManageDatabase sharedInstance] setAccountAutoUploadFiled:@"autoUploadBackground" state:NO];
+            [[NCManageDatabase sharedInstance] setAccountAutoUploadProperty:@"autoUploadBackground" state:NO];
             [[CCManageLocation sharedInstance] stopSignificantChangeUpdates];
         }
     }
@@ -268,24 +274,24 @@
         if ([[rowDescriptor.value valueData] boolValue] == YES) {
             
             [[NCAutoUpload sharedInstance] setupAutoUploadFull];
-            [[NCManageDatabase sharedInstance] setAccountAutoUploadFiled:@"autoUploadFull" state:YES];
+            [[NCManageDatabase sharedInstance] setAccountAutoUploadProperty:@"autoUploadFull" state:YES];
             
         } else {
             
-            [[NCManageDatabase sharedInstance] clearTable:[tableAutoUpload class] account:app.activeAccount];
+            [[NCManageDatabase sharedInstance] clearTable:[tableQueueUpload class] account:app.activeAccount];
             
             [app.netQueueUpload cancelAllOperations];
             [app.netQueueUploadWWan cancelAllOperations];
             
             [[CCNetworking sharedNetworking] settingSessionsDownload:NO upload:YES taskStatus:k_taskStatusCancel activeAccount:app.activeAccount activeUser:app.activeUser activeUrl:app.activeUrl];
             
-            [[NCManageDatabase sharedInstance] setAccountAutoUploadFiled:@"autoUploadFull" state:NO];
+            [[NCManageDatabase sharedInstance] setAccountAutoUploadProperty:@"autoUploadFull" state:NO];
         }
     }
 
     if ([rowDescriptor.tag isEqualToString:@"autoUploadImage"]) {
         
-        [[NCManageDatabase sharedInstance] setAccountAutoUploadFiled:@"autoUploadImage" state:[[rowDescriptor.value valueData] boolValue]];
+        [[NCManageDatabase sharedInstance] setAccountAutoUploadProperty:@"autoUploadImage" state:[[rowDescriptor.value valueData] boolValue]];
 
         if ([[rowDescriptor.value valueData] boolValue] == YES)
             [[NCAutoUpload sharedInstance] alignPhotoLibrary];
@@ -293,12 +299,12 @@
     
     if ([rowDescriptor.tag isEqualToString:@"autoUploadWWAnPhoto"]) {
         
-        [[NCManageDatabase sharedInstance] setAccountAutoUploadFiled:@"autoUploadWWAnPhoto" state:[[rowDescriptor.value valueData] boolValue]];
+        [[NCManageDatabase sharedInstance] setAccountAutoUploadProperty:@"autoUploadWWAnPhoto" state:[[rowDescriptor.value valueData] boolValue]];
     }
     
     if ([rowDescriptor.tag isEqualToString:@"autoUploadVideo"]) {
     
-        [[NCManageDatabase sharedInstance] setAccountAutoUploadFiled:@"autoUploadVideo" state:[[rowDescriptor.value valueData] boolValue]];
+        [[NCManageDatabase sharedInstance] setAccountAutoUploadProperty:@"autoUploadVideo" state:[[rowDescriptor.value valueData] boolValue]];
 
         if ([[rowDescriptor.value valueData] boolValue] == YES)
             [[NCAutoUpload sharedInstance] alignPhotoLibrary];            
@@ -306,12 +312,12 @@
     
     if ([rowDescriptor.tag isEqualToString:@"autoUploadWWAnVideo"]) {
         
-        [[NCManageDatabase sharedInstance] setAccountAutoUploadFiled:@"autoUploadWWAnVideo" state:[[rowDescriptor.value valueData] boolValue]];
+        [[NCManageDatabase sharedInstance] setAccountAutoUploadProperty:@"autoUploadWWAnVideo" state:[[rowDescriptor.value valueData] boolValue]];
     }
     
     if ([rowDescriptor.tag isEqualToString:@"autoUploadCreateSubfolder"]) {
         
-        [[NCManageDatabase sharedInstance] setAccountAutoUploadFiled:@"autoUploadCreateSubfolder" state:[[rowDescriptor.value valueData] boolValue]];
+        [[NCManageDatabase sharedInstance] setAccountAutoUploadProperty:@"autoUploadCreateSubfolder" state:[[rowDescriptor.value valueData] boolValue]];
     }
 }
 
@@ -337,6 +343,8 @@
     XLFormRowDescriptor *rowAutoUploadFull = [self.form formRowWithTag:@"autoUploadFull"];
     
     XLFormRowDescriptor *rowAutoUploadCreateSubfolder = [self.form formRowWithTag:@"autoUploadCreateSubfolder"];
+
+    XLFormRowDescriptor *rowAutoUploadFileName = [self.form formRowWithTag:@"autoUploadFileName"];
 
     
     // - STATUS ---------------------
@@ -379,46 +387,14 @@
     rowAutoUploadFull.hidden = [NSString stringWithFormat:@"$%@==0", @"autoUpload"];
     
     rowAutoUploadCreateSubfolder.hidden = [NSString stringWithFormat:@"$%@==0", @"autoUpload"];
+    
+    rowAutoUploadFileName.hidden = [NSString stringWithFormat:@"$%@==0", @"autoUpload"];
 
     // ----------------------
     
     [self.tableView reloadData];
     
     self.form.delegate = self;
-}
-
-- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
-{
-    tableAccount *tableAccount = [[NCManageDatabase sharedInstance] getAccountActive];
-    NSString *sectionName;
-    
-    switch (section)
-    {
-        case 0:
-            sectionName = NSLocalizedString(@"_settings_autoupload_", nil);
-            break;
-        case 1:
-            if (tableAccount.autoUpload) sectionName = NSLocalizedString(@"_autoupload_photos_", nil);
-            else sectionName = @"";
-            break;
-        case 2:
-            if (tableAccount.autoUpload) sectionName = NSLocalizedString(@"_autoupload_videos_", nil);
-            else sectionName = @"";
-            break;
-        case 3:
-            if (tableAccount.autoUpload) sectionName = NSLocalizedString(@"_autoupload_background_", nil);
-            else sectionName = @"";
-            break;
-        case 4:
-            if (tableAccount.autoUpload) sectionName = NSLocalizedString(@"_autoupload_fullphotos_", nil);
-            else sectionName = @"";
-            break;
-        case 5:
-            if (tableAccount.autoUpload) sectionName = NSLocalizedString(@"_autoupload_create_subfolder_", nil);
-            else sectionName = @"";
-            break;
-    }
-    return sectionName;
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForFooterInSection:(NSInteger)section
@@ -441,6 +417,10 @@
             break;
         case 5:
             if (tableAccount.autoUpload) sectionName =  NSLocalizedString(@"_autoupload_create_subfolder_footer_", nil);
+            else sectionName = @"";
+            break;
+        case 6:
+            if (tableAccount.autoUpload) sectionName =  NSLocalizedString(@"_autoupload_filenamemask_footer_", nil);
             else sectionName = @"";
             break;
     }

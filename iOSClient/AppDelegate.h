@@ -46,7 +46,6 @@
 // Timer Process
 @property (nonatomic, strong) NSTimer *timerProcessAutoUpload;
 @property (nonatomic, strong) NSTimer *timerUpdateApplicationIconBadgeNumber;
-@property (nonatomic, strong) NSTimer *timerVerifySessionInProgress;
 
 // For LMMediaPlayerView
 @property (strong, nonatomic) UIWindow *window;
@@ -127,9 +126,6 @@
 
 @property (nonatomic, strong) NSMutableDictionary *listMainVC;
 @property (nonatomic, strong) NSMutableDictionary *listProgressMetadata;
-
-// ico Image Cache
-@property (nonatomic, strong) NSMutableDictionary *icoImagesCache;
 
 // Is in Crypto Mode
 @property BOOL isCryptoCloudMode;

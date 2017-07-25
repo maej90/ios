@@ -26,8 +26,8 @@ import MobileCoreServices
 
 class CCloadItemData: NSObject {
     
-    func loadFiles(_ directoryUser: String, extensionContext: NSExtensionContext, vc: ShareViewController)
-    {
+    func loadFiles(_ directoryUser: String, extensionContext: NSExtensionContext, vc: ShareViewController) {
+        
         var filesName: [String] = []
         var conuter = 0
         let hud = CCHud(view: vc.view)!
@@ -87,9 +87,18 @@ class CCloadItemData: NSObject {
                                         
                                         print("item as url: \(String(describing: item))")
                                         
-                                        let pathExtention = URL(fileURLWithPath: url.lastPathComponent).pathExtension
-                                        let fileName = "\(dateFormatter.string(from: Date()))\(conuter).\(pathExtention)"
+                                        let fileName = url.lastPathComponent
+                                        // OLD fileName with date
+                                        //let pathExtention = URL(fileURLWithPath: url.lastPathComponent).pathExtension
+                                        //let fileName = "\(dateFormatter.string(from: Date()))\(conuter).\(pathExtention)"
                                         let filenamePath = directoryUser + "/" + fileName
+                                        
+                                        do {
+                                            try FileManager.default.removeItem(atPath: filenamePath)
+                                        }
+                                        catch let error as NSError {
+                                            print("Ooops! Something went wrong: \(error)")
+                                        }
                                         
                                         do {
                                             try FileManager.default.copyItem(atPath: url.path, toPath:filenamePath)

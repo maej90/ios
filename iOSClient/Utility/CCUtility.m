@@ -150,25 +150,30 @@
     [UICKeyChainStore setString:@"true" forKey:version service:k_serviceShareKeyChain];
 }
 
-+ (void)setActiveAccountShareExt:(NSString *)activeAccount
++ (void)setActiveAccountExt:(NSString *)activeAccount
 {
-    [UICKeyChainStore setString:activeAccount forKey:@"activeAccountShareExt" service:k_serviceShareKeyChain];
+    [UICKeyChainStore setString:activeAccount forKey:@"activeAccountExt" service:k_serviceShareKeyChain];
 }
 
-+ (void)setCryptatedShareExt:(BOOL)cryptated
++ (void)setCryptatedExt:(BOOL)cryptated
 {
     NSString *sCryptated = (cryptated) ? @"true" : @"false";
-    [UICKeyChainStore setString:sCryptated forKey:@"cryptatedShareExt" service:k_serviceShareKeyChain];
+    [UICKeyChainStore setString:sCryptated forKey:@"cryptatedExt" service:k_serviceShareKeyChain];
 }
 
-+ (void)setServerUrlShareExt:(NSString *)serverUrl
++ (void)setServerUrlExt:(NSString *)serverUrl
 {
-    [UICKeyChainStore setString:serverUrl forKey:@"serverUrlShareExt" service:k_serviceShareKeyChain];
+    [UICKeyChainStore setString:serverUrl forKey:@"serverUrlExt" service:k_serviceShareKeyChain];
 }
 
-+ (void)setTitleServerUrlShareExt:(NSString *)titleServerUrl
++ (void)setTitleServerUrlExt:(NSString *)titleServerUrl
 {
-    [UICKeyChainStore setString:titleServerUrl forKey:@"titleServerUrlShareExt" service:k_serviceShareKeyChain];
+    [UICKeyChainStore setString:titleServerUrl forKey:@"titleServerUrlExt" service:k_serviceShareKeyChain];
+}
+
++ (void)setFileNameExt:(NSString *)fileName
+{
+    [UICKeyChainStore setString:fileName forKey:@"fileNameExt" service:k_serviceShareKeyChain];
 }
 
 + (void)setEmail:(NSString *)email
@@ -192,6 +197,12 @@
     [UICKeyChainStore setString:mask forKey:key service:k_serviceShareKeyChain];
 }
 
++ (void)setFileNameType:(BOOL)prefix key:(NSString *)key
+{
+    NSString *sPrefix = (prefix) ? @"true" : @"false";
+    [UICKeyChainStore setString:sPrefix forKey:key service:k_serviceShareKeyChain];
+}
+
 + (void)setCreateMenuEncrypted:(BOOL)encrypted
 {
     NSString *sEncrypted = (encrypted) ? @"true" : @"false";
@@ -208,6 +219,12 @@
 {
     NSString *sHigh = (high) ? @"true" : @"false";
     [UICKeyChainStore setString:sHigh forKey:@"activityVerboseHigh" service:k_serviceShareKeyChain];
+}
+
++ (void)setShowHiddenFiles:(BOOL)show
+{
+    NSString *sShow = (show) ? @"true" : @"false";
+    [UICKeyChainStore setString:sShow forKey:@"showHiddenFiles" service:k_serviceShareKeyChain];
 }
 
 #pragma ------------------------------ GET
@@ -339,24 +356,29 @@
     return [NSString stringWithFormat:@"%04ld", number];
 }
 
-+ (NSString *)getActiveAccountShareExt
++ (NSString *)getActiveAccountExt
 {
-    return [UICKeyChainStore stringForKey:@"activeAccountShareExt" service:k_serviceShareKeyChain];
+    return [UICKeyChainStore stringForKey:@"activeAccountExt" service:k_serviceShareKeyChain];
 }
 
-+ (BOOL)getCryptatedShareExt
++ (BOOL)getCryptatedExt
 {
-    return [[UICKeyChainStore stringForKey:@"cryptatedShareExt" service:k_serviceShareKeyChain] boolValue];
+    return [[UICKeyChainStore stringForKey:@"cryptatedExt" service:k_serviceShareKeyChain] boolValue];
 }
 
-+ (NSString *)getServerUrlShareExt
++ (NSString *)getServerUrlExt
 {
-    return [UICKeyChainStore stringForKey:@"serverUrlShareExt" service:k_serviceShareKeyChain];
+    return [UICKeyChainStore stringForKey:@"serverUrlExt" service:k_serviceShareKeyChain];
 }
 
-+ (NSString *)getTitleServerUrlShareExt
++ (NSString *)getTitleServerUrlExt
 {
-    return [UICKeyChainStore stringForKey:@"titleServerUrlShareExt" service:k_serviceShareKeyChain];
+    return [UICKeyChainStore stringForKey:@"titleServerUrlExt" service:k_serviceShareKeyChain];
+}
+
++ (NSString *)getFileNameExt
+{
+    return [UICKeyChainStore stringForKey:@"fileNameExt" service:k_serviceShareKeyChain];
 }
 
 + (NSString *)getEmail
@@ -384,6 +406,11 @@
     return mask;
 }
 
++ (BOOL)getFileNameType:(NSString *)key
+{
+    return [[UICKeyChainStore stringForKey:key service:k_serviceShareKeyChain] boolValue];
+}
+
 + (BOOL)getCreateMenuEncrypted
 {
     return [[UICKeyChainStore stringForKey:@"createMenuEncrypted" service:k_serviceShareKeyChain] boolValue];
@@ -397,6 +424,11 @@
 + (BOOL)getActivityVerboseHigh
 {
     return [[UICKeyChainStore stringForKey:@"activityVerboseHigh" service:k_serviceShareKeyChain] boolValue];
+}
+
++ (BOOL)getShowHiddenFiles
+{
+    return [[UICKeyChainStore stringForKey:@"showHiddenFiles" service:k_serviceShareKeyChain] boolValue];
 }
 
 #pragma --------------------------------------------------------------------------------------------
@@ -434,6 +466,24 @@
     } else {
         return NSLocalizedString(@"_over_30_days_", nil);
     }
+}
+
+
++ (NSDate *)dateEnUsPosixFromCloud:(NSString *)dateString
+{
+    NSDate *date = [NSDate date];
+    NSError *error;
+    NSDateFormatter *dateFormatter = [NSDateFormatter new];
+    NSLocale *enUSPOSIXLocale = [NSLocale localeWithLocaleIdentifier:@"en_US_POSIX"];
+    [dateFormatter setLocale:enUSPOSIXLocale];
+    [dateFormatter setDateFormat:@"EEE, dd MMM y HH:mm:ss zzz"];
+
+    if (![dateFormatter getObjectValue:&date forString:dateString range:nil error:&error]) {
+        NSLog(@"Date '%@' could not be parsed: %@", dateString, error);
+        date = [NSDate date];
+    }
+
+    return date;
 }
 
 + (NSString *)transformedSize:(double)value
@@ -497,52 +547,95 @@
     return [NSString stringWithFormat:@"%@", randomString];
 }
 
-+ (NSString *)createFileNameFromAsset:(PHAsset *)asset key:(NSString *)key
++ (NSString *)createFileName:fileName fileDate:(NSDate *)fileDate fileType:(PHAssetMediaType)fileType keyFileName:(NSString *)keyFileName keyFileNameType:(NSString *)keyFileNameType
 {
-    NSDate *assetDate = asset.creationDate;
-    NSString *fileName;
-    
-    NSString *assetFileName = [asset valueForKey:@"filename"];
+    BOOL addFileNameType = NO;
     
     NSString *numberFileName;
-    if ([assetFileName length] > 8) numberFileName = [assetFileName substringWithRange:NSMakeRange(04, 04)];
+    if ([fileName length] > 8) numberFileName = [fileName substringWithRange:NSMakeRange(04, 04)];
     else numberFileName = [CCUtility getIncrementalNumber];
     
     NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
-    [formatter setDateFormat:@"yyyy-MM-dd HH-mm-ss"];
-    NSString *fileNameDate = [formatter stringFromDate:assetDate];
+    [formatter setDateFormat:@"yy-MM-dd HH-mm-ss"];
+    NSString *fileNameDate = [formatter stringFromDate:fileDate];
     
-    NSString *fileNameExt = [[assetFileName pathExtension] lowercaseString];
+    NSString *fileNameType = @"";
+    if (fileType == PHAssetMediaTypeImage)
+        fileNameType = NSLocalizedString(@"_photo_", nil);
+    if (fileType == PHAssetMediaTypeVideo)
+        fileNameType = NSLocalizedString(@"_video_", nil);
+    if (fileType == PHAssetMediaTypeAudio)
+        fileNameType = NSLocalizedString(@"_audio_", nil);
+    if (fileType == PHAssetMediaTypeUnknown)
+        fileNameType = NSLocalizedString(@"_unknown_", nil);
+
+    // Use File Name Type
+    if (keyFileNameType)
+        addFileNameType = [CCUtility getFileNameType:keyFileNameType];
     
-    if (key) {
+    NSString *fileNameExt = [[fileName pathExtension] lowercaseString];
+    
+    if (keyFileName) {
         
-        fileName = [CCUtility getFileNameMask:key];
+        fileName = [CCUtility getFileNameMask:keyFileName];
         
         if ([fileName length] > 0) {
             
             [formatter setDateFormat:@"dd"];
-            NSString *day = [formatter stringFromDate:assetDate];
+            NSString *dayNumber = [formatter stringFromDate:fileDate];
             [formatter setDateFormat:@"MMM"];
-            NSString *month = [formatter stringFromDate:assetDate];
+            NSString *month = [formatter stringFromDate:fileDate];
+            [formatter setDateFormat:@"MM"];
+            NSString *monthNumber = [formatter stringFromDate:fileDate];
             [formatter setDateFormat:@"yyyy"];
-            NSString *year = [formatter stringFromDate:assetDate];
+            NSString *year = [formatter stringFromDate:fileDate];
+            [formatter setDateFormat:@"yy"];
+            NSString *yearNumber = [formatter stringFromDate:fileDate];
+            [formatter setDateFormat:@"HH"];
+            NSString *hour24 = [formatter stringFromDate:fileDate];
+            [formatter setDateFormat:@"hh"];
+            NSString *hour12 = [formatter stringFromDate:fileDate];
+            [formatter setDateFormat:@"mm"];
+            NSString *minute = [formatter stringFromDate:fileDate];
+            [formatter setDateFormat:@"ss"];
+            NSString *second = [formatter stringFromDate:fileDate];
+            [formatter setDateFormat:@"a"];
+            NSString *ampm = [formatter stringFromDate:fileDate];
             
             // Replace string with date
 
-            fileName = [fileName stringByReplacingOccurrencesOfString:@"DD" withString:day];
-            fileName = [fileName stringByReplacingOccurrencesOfString:@"MM" withString:month];
-            fileName = [fileName stringByReplacingOccurrencesOfString:@"YY" withString:year];
+            fileName = [fileName stringByReplacingOccurrencesOfString:@"DD" withString:dayNumber];
+            fileName = [fileName stringByReplacingOccurrencesOfString:@"MMM" withString:month];
+            fileName = [fileName stringByReplacingOccurrencesOfString:@"MM" withString:monthNumber];
+            fileName = [fileName stringByReplacingOccurrencesOfString:@"YYYY" withString:year];
+            fileName = [fileName stringByReplacingOccurrencesOfString:@"YY" withString:yearNumber];
 
-            fileName = [NSString stringWithFormat:@"%@-%@.%@", fileName, numberFileName, fileNameExt];
+            fileName = [fileName stringByReplacingOccurrencesOfString:@"HH" withString:hour24];
+            fileName = [fileName stringByReplacingOccurrencesOfString:@"hh" withString:hour12];
+            fileName = [fileName stringByReplacingOccurrencesOfString:@"mm" withString:minute];
+            fileName = [fileName stringByReplacingOccurrencesOfString:@"ss" withString:second];
+            fileName = [fileName stringByReplacingOccurrencesOfString:@"ampm" withString:ampm];
+
+            if (addFileNameType)
+                fileName = [NSString stringWithFormat:@"%@ %@-%@.%@", fileNameType, fileName, numberFileName, fileNameExt];
+            else
+                fileName = [NSString stringWithFormat:@"%@-%@.%@", fileName, numberFileName, fileNameExt];
             
         } else {
             
-            fileName = [NSString stringWithFormat:@"%@ %@.%@", fileNameDate, numberFileName, fileNameExt];
+            if (addFileNameType)
+                fileName = [NSString stringWithFormat:@"%@ %@ %@.%@", fileNameType, fileNameDate, numberFileName, fileNameExt];
+            else
+                fileName = [NSString stringWithFormat:@"%@ %@.%@", fileNameDate, numberFileName, fileNameExt];
         }
         
     } else {
         
-        fileName = [NSString stringWithFormat:@"%@ %@.%@", fileNameDate, numberFileName, fileNameExt];
+        if (addFileNameType)
+            fileName = [NSString stringWithFormat:@"%@ %@ %@.%@", fileNameType, fileNameDate, numberFileName, fileNameExt];
+        else
+            fileName = [NSString stringWithFormat:@"%@ %@.%@", fileNameDate, numberFileName, fileNameExt];
+
     }
     
     return fileName;
@@ -773,9 +866,40 @@
 #pragma mark ===== CCMetadata =====
 #pragma --------------------------------------------------------------------------------------------
 
-+ (tableMetadata *)trasformedOCFileToCCMetadata:(OCFileDto *)itemDto fileNamePrint:(NSString *)fileNamePrint serverUrl:(NSString *)serverUrl directoryID:(NSString *)directoryID autoUploadFileName:(NSString *)autoUploadFileName autoUploadDirectory:(NSString *)autoUploadDirectory activeAccount:(NSString *)activeAccount directoryUser:(NSString *)directoryUser
++ (tableMetadata *)createMetadataWithAccount:(NSString *)account date:(NSDate *)date directory:(BOOL)directory fileID:(NSString *)fileID directoryID:(NSString *)directoryID fileName:(NSString *)fileName etag:(NSString *)etag size:(double)size status:(double)status
 {
     tableMetadata *metadata = [tableMetadata new];
+    
+    metadata.account = account;
+    metadata.date = date;
+    metadata.directory = directory;
+    metadata.directoryID = directoryID;
+    metadata.etag = etag;
+    metadata.fileID = fileID;
+    metadata.fileName = fileName;
+    metadata.fileNameData = fileName;
+    metadata.fileNamePrint = fileName;
+    metadata.nameCurrentDevice = [CCUtility getNameCurrentDevice];
+    metadata.size = size;
+    metadata.status = status;
+    metadata.type = k_metadataType_file;
+    metadata.uuid = [CCUtility getUUID];
+    
+    NSString *serverUrl = [[NCManageDatabase sharedInstance] getServerUrl:directoryID];
+    NSString *autoUploadFileName = [[NCManageDatabase sharedInstance] getAccountAutoUploadFileName];
+    NSString *autoUploadDirectory = [[NCManageDatabase sharedInstance] getAccountAutoUploadDirectory:serverUrl];
+    
+    [self insertTypeFileIconName:metadata serverUrl:serverUrl autoUploadFileName:autoUploadFileName autoUploadDirectory:autoUploadDirectory];
+    
+    return metadata;
+}
+
++ (tableMetadata *)trasformedOCFileToCCMetadata:(OCFileDto *)itemDto fileName:(NSString *)fileName fileNamePrint:(NSString *)fileNamePrint serverUrl:(NSString *)serverUrl directoryID:(NSString *)directoryID autoUploadFileName:(NSString *)autoUploadFileName autoUploadDirectory:(NSString *)autoUploadDirectory activeAccount:(NSString *)activeAccount directoryUser:(NSString *)directoryUser
+{
+    tableMetadata *metadata = [tableMetadata new];
+    
+    fileName = [CCUtility removeForbiddenCharactersServer:fileName];
+    fileNamePrint = [CCUtility removeForbiddenCharactersServer:fileNamePrint];
     
     metadata.account = activeAccount;
     metadata.cryptated = NO;
@@ -785,9 +909,9 @@
     metadata.favorite = itemDto.isFavorite;
     metadata.fileID = itemDto.ocId;
     metadata.directoryID = directoryID;
-    metadata.fileName = [CCUtility removeForbiddenCharactersServer:itemDto.fileName];
-    metadata.fileNameData = [CCUtility trasformedFileNamePlistInCrypto:metadata.fileName];
-    metadata.fileNamePrint = [CCUtility removeForbiddenCharactersServer:fileNamePrint];
+    metadata.fileName = fileName;
+    metadata.fileNameData = [CCUtility trasformedFileNamePlistInCrypto:fileName];
+    metadata.fileNamePrint = fileNamePrint;
     metadata.iconName = @"";
     metadata.model = @"";
     metadata.nameCurrentDevice = [CCUtility getNameCurrentDevice];
@@ -831,6 +955,11 @@
     if ([metadata.type isEqualToString: k_metadataType_template]) {
         
         metadata.typeFile = k_metadataTypeFile_template;
+    
+    } else if ([metadata.fileName isEqualToString:@"."]) {
+        
+        metadata.typeFile = k_metadataTypeFile_unknown;
+        metadata.iconName = @"file";
         
     } else if (!metadata.directory) {
         
@@ -1052,7 +1181,7 @@
     metadata.protocolCrypto = k_versionProtocolPlist;
     metadata.size = [attributes[NSFileSize] longValue];
     metadata.thumbnailExists = false;
-    metadata.type = k_metadataType_local;
+    metadata.type = k_metadataType_file;
     metadata.title = @"";
     metadata.uuid = [CCUtility getUUID];
     

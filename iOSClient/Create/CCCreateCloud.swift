@@ -79,6 +79,10 @@ class CreateMenuAdd: NSObject {
             appDelegate.activeMain.returnCreate(Int(k_returnCreateFilePlain))
         })
         
+        actionSheet.addButton(withTitle: NSLocalizedString("_upload_file_text_", comment: ""), image: CCGraphics.changeThemingColorImage(UIImage(named: "file_txt"), color: colorIcon), backgroundColor: UIColor.white, height: 50.0, type: AHKActionSheetButtonType.default, handler: {(AHKActionSheet) -> Void in
+            appDelegate.activeMain.returnCreate(Int(k_returnCreateFileText))
+        })
+        
         if appDelegate.isCryptoCloudMode {
         
             actionSheet.addButton(withTitle: NSLocalizedString("_upload_encrypted_mode", comment: ""), image: UIImage(named: "actionSheetLock"), backgroundColor: colorLightGray, height: 50.0, type: AHKActionSheetButtonType.encrypted, handler: {(AHKActionSheet) -> Void in
@@ -285,6 +289,15 @@ class CreateFormUploadAssets: XLFormViewController, CCMoveDelegate {
         }
         section.addFormRow(row)
 
+        // Section: Add File Name Type
+
+        section = XLFormSectionDescriptor.formSection()
+        form.addFormSection(section)
+
+        row = XLFormRowDescriptor(tag: "addFileNameType", rowType: XLFormRowDescriptorTypeBooleanSwitch, title: NSLocalizedString("_filenametype_photo_video_", comment: ""))
+        row.value = CCUtility.getFileNameType(k_keyFileNameType)
+        section.addFormRow(row)
+        
         // Section: Rename File Name
         
         section = XLFormSectionDescriptor.formSection()
@@ -339,13 +352,17 @@ class CreateFormUploadAssets: XLFormViewController, CCMoveDelegate {
                 
             }
         }
+        else if formRow.tag == "addFileNameType" {
+            CCUtility.setFileNameType((formRow.value! as AnyObject).boolValue, key: k_keyFileNameType)
+            self.reloadForm()
+        }
         else if formRow.tag == "maskFileName" {
             
-            let fileName : String? = formRow.value as? String
+            let fileName = formRow.value as? String
             
             self.form.delegate = nil
             
-            if fileName != nil {
+            if let fileName = fileName {
                 formRow.value = CCUtility.removeForbiddenCharactersServer(fileName)
             }
             
@@ -395,9 +412,9 @@ class CreateFormUploadAssets: XLFormViewController, CCMoveDelegate {
     
     override func viewWillDisappear(_ animated: Bool)
     {
-        self.delegate?.dismissFormUploadAssets()
-        
         super.viewWillDisappear(animated)
+
+        self.delegate?.dismissFormUploadAssets()        
     }
 
     func reloadForm() {
@@ -432,8 +449,10 @@ class CreateFormUploadAssets: XLFormViewController, CCMoveDelegate {
         case 1:
             return "    " + NSLocalizedString("_use_folder_photos_", comment: "")
         case 2:
-            return "    " + NSLocalizedString("_rename_filename_", comment: "")
+            return "    " + NSLocalizedString("_add_filenametype_", comment: "")
         case 3:
+            return "    " + NSLocalizedString("_rename_filename_", comment: "")
+        case 4:
             return NSLocalizedString("_preview_filename_", comment: "")
         default:
             return ""
@@ -462,13 +481,13 @@ class CreateFormUploadAssets: XLFormViewController, CCMoveDelegate {
     
         self.serverUrl = serverUrlTo
         
-        if title == nil {
+        if let title = title {
             
-            self.titleServerUrl = "/"
+            self.titleServerUrl = title
             
         } else {
             
-            self.titleServerUrl = title
+            self.titleServerUrl = "/"
         }
         
         self.reloadForm()
@@ -502,10 +521,11 @@ class CreateFormUploadAssets: XLFormViewController, CCMoveDelegate {
     func previewFileName(valueRename : String?) -> String {
         
         var returnString : String = ""
+        let asset = assets[0] as! PHAsset
         
-        if valueRename != nil {
+        if let valueRename = valueRename {
             
-            let valueRenameTrimming = valueRename!.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
+            let valueRenameTrimming = valueRename.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
             
             if valueRenameTrimming.characters.count > 0 {
                 
@@ -513,18 +533,17 @@ class CreateFormUploadAssets: XLFormViewController, CCMoveDelegate {
                 CCUtility.setFileNameMask(valueRenameTrimming, key: k_keyFileNameMask)
                 self.form.delegate = self
                 
-                returnString = CCUtility.createFileName(from: assets[0] as! PHAsset, key: k_keyFileNameMask)
-                
+                returnString = CCUtility.createFileName(asset.value(forKey: "filename"), fileDate: asset.creationDate, fileType: asset.mediaType, keyFileName: k_keyFileNameMask, keyFileNameType: k_keyFileNameType)
             } else {
                 
                 CCUtility.setFileNameMask("", key: k_keyFileNameMask)
-                returnString = CCUtility.createFileName(from: assets[0] as! PHAsset, key: nil)
+                returnString = CCUtility.createFileName(asset.value(forKey: "filename"), fileDate: asset.creationDate, fileType: asset.mediaType, keyFileName: nil, keyFileNameType: k_keyFileNameType)
             }
             
         } else {
             
             CCUtility.setFileNameMask("", key: k_keyFileNameMask)
-            returnString = CCUtility.createFileName(from: assets[0] as! PHAsset, key: nil)
+            returnString = CCUtility.createFileName(asset.value(forKey: "filename"), fileDate: asset.creationDate, fileType: asset.mediaType, keyFileName: nil, keyFileNameType: k_keyFileNameType)
         }
         
         return NSLocalizedString("_preview_filename_", comment: "") + ":" + "\n\n" + returnString
@@ -549,6 +568,178 @@ class CreateFormUploadAssets: XLFormViewController, CCMoveDelegate {
         self.present(navigationController, animated: true, completion: nil)
     }
     
+}
+
+class CreateFormUploadFile: XLFormViewController, CCMoveDelegate {
+    
+    var serverUrl = ""
+    var titleServerUrl = ""
+    var fileName = ""
+    var text = ""
+    
+    let appDelegate = UIApplication.shared.delegate as! AppDelegate
+    
+    convenience init(_ titleServerUrl: String, serverUrl: String, text: String, fileName: String) {
+        
+        self.init()
+        
+        if titleServerUrl.isEmpty == true {
+            self.titleServerUrl = "/"
+        } else {
+            self.titleServerUrl = titleServerUrl
+        }
+        
+        self.fileName = fileName
+        self.serverUrl = serverUrl
+        self.text = text
+        
+        self.initializeForm()
+    }
+    
+    //MARK: XLFormDescriptorDelegate
+    
+    func initializeForm() {
+        
+        let form : XLFormDescriptor = XLFormDescriptor() as XLFormDescriptor
+        form.rowNavigationOptions = XLFormRowNavigationOptions.stopDisableRow
+        
+        var section : XLFormSectionDescriptor
+        var row : XLFormRowDescriptor
+        
+        // Section: Destination Folder
+        
+        section = XLFormSectionDescriptor.formSection()
+        form.addFormSection(section)
+        row = XLFormRowDescriptor(tag: "ButtonDestinationFolder", rowType: XLFormRowDescriptorTypeButton, title: self.titleServerUrl)
+        let imageFolder = CCGraphics.changeThemingColorImage(UIImage(named: "folder")!, color: NCBrandColor.sharedInstance.brand) as UIImage
+        row.cellConfig.setObject(imageFolder, forKey: "imageView.image" as NSCopying)
+        row.cellConfig.setObject(UIColor.black, forKey: "textLabel.textColor" as NSCopying)
+        row.action.formSelector = #selector(changeDestinationFolder(_:))
+        section.addFormRow(row)
+        
+        // Section: File Name
+        
+        section = XLFormSectionDescriptor.formSection()
+        form.addFormSection(section)
+        
+        row = XLFormRowDescriptor(tag: "fileName", rowType: XLFormRowDescriptorTypeAccount, title: NSLocalizedString("_filename_", comment: ""))
+        row.value = fileName
+        section.addFormRow(row)
+        
+        self.form = form
+    }
+    
+    override func formRowDescriptorValueHasChanged(_ formRow: XLFormRowDescriptor!, oldValue: Any!, newValue: Any!) {
+        
+        super.formRowDescriptorValueHasChanged(formRow, oldValue: oldValue, newValue: newValue)
+        
+        if formRow.tag == "fileName" {
+            
+            self.form.delegate = nil
+            
+            if let fileNameNew = formRow.value {
+                 self.fileName = CCUtility.removeForbiddenCharactersServer(fileNameNew as! String)
+            }
+        
+            self.form.delegate = self
+        }
+    }
+    
+    // MARK: - View Life Cycle
+    
+    override func viewDidLoad() {
+        
+        super.viewDidLoad()
+        
+        let cancelButton : UIBarButtonItem = UIBarButtonItem(title: NSLocalizedString("_cancel_", comment: ""), style: UIBarButtonItemStyle.plain, target: self, action: #selector(cancel))
+        let saveButton : UIBarButtonItem = UIBarButtonItem(title: NSLocalizedString("_save_", comment: ""), style: UIBarButtonItemStyle.plain, target: self, action: #selector(save))
+        
+        self.navigationItem.leftBarButtonItem = cancelButton
+        self.navigationItem.rightBarButtonItem = saveButton
+        
+        self.navigationController?.navigationBar.isTranslucent = false
+        self.navigationController?.navigationBar.barTintColor = NCBrandColor.sharedInstance.brand
+        self.navigationController?.navigationBar.tintColor = NCBrandColor.sharedInstance.navigationBarText
+        self.navigationController?.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: NCBrandColor.sharedInstance.navigationBarText]
+        
+        self.tableView.separatorStyle = UITableViewCellSeparatorStyle.none
+        self.tableView.backgroundColor = NCBrandColor.sharedInstance.tableBackground
+        
+        self.reloadForm()
+    }
+    
+    override func viewWillDisappear(_ animated: Bool)
+    {
+        super.viewWillDisappear(animated)
+    }
+    
+    func reloadForm() {
+        
+        self.form.delegate = nil
+        
+        let buttonDestinationFolder : XLFormRowDescriptor  = self.form.formRow(withTag: "ButtonDestinationFolder")!
+        buttonDestinationFolder.title = self.titleServerUrl
+        
+        self.tableView.reloadData()
+        self.form.delegate = self
+    }
+    
+    // MARK: - Action
+    
+    func moveServerUrl(to serverUrlTo: String!, title: String!) {
+        
+        self.serverUrl = serverUrlTo
+        
+        if let title = title {
+            
+            self.titleServerUrl = title
+            
+        } else {
+            
+            self.titleServerUrl = "/"
+        }
+        
+        self.reloadForm()
+    }
+    
+    func save() {
+        
+        self.dismiss(animated: true, completion: {
+            
+            let data = self.text.data(using: .utf8)
+            let success = FileManager.default.createFile(atPath: "\(self.appDelegate.directoryUser!)/\(self.fileName)", contents: data, attributes: nil)
+            
+            if success {
+                CCNetworking.shared().uploadFile(self.fileName, serverUrl: self.serverUrl, cryptated: false, onlyPlist: false, session: k_upload_session, taskStatus: Int(k_taskStatusResume), selector: nil, selectorPost: nil, errorCode: 0, delegate: self)
+            } else {
+                self.appDelegate.messageNotification("_error_", description: "_error_creation_file_", visible: true, delay: TimeInterval(k_dismissAfterSecond), type: TWMessageBarMessageType.info, errorCode: 0)
+            }            
+        })
+    }
+    
+    func cancel() {
+        
+        self.dismiss(animated: true, completion: nil)
+    }
+    
+    func changeDestinationFolder(_ sender: XLFormRowDescriptor) {
+        
+        self.deselectFormRow(sender)
+        
+        let storyboard : UIStoryboard = UIStoryboard(name: "CCMove", bundle: nil)
+        let navigationController = storyboard.instantiateViewController(withIdentifier: "CCMove") as! UINavigationController
+        let viewController : CCMove = navigationController.topViewController as! CCMove
+        
+        viewController.delegate = self;
+        viewController.tintColor = NCBrandColor.sharedInstance.navigationBarText
+        viewController.barTintColor = NCBrandColor.sharedInstance.brand
+        viewController.tintColorTitle = NCBrandColor.sharedInstance.navigationBarText
+        viewController.move.title = NSLocalizedString("_select_", comment: "");
+        viewController.networkingOperationQueue =  appDelegate.netQueue
+        
+        navigationController.modalPresentationStyle = UIModalPresentationStyle.formSheet
+        self.present(navigationController, animated: true, completion: nil)
+    }
 }
 
 

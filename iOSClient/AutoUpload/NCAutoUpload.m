@@ -87,7 +87,7 @@
         tableAccount *account = [[NCManageDatabase sharedInstance] getAccountActive];
 
         if (account.autoUpload == YES)
-            [[NCManageDatabase sharedInstance] setAccountAutoUploadFiled:@"autoUpload" state:NO];
+            [[NCManageDatabase sharedInstance] setAccountAutoUploadProperty:@"autoUpload" state:NO];
         
         [[CCManageLocation sharedInstance] stopSignificantChangeUpdates];
         
@@ -107,7 +107,7 @@
         tableAccount *account = [[NCManageDatabase sharedInstance] getAccountActive];
 
         if (account.autoUpload == YES)
-            [[NCManageDatabase sharedInstance] setAccountAutoUploadFiled:@"autoUpload" state:NO];
+            [[NCManageDatabase sharedInstance] setAccountAutoUploadProperty:@"autoUpload" state:NO];
         
         [[CCManageLocation sharedInstance] stopSignificantChangeUpdates];
         
@@ -142,7 +142,7 @@
                 if ([ALAssetsLibrary authorizationStatus] == ALAuthorizationStatusAuthorized) {
                     
                     if (account.autoUploadBackground == YES)
-                        [[NCManageDatabase sharedInstance] setAccountAutoUploadFiled:@"autoUploadBackground" state:NO];
+                        [[NCManageDatabase sharedInstance] setAccountAutoUploadProperty:@"autoUploadBackground" state:NO];
                     
                     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"_location_not_enabled_", nil) message:NSLocalizedString(@"_location_not_enabled_msg_", nil) delegate:nil cancelButtonTitle:NSLocalizedString(@"_ok_", nil) otherButtonTitles:nil];
                     [alert show];
@@ -159,14 +159,14 @@
             if ([ALAssetsLibrary authorizationStatus] == ALAuthorizationStatusAuthorized) {
                 
                 if (account.autoUploadBackground == NO)
-                    [[NCManageDatabase sharedInstance] setAccountAutoUploadFiled:@"autoUploadBackground" state:YES];
+                    [[NCManageDatabase sharedInstance] setAccountAutoUploadProperty:@"autoUploadBackground" state:YES];
                 
                 [[CCManageLocation sharedInstance] startSignificantChangeUpdates];
                 
             } else {
                 
                 if (account.autoUploadBackground == YES)
-                    [[NCManageDatabase sharedInstance] setAccountAutoUploadFiled:@"autoUploadBackground" state:NO];
+                    [[NCManageDatabase sharedInstance] setAccountAutoUploadProperty:@"autoUploadBackground" state:NO];
                 
                 [[CCManageLocation sharedInstance] stopSignificantChangeUpdates];
                 
@@ -178,7 +178,7 @@
     } else {
         
         if (account.autoUploadBackground == YES)
-            [[NCManageDatabase sharedInstance] setAccountAutoUploadFiled:@"autoUploadBackground" state:NO];
+            [[NCManageDatabase sharedInstance] setAccountAutoUploadProperty:@"autoUploadBackground" state:NO];
         
         [[CCManageLocation sharedInstance] stopSignificantChangeUpdates];
         
@@ -223,7 +223,7 @@
                 if ([CCManageLocation sharedInstance].firstChangeAuthorizationDone) {
                     
                     if (account.autoUploadBackground == YES)
-                        [[NCManageDatabase sharedInstance] setAccountAutoUploadFiled:@"autoUploadBackground" state:NO];
+                        [[NCManageDatabase sharedInstance] setAccountAutoUploadProperty:@"autoUploadBackground" state:NO];
                     
                     [[CCManageLocation sharedInstance] stopSignificantChangeUpdates];
                 }
@@ -238,7 +238,7 @@
             
             if (account.autoUploadBackground == YES) {
                 
-                [[NCManageDatabase sharedInstance] setAccountAutoUploadFiled:@"autoUploadBackground" state:NO];
+                [[NCManageDatabase sharedInstance] setAccountAutoUploadProperty:@"autoUploadBackground" state:NO];
                 
                 [[CCManageLocation sharedInstance] stopSignificantChangeUpdates];
                 
@@ -280,10 +280,10 @@
         } else {
             
             if (account.autoUpload == YES)
-                [[NCManageDatabase sharedInstance] setAccountAutoUploadFiled:@"autoUpload" state:NO];
+                [[NCManageDatabase sharedInstance] setAccountAutoUploadProperty:@"autoUpload" state:NO];
             
             if (account.autoUploadBackground == YES)
-                [[NCManageDatabase sharedInstance] setAccountAutoUploadFiled:@"autoUploadBackground" state:NO];
+                [[NCManageDatabase sharedInstance] setAccountAutoUploadProperty:@"autoUploadBackground" state:NO];
             
             [[CCManageLocation sharedInstance] stopSignificantChangeUpdates];
         }
@@ -316,7 +316,7 @@
     tableAccount *account = [[NCManageDatabase sharedInstance] getAccountActive];
     
     // Check Asset : NEW or FULL
-    PHFetchResult *newAssetToUpload = [self getCameraRollAssets:account assetsFull:assetsFull];
+    PHFetchResult *newAssetToUpload = [self getCameraRollAssets:account assetsFull:assetsFull alignPhotoLibrary:NO];
     
     // News Assets ? if no verify if blocked Table Auto Upload -> Autostart
     if ([newAssetToUpload count] == 0) {
@@ -380,8 +380,8 @@
         NSDate *assetDate = asset.creationDate;
         PHAssetMediaType assetMediaType = asset.mediaType;
         NSString *session;
-        NSString *fileName = [CCUtility createFileNameFromAsset:asset key:nil];
-        
+        NSString *fileName = [CCUtility createFileName:[asset valueForKey:@"filename"] fileDate:asset.creationDate fileType:asset.mediaType keyFileName:k_keyFileNameAutoUploadMask keyFileNameType:k_keyFileNameAutoUploadType];
+
         // Select type of session
         
         if (assetMediaType == PHAssetMediaTypeImage && tableAccount.autoUploadWWAnPhoto == NO) session = k_upload_session;
@@ -415,32 +415,33 @@
             else
                 metadataNet.selectorPost = selectorUploadRemovePhoto;
             
-            metadataNet.priority = NSOperationQueuePriorityLow;
         } else {
             metadataNet.selector = selectorUploadAutoUpload;
             metadataNet.selectorPost = nil;
-            metadataNet.priority = NSOperationQueuePriorityLow;
         }
+        
+        if (assetMediaType == PHAssetMediaTypeImage)
+            metadataNet.priority = k_priorityAutoUploadImage;
+        else
+            metadataNet.priority = k_priorityAutoUploadVideo;
+
         metadataNet.fileName = fileName;
         metadataNet.serverUrl = serverUrl;
         metadataNet.session = session;
         metadataNet.taskStatus = k_taskStatusResume;
         
-        if (assetsFull) {
-            [metadataNetFull addObject:metadataNet];
-        } else {            
-            NCRequestAsset *requestAsset = [NCRequestAsset new];
-            requestAsset.delegate = self;
-            
-            [requestAsset writeAssetToSandboxFileName:metadataNet.fileName assetLocalIdentifier:metadataNet.assetLocalIdentifier selector:metadataNet.selector selectorPost:metadataNet.selectorPost errorCode:0 metadataNet:metadataNet serverUrl:serverUrl activeUrl:app.activeUrl directoryUser:app.directoryUser cryptated:NO session:metadataNet.session taskStatus:0 delegate:nil];
-        }
+        [metadataNetFull addObject:metadataNet];
+        
+        // Update database
+        if (!assetsFull)
+            [self addQueueUploadAndPhotoLibrary:metadataNet asset:asset];
     }
     
-    // Insert all assets (Full) in TableAutoUpload
+    // Insert all assets (Full) in tableQueueUpload
     if (assetsFull && [metadataNetFull count] > 0) {
+    
+        [[NCManageDatabase sharedInstance] addQueueUploadWithMetadatasNet:metadataNetFull];
         
-        [[NCManageDatabase sharedInstance] addAutoUploadWithMetadatasNet:metadataNetFull];
-          
         // Update icon badge number
         [app updateApplicationIconBadgeNumber];
     }
@@ -449,25 +450,31 @@
     [_hud hideHud];
 }
 
-- (void)addDatabaseAutoUpload:(CCMetadataNet *)metadataNet asset:(PHAsset *)asset
+- (void)addQueueUploadAndPhotoLibrary:(CCMetadataNet *)metadataNet asset:(PHAsset *)asset
 {
-    if ([[NCManageDatabase sharedInstance] addAutoUploadWithMetadataNet:metadataNet]) {
+    @synchronized(self) {
         
-        [[NCManageDatabase sharedInstance] addActivityClient:metadataNet.fileName fileID:metadataNet.assetLocalIdentifier action:k_activityDebugActionAutoUpload selector:metadataNet.selector note:@"Add Auto Upload, add new asset" type:k_activityTypeInfo verbose:k_activityVerboseHigh activeUrl:app.activeUrl];
+        if ([[NCManageDatabase sharedInstance] addQueueUploadWithMetadataNet:metadataNet]) {
         
-    } else {
+            [[NCManageDatabase sharedInstance] addActivityClient:metadataNet.fileName fileID:metadataNet.assetLocalIdentifier action:k_activityDebugActionAutoUpload selector:metadataNet.selector note:@"Add Auto Upload, add new asset" type:k_activityTypeInfo verbose:k_activityVerboseHigh activeUrl:app.activeUrl];
         
-        [[NCManageDatabase sharedInstance] addActivityClient:metadataNet.fileName fileID:metadataNet.assetLocalIdentifier action:k_activityDebugActionAutoUpload selector:metadataNet.selector note:@"Add Auto Upload, asset already present" type:k_activityTypeInfo verbose:k_activityVerboseHigh activeUrl:app.activeUrl];
-    }
+        } else {
     
-    // Add asset in table Photo Library
-    if ([metadataNet.selector isEqualToString:selectorUploadAutoUpload])
-        [[NCManageDatabase sharedInstance] addPhotoLibrary:@[asset]];
+            [[NCManageDatabase sharedInstance] addActivityClient:metadataNet.fileName fileID:metadataNet.assetLocalIdentifier action:k_activityDebugActionAutoUpload selector:metadataNet.selector note:@"Add Auto Upload, asset already present or db in write transaction" type:k_activityTypeInfo verbose:k_activityVerboseHigh activeUrl:app.activeUrl];
+        }
+    
+        // Add asset in table Photo Library
+        if ([metadataNet.selector isEqualToString:selectorUploadAutoUpload]) {
+            if (![[NCManageDatabase sharedInstance] addPhotoLibrary:@[asset]]) {
+                [[NCManageDatabase sharedInstance] addActivityClient:metadataNet.fileName fileID:metadataNet.assetLocalIdentifier action:k_activityDebugActionAutoUpload selector:metadataNet.selector note:@"Add Photo Library, db in write transaction" type:k_activityTypeInfo verbose:k_activityVerboseHigh activeUrl:app.activeUrl];
+            }
+        }
         
-    dispatch_async(dispatch_get_main_queue(), ^{
-        // Update icon badge number
-        [app updateApplicationIconBadgeNumber];
-    });
+        dispatch_async(dispatch_get_main_queue(), ^{
+            // Update icon badge number
+            [app updateApplicationIconBadgeNumber];
+        });
+    }
 }
 
 #pragma --------------------------------------------------------------------------------------------
@@ -477,41 +484,33 @@
 - (void)loadAutoUpload:(NSNumber *)maxConcurrent
 {
     CCMetadataNet *metadataNet;
-    PHFetchResult *result;
     
     // Stop Timer
     [app.timerProcessAutoUpload invalidate];
     
     NSInteger maxConcurrentUpload = [maxConcurrent integerValue];
-    NSInteger counterUploadInQueueAndInLock = [app getNumberUploadInQueues] + [app getNumberUploadInQueuesWWan] + [[[NCManageDatabase sharedInstance] getLockAutoUpload] count];
+    NSInteger counterUploadInQueueAndInLock = [app getNumberUploadInQueues] + [app getNumberUploadInQueuesWWan] + [[[NCManageDatabase sharedInstance] getLockQueueUpload] count];
     NSInteger counterNewUpload = 0;
  
     // ------------------------- <selector Auto Upload> -------------------------
     
     while (counterUploadInQueueAndInLock < maxConcurrentUpload) {
         
-        metadataNet = [[NCManageDatabase sharedInstance] getAutoUploadWithSelector:selectorUploadAutoUpload];
+        metadataNet = [[NCManageDatabase sharedInstance] getQueueUploadWithSelector:selectorUploadAutoUpload];
         if (metadataNet) {
             
-            result = [PHAsset fetchAssetsWithLocalIdentifiers:@[metadataNet.assetLocalIdentifier] options:nil];
+            // Priority Error only in Foreground
+            if ([[UIApplication sharedApplication] applicationState] == UIApplicationStateBackground && metadataNet.priority <= k_priorityAutoUploadError)
+                continue;
+            
+            [[CCNetworking sharedNetworking] uploadFileFromAssetLocalIdentifier:metadataNet delegate:app.activeMain];
+            
+            counterNewUpload++;
             
         } else
             break;
         
-        if (result.count > 0) {
-            
-            [[CCNetworking sharedNetworking] uploadFileFromAssetLocalIdentifier:metadataNet.assetLocalIdentifier fileName:metadataNet.fileName serverUrl:metadataNet.serverUrl cryptated:metadataNet.cryptated session:metadataNet.session taskStatus:metadataNet.taskStatus selector:metadataNet.selector selectorPost:metadataNet.selectorPost errorCode:metadataNet.errorCode delegate:app.activeMain];
-            
-            counterNewUpload++;
-            
-        } else {
-            
-            [[NCManageDatabase sharedInstance] addActivityClient:metadataNet.fileName fileID:metadataNet.assetLocalIdentifier action:k_activityDebugActionUpload selector:selectorUploadAutoUploadAll note:@"Internal error image/video not found [0]" type:k_activityTypeFailure verbose:k_activityVerboseHigh activeUrl:app.activeUrl];
-            
-            [[NCManageDatabase sharedInstance] deleteAutoUploadWithAssetLocalIdentifier:metadataNet.assetLocalIdentifier];
-        }
-        
-        counterUploadInQueueAndInLock = [app getNumberUploadInQueues] + [app getNumberUploadInQueuesWWan] + [[[NCManageDatabase sharedInstance] getLockAutoUpload] count];
+        counterUploadInQueueAndInLock = [app getNumberUploadInQueues] + [app getNumberUploadInQueuesWWan] + [[[NCManageDatabase sharedInstance] getLockQueueUpload] count];
     }
     
     // ------------------------- <selector Auto Upload All> ----------------------
@@ -529,34 +528,27 @@
     
         while (counterUploadInQueueAndInLock < maxConcurrentUpload) {
         
-            metadataNet =  [[NCManageDatabase sharedInstance] getAutoUploadWithSelector:selectorUploadAutoUploadAll];
+            metadataNet =  [[NCManageDatabase sharedInstance] getQueueUploadWithSelector:selectorUploadAutoUploadAll];
             if (metadataNet) {
                 
-                result = [PHAsset fetchAssetsWithLocalIdentifiers:@[metadataNet.assetLocalIdentifier] options:nil];
+                // Priority Error only in Foreground
+                if ([[UIApplication sharedApplication] applicationState] == UIApplicationStateBackground && metadataNet.priority <= k_priorityAutoUploadError)
+                    continue;
+
+                [[CCNetworking sharedNetworking] uploadFileFromAssetLocalIdentifier:metadataNet delegate:app.activeMain];
+                
+                counterNewUpload++;
         
             } else
                 break;
             
-            if (result.count > 0) {
-            
-                [[CCNetworking sharedNetworking] uploadFileFromAssetLocalIdentifier:metadataNet.assetLocalIdentifier fileName:metadataNet.fileName serverUrl:metadataNet.serverUrl cryptated:metadataNet.cryptated session:metadataNet.session taskStatus:metadataNet.taskStatus selector:metadataNet.selector selectorPost:metadataNet.selectorPost errorCode:metadataNet.errorCode delegate:app.activeMain];
-            
-                counterNewUpload++;
-                            
-            } else {
-            
-                [[NCManageDatabase sharedInstance] addActivityClient:metadataNet.fileName fileID:metadataNet.assetLocalIdentifier action:k_activityDebugActionUpload selector:selectorUploadAutoUploadAll note:@"Internal error image/video not found [0]" type:k_activityTypeFailure verbose:k_activityVerboseHigh activeUrl:app.activeUrl];
-            
-                [[NCManageDatabase sharedInstance] deleteAutoUploadWithAssetLocalIdentifier:metadataNet.assetLocalIdentifier];
-            }
-        
-            counterUploadInQueueAndInLock = [app getNumberUploadInQueues] + [app getNumberUploadInQueuesWWan] + [[[NCManageDatabase sharedInstance] getLockAutoUpload] count];
+            counterUploadInQueueAndInLock = [app getNumberUploadInQueues] + [app getNumberUploadInQueuesWWan] + [[[NCManageDatabase sharedInstance] getLockQueueUpload] count];
         }
     }
     
     // Verify Lock
     NSInteger counterUploadInQueue = [app getNumberUploadInQueues] + [app getNumberUploadInQueuesWWan];
-    NSArray *tableMetadatasInLock = [[NCManageDatabase sharedInstance] getLockAutoUpload];
+    NSArray *tableMetadatasInLock = [[NCManageDatabase sharedInstance] getLockQueueUpload];
 
     if (counterNewUpload == 0 && counterUploadInQueue == 0 && [tableMetadatasInLock count] > 0) {
         
@@ -564,10 +556,17 @@
         for (tableMetadata *metadata in tableMetadatasInLock) {
             
             if ([[NCManageDatabase sharedInstance] isTableInvalidated:metadata] == NO)
-                [[NCManageDatabase sharedInstance] unlockAutoUploadWithAssetLocalIdentifier:metadata.assetLocalIdentifier];
+                [[NCManageDatabase sharedInstance] unlockQueueUploadWithAssetLocalIdentifier:metadata.assetLocalIdentifier];
         }
     }
     
+    // verify Download/Upload 
+    if (counterNewUpload == 0) {
+        
+        [[CCNetworking sharedNetworking] verifyDownloadInProgress];
+        [[CCNetworking sharedNetworking] verifyUploadInProgress];
+    }
+
     // Start Timer
     app.timerProcessAutoUpload = [NSTimer scheduledTimerWithTimeInterval:k_timerProcessAutoUpload target:app selector:@selector(processAutoUpload) userInfo:nil repeats:YES];
 }
@@ -622,7 +621,7 @@
 #pragma mark ===== get Camera Roll new Asset ====
 #pragma --------------------------------------------------------------------------------------------
 
-- (PHFetchResult *)getCameraRollAssets:(tableAccount *)account assetsFull:(BOOL)assetsFull
+- (PHFetchResult *)getCameraRollAssets:(tableAccount *)account assetsFull:(BOOL)assetsFull alignPhotoLibrary:(BOOL)alignPhotoLibrary
 {
     @synchronized(self) {
         
@@ -636,7 +635,7 @@
 
             NSMutableArray *newAssets =[NSMutableArray new];
             
-            if (account.autoUploadImage && account.autoUploadVideo) {
+            if (alignPhotoLibrary || (account.autoUploadImage && account.autoUploadVideo)) {
                 
                 predicate = [NSCompoundPredicate orPredicateWithSubpredicates:@[predicateImage, predicateVideo]];
                 
@@ -647,6 +646,10 @@
             } else if (account.autoUploadVideo) {
                 
                 predicate = predicateVideo;
+                
+            } else {
+                
+                return nil;
             }
             
             PHFetchOptions *fetchOptions = [PHFetchOptions new];
@@ -669,7 +672,7 @@
                     (asset.creationDate != nil) ? (creationDate = [NSString stringWithFormat:@"%@", asset.creationDate]) : (creationDate = @"");
                     (asset.modificationDate != nil) ? (modificationDate = [NSString stringWithFormat:@"%@", asset.modificationDate]) : (modificationDate = @"");
                     
-                    idAsset = [NSString stringWithFormat:@"%@%@%@", asset.localIdentifier, creationDate, modificationDate];
+                    idAsset = [NSString stringWithFormat:@"%@%@%@%@", account.account, asset.localIdentifier, creationDate, modificationDate];
                     
                     if (![idsAsset containsObject: idAsset])
                         [newAssets addObject:asset];
@@ -681,11 +684,6 @@
             
                 return assets;
             }
-            
-        } else {
-            
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"_access_photo_not_enabled_", nil) message:NSLocalizedString(@"_access_photo_not_enabled_msg_", nil) delegate:nil cancelButtonTitle:NSLocalizedString(@"_ok_", nil) otherButtonTitles:nil];
-            [alert show];
         }
     }
     
@@ -702,12 +700,10 @@
         
         tableAccount *account = [[NCManageDatabase sharedInstance] getAccountActive];
 
-        if (account.autoUpload) {
-            PHFetchResult *assets = [self getCameraRollAssets:account assetsFull:YES];
-            [[NCManageDatabase sharedInstance] addPhotoLibrary:(NSArray *)assets];
-            
-            NSLog(@"Align Photo Library %lu", (unsigned long)[assets count]);
-        }
+        PHFetchResult *assets = [self getCameraRollAssets:account assetsFull:YES alignPhotoLibrary:YES];
+        (void)[[NCManageDatabase sharedInstance] addPhotoLibrary:(NSArray *)assets];
+
+        NSLog(@"Align Photo Library %lu", (unsigned long)[assets count]);
     });
 }
 

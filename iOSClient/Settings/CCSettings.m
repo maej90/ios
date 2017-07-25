@@ -256,14 +256,11 @@
                 [self reloadForm];
             }]];
             
-            //if iPhone
             if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
-                
+                // iPhone
                 [self presentViewController:alertController animated:YES completion:nil];
-            }
-            //if iPad
-            else {
-                
+            }else {
+                // iPad
                 // Change Rect to position Popover
                 UIPopoverController *popup = [[UIPopoverController alloc] initWithContentViewController:alertController];
                 [popup presentPopoverFromRect:[self.tableView rectForRowAtIndexPath:[self.form indexPathOfFormRow:rowDescriptor]] inView:self.view permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
@@ -404,6 +401,8 @@
         if (metadata.directory) {
         
             NSString *serverUrl = [[NCManageDatabase sharedInstance] getServerUrl:metadata.directoryID];
+            if (!serverUrl) continue;
+            
             serverUrl = [CCUtility stringAppendServerUrl:serverUrl addFileName:metadata.fileNamePrint];
 
             NSString *serverUrlBeginWith = serverUrl;
@@ -485,29 +484,33 @@
 
 - (void)sendMail:(XLFormRowDescriptor *)sender
 {
-    // Email Subject
-    NSString *emailTitle = NSLocalizedString(@"_information_req_", nil);
-    // Email Content
-    NSString *messageBody;
-    // Email Recipents
-    NSArray *toRecipents;
+    if ([MFMailComposeViewController canSendMail]) {
+
+        // Email Subject
+        NSString *emailTitle = NSLocalizedString(@"_information_req_", nil);
+        // Email Content
+        NSString *messageBody;
+        // Email Recipents
+        NSArray *toRecipents;
     
-    messageBody = [NSString stringWithFormat:@"\n\n\n%@ Version %@ (%@)", [NCBrandOptions sharedInstance].brand, [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"], [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleVersion"]];
-    toRecipents = [NSArray arrayWithObject:[NCBrandOptions sharedInstance].mailMe];
+        messageBody = [NSString stringWithFormat:@"%@\n\n\n\n%@ Version %@ (%@) - iOS %@", NSLocalizedString(@"_write_in_english_", nil), [NCBrandOptions sharedInstance].brand, [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"], [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleVersion"], [[UIDevice currentDevice] systemVersion]];
+        toRecipents = [NSArray arrayWithObject:[NCBrandOptions sharedInstance].mailMe];
     
-    MFMailComposeViewController *mc = [[MFMailComposeViewController alloc] init];
-    mc.mailComposeDelegate = self;
-    [mc setSubject:emailTitle];
-    [mc setMessageBody:messageBody isHTML:NO];
-    [mc setToRecipients:toRecipents];
+        MFMailComposeViewController *mc = [[MFMailComposeViewController alloc] init];
+        mc.mailComposeDelegate = self;
+        [mc setSubject:emailTitle];
+        [mc setMessageBody:messageBody isHTML:NO];
+        [mc setToRecipients:toRecipents];
     
-    // Present mail view controller on screen
+        // Present mail view controller on screen
     [self presentViewController:mc animated:YES completion:NULL];
+    }
 }
 
 - (void)sendMailEncryptPass
 {
-    [CCUtility sendMailEncryptPass:[CCUtility getEmail] validateEmail:NO form:self nameImage:@"backgroundDetail"];
+    if ([MFMailComposeViewController canSendMail])
+        [CCUtility sendMailEncryptPass:[CCUtility getEmail] validateEmail:NO form:self nameImage:@"backgroundDetail"];
 }
 
 #pragma --------------------------------------------------------------------------------------------

@@ -70,20 +70,6 @@ class tableActivity: Object {
     dynamic var verbose: Bool = false
 }
 
-class tableAutoUpload: Object {
-    
-    dynamic var account = ""
-    dynamic var assetLocalIdentifier = ""
-    dynamic var date = NSDate()
-    dynamic var fileName = ""
-    dynamic var lock: Bool = false
-    dynamic var priority: Int = 0
-    dynamic var selector = ""
-    dynamic var selectorPost = ""
-    dynamic var serverUrl = ""
-    dynamic var session = ""
-}
-
 class tableCapabilities: Object {
     
     dynamic var account = ""
@@ -188,11 +174,11 @@ class tableMetadata: Object {
     dynamic var sessionID = ""
     dynamic var sessionSelector = ""
     dynamic var sessionSelectorPost = ""
-    dynamic var sessionTaskIdentifier : Int = -1
-    dynamic var sessionTaskIdentifierPlist : Int = -1
+    dynamic var sessionTaskIdentifier: Int = -1
+    dynamic var sessionTaskIdentifierPlist: Int = -1
     dynamic var size: Double = 0
     dynamic var status: Double = 0
-    dynamic var thumbnailExists : Bool = false
+    dynamic var thumbnailExists: Bool = false
     dynamic var title = ""
     dynamic var type = ""
     dynamic var typeFile = ""
@@ -200,6 +186,10 @@ class tableMetadata: Object {
     
     override static func primaryKey() -> String {
         return "fileID"
+    }
+    
+    override static func indexedProperties() -> [String] {
+        return ["directoryID"]
     }
 }
 
@@ -215,6 +205,20 @@ class tablePhotoLibrary: Object {
     override static func primaryKey() -> String {
         return "idAsset"
     }
+}
+
+class tableQueueUpload: Object {
+    
+    dynamic var account = ""
+    dynamic var assetLocalIdentifier = ""
+    dynamic var date = NSDate()
+    dynamic var fileName = ""
+    dynamic var lock: Bool = false
+    dynamic var priority: Int = 0
+    dynamic var selector = ""
+    dynamic var selectorPost = ""
+    dynamic var serverUrl = ""
+    dynamic var session = ""
 }
 
 class tableShare: Object {

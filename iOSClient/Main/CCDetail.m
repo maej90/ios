@@ -451,38 +451,31 @@
 
 - (void)photoBrowser:(MWPhotoBrowser *)photoBrowser didDisplayPhotoAtIndex:(NSUInteger)index
 {
-    if (index != _indexNowVisible) {
+    tableMetadata *metadata = [self.dataSourceImagesVideos objectAtIndex:index];
+    NSString *directory;
     
-        tableMetadata *metadata = [self.dataSourceImagesVideos objectAtIndex:index];
+    _indexNowVisible = index;
+    _fileIDNowVisible = metadata.fileID;
     
-        NSString *directory;
-        NSString *fileID = metadata.fileID;
+    photoBrowser.toolbar.hidden = NO;
     
-        _indexNowVisible = index;
-        _fileIDNowVisible = metadata.fileID;
+    if (_sourceDirectoryLocal)
+        directory = self.metadataDetail.directoryID;
+    else
+        directory = app.directoryUser;
     
-        photoBrowser.toolbar.hidden = NO;
-    
+    // Download image ?
+    if (metadata) {
         
-    
-        if (_sourceDirectoryLocal)
-            directory = self.metadataDetail.directoryID;
-        else
-            directory = app.directoryUser;
+        tableMetadata *metadataDB = [[NCManageDatabase sharedInstance] getMetadataWithPredicate:[NSPredicate predicateWithFormat:@"fileID = %@", metadata.fileID]];
 
-        // Download
-        if (fileID) {
-        
-            metadata = [[NCManageDatabase sharedInstance] getMetadataWithPredicate:[NSPredicate predicateWithFormat:@"fileID = %@", fileID]];
-        
-            if (metadata && [[NSFileManager defaultManager] fileExistsAtPath:[NSString stringWithFormat:@"%@/%@", directory, metadata.fileID]] == NO && [metadata.session length] == 0)
-                [self performSelector:@selector(downloadPhotoBrowser:) withObject:metadata afterDelay:0.1];
-        
-            // Title
-            if (metadata && !photoBrowser.isGridController)
-                self.title = metadata.fileNamePrint;
-        }
+        if ([[NSFileManager defaultManager] fileExistsAtPath:[NSString stringWithFormat:@"%@/%@", directory, metadata.fileID]] == NO && [metadataDB.session length] == 0)
+            [self downloadPhotoBrowser:metadata];
     }
+    
+    // Title
+    if (metadata && !photoBrowser.isGridController)
+        self.title = metadata.fileNamePrint;
     
     if (_reload) {
         
@@ -502,8 +495,6 @@
         directory = app.directoryUser;
 
     tableMetadata *metadata = [self.dataSourceImagesVideos objectAtIndex:index];
-    
-    //NSLog(@"[LOG] photoBrowser: photoAtIndex : %lu ---- di totali photo : %lu", (unsigned long)index, (unsigned long)_photos.count);
     
     if (index < self.photos.count) {
         
@@ -533,15 +524,6 @@
                         [self.photos replaceObjectAtIndex:index withObject:[MWPhoto photoWithImage:[UIImage imageNamed:@"filePreviewError"]]];
                         
                     } else {
-                        /*
-                        UIImage *imageIcon = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/%@.ico", app.directoryUser, metadata.fileID]];
-                        
-                        if (imageIcon)
-                            image = [CCGraphics scaleImage:imageIcon toSize:self.view.bounds.size isAspectRation:YES];
-
-                            //image = [CCGraphics blurryImage:imageIcon withBlurLevel:2 toSize:self.view.bounds.size];
-                        else
-                        */ 
                         
                         image = [CCGraphics drawText:[NSLocalizedString(@"_loading_", nil) stringByAppendingString:@"..."] inImage:[UIImage imageNamed:@"button1000x200"] colorText:[UIColor darkGrayColor] sizeOfFont:50];
                         
@@ -686,7 +668,9 @@
     
     self.docController.delegate = self;
     
-    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) [self.docController presentOptionsMenuFromRect:photoBrowser.view.frame inView:photoBrowser.view animated:YES];
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone)
+        [self.docController presentOptionsMenuFromRect:photoBrowser.view.frame inView:photoBrowser.view animated:YES];
+    
     [self.docController presentOptionsMenuFromBarButtonItem:photoBrowser.actionButton animated:YES];
 }
 
@@ -770,8 +754,6 @@
     // do not reload is Video on air
     if (_photoBrowser.currentVideoPlayerViewController.isViewLoaded && _photoBrowser.currentVideoPlayerViewController.view.window) return;
     
-    //NSLog(@"[LOG] Add Download Photo Browser");
-    
     if ([metadataVar.fileID isEqualToString:_fileIDNowVisible] || [self.photoBrowser isGridReload:index]) {
         
         [self.photoBrowser reloadData];
@@ -788,7 +770,8 @@
 {
     NSString *serverUrl = [[NCManageDatabase sharedInstance] getServerUrl:metadata.directoryID];
     
-    [[CCNetworking sharedNetworking] downloadFile:metadata.fileID serverUrl:serverUrl downloadData:YES downloadPlist:NO selector:selectorLoadViewImage selectorPost:nil session:k_download_session taskStatus:k_taskStatusResume delegate:nil];
+    if (serverUrl)
+        [[CCNetworking sharedNetworking] downloadFile:metadata.fileID serverUrl:serverUrl downloadData:YES downloadPlist:NO selector:selectorLoadViewImage selectorPost:nil session:k_download_session taskStatus:k_taskStatusResume delegate:nil];
 }
 
 - (void)insertGeocoderLocation:(NSNotification *)notification
@@ -1071,7 +1054,9 @@
 
     self.docController.delegate = self;
     
-    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) [self.docController presentOptionsMenuFromRect:self.view.frame inView:self.view animated:YES];
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone)
+        [self.docController presentOptionsMenuFromRect:self.view.frame inView:self.view animated:YES];
+    
     [self.docController presentOptionsMenuFromBarButtonItem:sender animated:YES];
 }
 

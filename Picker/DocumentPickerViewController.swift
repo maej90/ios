@@ -39,19 +39,19 @@ class DocumentPickerViewController: UIDocumentPickerExtensionViewController, CCN
     var parameterMode: UIDocumentPickerMode?
     var parameterOriginalURL: URL?
     var parameterProviderIdentifier: String!
-    var parameterPasscodeCorrect: Bool? = false
-    var parameterEncrypted: Bool? = false
-    var isCryptoCloudMode: Bool? = false
+    var parameterPasscodeCorrect: Bool = false
+    var parameterEncrypted: Bool = false
+    var isCryptoCloudMode: Bool = false
     
-    var metadata: tableMetadata?
+    var recordMetadata = tableMetadata()
     var recordsTableMetadata: [tableMetadata]?
-    var titleFolder: String?
+    var titleFolder: String = ""
     
-    var activeAccount: String?
-    var activeUrl: String?
-    var activeUser: String?
-    var activePassword: String?
-    var directoryUser: String?
+    var activeAccount: String = ""
+    var activeUrl: String = ""
+    var activeUser: String = ""
+    var activePassword: String = ""
+    var directoryUser: String = ""
     
     var serverUrl: String?
     var thumbnailInLoading = [String: IndexPath]()
@@ -59,8 +59,8 @@ class DocumentPickerViewController: UIDocumentPickerExtensionViewController, CCN
     
     var passcodeFailedAttempts: UInt = 0
     var passcodeLockUntilDate: Date? = nil
-    var passcodeIsPush: Bool? = false
-    var serverUrlPush: String?
+    var passcodeIsPush: Bool = false
+    var serverUrlPush: String = ""
     
     
     lazy var networkingOperationQueue: OperationQueue = {
@@ -95,15 +95,12 @@ class DocumentPickerViewController: UIDocumentPickerExtensionViewController, CCN
             activeUser = record.user
             directoryUser = CCUtility.getDirectoryActiveUser(activeUser, activeUrl: activeUrl)
             
-            if (self.serverUrl == nil) {
-            
-                self.serverUrl = CCUtility.getHomeServerUrlActiveUrl(activeUrl)
-                                
+            if serverUrl == nil {
+                serverUrl = CCUtility.getHomeServerUrlActiveUrl(activeUrl)
             } else {
-                
                 self.navigationItem.title = titleFolder
             }
-            
+        
         } else {
             
             // Close error no account return nil
@@ -146,26 +143,22 @@ class DocumentPickerViewController: UIDocumentPickerExtensionViewController, CCN
         let password = CCUtility.getKeyChainPasscode(forUUID: CCUtility.getUUID())
         
         if password?.characters.count == 0 {
-            
             isCryptoCloudMode = false
-            
         } else {
-            
             isCryptoCloudMode = true
         }
         
         // Managed Crypto Cloud Mode
-        if isCryptoCloudMode == true {
+        if isCryptoCloudMode {
             
             // Encrypted mode
             encryptedButton.image = UIImage(named:"shareExtEncrypt")?.withRenderingMode(.automatic)
             
             // Color Button
-            if parameterEncrypted == true {
+            if parameterEncrypted {
                 encryptedButton.tintColor = NCBrandColor.sharedInstance.cryptocloud
             } else {
                 encryptedButton.tintColor = self.view.tintColor
-                
             }
             
             saveButton.tintColor = encryptedButton.tintColor
@@ -265,7 +258,7 @@ class DocumentPickerViewController: UIDocumentPickerExtensionViewController, CCN
         metadataNet.serverUrl = self.serverUrl
         metadataNet.selector = selectorReadFolder
         
-        let ocNetworking : OCnetworking = OCnetworking.init(delegate: self, metadataNet: metadataNet, withUser: activeUser, withPassword: activePassword, withUrl: activeUrl, isCryptoCloudMode: isCryptoCloudMode!)
+        let ocNetworking : OCnetworking = OCnetworking.init(delegate: self, metadataNet: metadataNet, withUser: activeUser, withPassword: activePassword, withUrl: activeUrl, isCryptoCloudMode: isCryptoCloudMode)
         networkingOperationQueue.addOperation(ocNetworking)
         
         hud.visibleIndeterminateHud()
@@ -286,20 +279,18 @@ class DocumentPickerViewController: UIDocumentPickerExtensionViewController, CCN
     func readFolderSuccess(_ metadataNet: CCMetadataNet!, metadataFolder: tableMetadata?, metadatas: [Any]!) {
         
         // remove all record
-        var predicate = NSPredicate(format: "account = %@ AND directoryID = %@ AND session = ''", activeAccount!, metadataNet.directoryID!)
+        var predicate = NSPredicate(format: "account = %@ AND directoryID = %@ AND session = ''", activeAccount, metadataNet.directoryID!)
         NCManageDatabase.sharedInstance.deleteMetadata(predicate: predicate, clearDateReadDirectoryID: metadataNet.directoryID!)
         
         for metadata in metadatas as! [tableMetadata] {
             
             // do not insert crypto file
             if CCUtility.isCryptoString(metadata.fileName) {
-                
                 continue
             }
             
             // Only Directory ?
             if (parameterMode == .moveToService || parameterMode == .exportToService) && metadata.directory == false {
-                
                 continue
             }
             
@@ -311,13 +302,11 @@ class DocumentPickerViewController: UIDocumentPickerExtensionViewController, CCN
                 for completeMetadata in metadatas as! [tableMetadata] {
                     
                     if completeMetadata.fileName == CCUtility.trasformedFileNamePlist(inCrypto: metadata.fileName) {
-                        
                         isCryptoComplete = true
                     }
                 }
 
                 if isCryptoComplete == false {
-                    
                     continue
                 }
             }
@@ -325,10 +314,10 @@ class DocumentPickerViewController: UIDocumentPickerExtensionViewController, CCN
             // Add record
             let fileID = metadata.fileID
             let fileName = metadata.fileName
-            _ = NCManageDatabase.sharedInstance.addMetadata(metadata, activeUrl: activeUrl!, serverUrl: metadataNet.serverUrl)
+            _ = NCManageDatabase.sharedInstance.addMetadata(metadata)
             
             // if plist do not exists, download it
-            if CCUtility.isCryptoPlistString(fileName) && FileManager.default.fileExists(atPath: "\(directoryUser!)/\(fileName)") == false {
+            if CCUtility.isCryptoPlistString(fileName) && FileManager.default.fileExists(atPath: "\(directoryUser)/\(fileName)") == false {
                 
                 let metadataNet = CCMetadataNet.init(account: activeAccount)!
                 
@@ -341,16 +330,13 @@ class DocumentPickerViewController: UIDocumentPickerExtensionViewController, CCN
                 metadataNet.session = k_download_session_foreground
                 metadataNet.taskStatus = Int(k_taskStatusResume)
                 
-                let ocNetworking : OCnetworking = OCnetworking.init(delegate: self, metadataNet: metadataNet, withUser: activeUser, withPassword: activePassword, withUrl: activeUrl, isCryptoCloudMode: isCryptoCloudMode!)
+                let ocNetworking : OCnetworking = OCnetworking.init(delegate: self, metadataNet: metadataNet, withUser: activeUser, withPassword: activePassword, withUrl: activeUrl, isCryptoCloudMode: isCryptoCloudMode)
                 networkingOperationQueue.addOperation(ocNetworking)
             }
         }
         
-        // Get Datasource
-        //recordsTableMetadata = CCCoreData.getTableMetadata(with: NSPredicate(format: "(account == '\(activeAccount!)') AND (directoryID == '\(metadataNet.directoryID!)')"), fieldOrder: "fileName", ascending: true) as? [TableMetadata]
-        
-        predicate = NSPredicate(format: "account = %@ AND directoryID == %@", activeAccount!, metadataNet.directoryID!)
-        recordsTableMetadata = NCManageDatabase.sharedInstance.getMetadatas(predicate: predicate, sorted: "fileName", ascending: true)
+        predicate = NSPredicate(format: "account = %@ AND directoryID = %@", activeAccount, metadataNet.directoryID!)
+        recordsTableMetadata = NCManageDatabase.sharedInstance.getMetadatas(predicate: predicate, sorted: "fileNamePrint", ascending: true)
         
         tableView.reloadData()
         
@@ -360,7 +346,6 @@ class DocumentPickerViewController: UIDocumentPickerExtensionViewController, CCN
     //  MARK: - Download Thumbnail
     
     func downloadThumbnailFailure(_ metadataNet: CCMetadataNet!, message: String!, errorCode: Int) {
-        
         NSLog("[LOG] Thumbnail Error \(metadataNet.fileName) \(message) (error \(errorCode))");
     }
     
@@ -368,12 +353,11 @@ class DocumentPickerViewController: UIDocumentPickerExtensionViewController, CCN
         
         if let indexPath = thumbnailInLoading[metadataNet.fileID] {
             
-            let path = "\(directoryUser!)/\(metadataNet.fileID!).ico"
+            let path = "\(directoryUser)/\(metadataNet.fileID!).ico"
             
             if FileManager.default.fileExists(atPath: path) {
                 
                 if let cell = tableView.cellForRow(at: indexPath) as? recordMetadataCell {
-                    
                     cell.fileImageView.image = UIImage(contentsOfFile: path)
                 }
             }
@@ -393,7 +377,7 @@ class DocumentPickerViewController: UIDocumentPickerExtensionViewController, CCN
         metadataNet.selector = selectorDownloadThumbnail;
         metadataNet.serverUrl = self.serverUrl
         
-        let ocNetworking : OCnetworking = OCnetworking.init(delegate: self, metadataNet: metadataNet, withUser: activeUser, withPassword: activePassword, withUrl: activeUrl, isCryptoCloudMode: isCryptoCloudMode!)
+        let ocNetworking : OCnetworking = OCnetworking.init(delegate: self, metadataNet: metadataNet, withUser: activeUser, withPassword: activePassword, withUrl: activeUrl, isCryptoCloudMode: isCryptoCloudMode)
         networkingOperationQueue.addOperation(ocNetworking)
     }
 
@@ -407,11 +391,6 @@ class DocumentPickerViewController: UIDocumentPickerExtensionViewController, CCN
         hud.progress(progress)
     }
     
-    func cancelTransfer() {
-        
-        networkingOperationQueue.cancelAllOperations()
-    }
-
     //  MARK: - Download
 
     func downloadFileFailure(_ fileID: String!, serverUrl: String!, selector: String!, message: String!, errorCode: Int) {
@@ -432,18 +411,24 @@ class DocumentPickerViewController: UIDocumentPickerExtensionViewController, CCN
     func downloadFileSuccess(_ fileID: String!, serverUrl: String!, selector: String!, selectorPost: String!) {
         
         hud.hideHud()
+    
+        guard let metadata = NCManageDatabase.sharedInstance.getMetadata(predicate: NSPredicate(format: "account = %@ AND fileID == %@", activeAccount, fileID!)) else {
+            self.dismissGrantingAccess(to: nil)
+            return
+        }
         
-        let predicate = NSPredicate(format: "account = %@ AND fileID == %@", activeAccount!, fileID!)
-        metadata = NCManageDatabase.sharedInstance.getMetadata(predicate: predicate)
+        recordMetadata = metadata
         
-        //let metadata = CCCoreData.getMetadataWithPreficate(NSPredicate(format: "(account == '\(activeAccount!)') AND (fileID == '\(fileID!)')"), context: nil)
+        // Save for PickerFileProvide
+        CCUtility.setFileNameExt(metadata.fileName)
+        CCUtility.setServerUrlExt(serverUrl)
         
         switch selector {
             
         case selectorLoadFileView :
             
-            let sourceUrl = URL(string: "file://\(directoryUser!)/\(fileID!)".addingPercentEncoding(withAllowedCharacters: .urlPathAllowed)!)!
-            let destinationUrl : URL! = appGroupContainerURL()?.appendingPathComponent(metadata!.fileNamePrint)
+            let sourceUrl = URL(string: "file://\(directoryUser)/\(fileID!)".addingPercentEncoding(withAllowedCharacters: .urlPathAllowed)!)!
+            let destinationUrl : URL! = appGroupContainerURL()?.appendingPathComponent(recordMetadata.fileNamePrint)
             
             // Destination Provider
 
@@ -465,8 +450,12 @@ class DocumentPickerViewController: UIDocumentPickerExtensionViewController, CCN
             
         case selectorLoadPlist :
             
-            var metadata : tableMetadata? = CCUtility.insertInformationPlist(self.metadata, directoryUser: directoryUser)!
-            metadata = NCManageDatabase.sharedInstance.updateMetadata(metadata!, activeUrl: activeUrl!)
+            let autoUploadFileName = NCManageDatabase.sharedInstance.getAccountAutoUploadFileName()
+            let autoUploadDirectory = NCManageDatabase.sharedInstance.getAccountAutoUploadDirectory(activeUrl)
+            
+            var metadata : tableMetadata? = CCUtility.insertInformationPlist(recordMetadata, directoryUser: directoryUser)!
+            metadata = CCUtility.insertTypeFileIconName(metadata, serverUrl: serverUrl, autoUploadFileName: autoUploadFileName, autoUploadDirectory: autoUploadDirectory)
+            metadata = NCManageDatabase.sharedInstance.updateMetadata(metadata!)
             
             if metadata != nil {
                 if metadata!.type == k_metadataType_template {
@@ -489,7 +478,7 @@ class DocumentPickerViewController: UIDocumentPickerExtensionViewController, CCN
         hud.hideHud()
         
         // remove file
-        let predicate = NSPredicate(format: "account = %@ AND fileID == %@", activeAccount!, fileID)
+        let predicate = NSPredicate(format: "account = %@ AND fileID == %@", activeAccount, fileID)
         NCManageDatabase.sharedInstance.deleteMetadata(predicate: predicate, clearDateReadDirectoryID: nil)
         
         if errorCode != -999 {
@@ -518,7 +507,7 @@ extension DocumentPickerViewController {
     
     @IBAction func encryptedButtonTapped(_ sender: AnyObject) {
 
-        parameterEncrypted = !parameterEncrypted!
+        parameterEncrypted = !parameterEncrypted
         
         if parameterEncrypted == true {
             encryptedButton.tintColor = NCBrandColor.sharedInstance.cryptocloud
@@ -540,27 +529,26 @@ extension DocumentPickerViewController {
         case .moveToService, .exportToService:
             
             let fileName = sourceURL.lastPathComponent
-            let destinationURLDirectoryUser = URL(string: "file://\(directoryUser!)/\(fileName)".addingPercentEncoding(withAllowedCharacters: .urlPathAllowed)!)!
+            let destinationURLDirectoryUser = URL(string: "file://\(directoryUser)/\(fileName)".addingPercentEncoding(withAllowedCharacters: .urlPathAllowed)!)!
             
-            //let fileSize = (try! FileManager.default.attributesOfItem(atPath: sourceURL.path)[FileAttributeKey.size] as! NSNumber).uint64Value
-            
-            self.destinationURL = appGroupContainerURL()?.appendingPathComponent(fileName)
-            
-            // copy sourceURL on directoryUser
-            do {
-                try FileManager.default.removeItem(at: destinationURLDirectoryUser)
-            } catch _ {
-                print("file do not exists")
-            }
-            
-            do {
-                try FileManager.default.copyItem(at: sourceURL, to: destinationURLDirectoryUser)
-            } catch _ {
-                print("file do not exists")
-                return
-            }
+            destinationURL = appGroupContainerURL()?.appendingPathComponent(fileName)
             
             fileCoordinator.coordinate(readingItemAt: sourceURL, options: .withoutChanges, error: nil, byAccessor: { [weak self] newURL in
+                
+                // copy sourceURL on directoryUser
+                do {
+                    try FileManager.default.removeItem(at: destinationURLDirectoryUser)
+                } catch _ {
+                    print("file do not exists")
+                }
+                
+                do {
+                    try FileManager.default.copyItem(at: sourceURL, to: destinationURLDirectoryUser)
+                } catch _ {
+                    print("file do not exists")
+                    self?.dismissGrantingAccess(to: self?.destinationURL)
+                    return
+                }
                 
                 do {
                     try FileManager.default.removeItem(at: (self?.destinationURL)!)
@@ -571,32 +559,41 @@ extension DocumentPickerViewController {
                 do {
                     try FileManager.default.copyItem(at: sourceURL, to: (self?.destinationURL)!)
                     
-                    // Upload fileName to Cloud
+                    let fileSize = (try! FileManager.default.attributesOfItem(atPath: sourceURL.path)[FileAttributeKey.size] as! NSNumber).uint64Value
                     
-                    let metadataNet = CCMetadataNet.init(account: self!.activeAccount)!
+                    if fileSize == 0 {
+                        
+                        CCUtility.setFileNameExt(fileName)
+                        CCUtility.setServerUrlExt(self!.serverUrl)
+                        self?.dismissGrantingAccess(to: self?.destinationURL)
+                        
+                    } else {
                     
-                    metadataNet.action = actionUploadFile
-                    metadataNet.cryptated = self!.parameterEncrypted!
-                    metadataNet.fileName = fileName
-                    metadataNet.fileNamePrint = fileName
-                    metadataNet.serverUrl = self!.serverUrl
-                    metadataNet.session = k_upload_session_foreground
-                    metadataNet.taskStatus = Int(k_taskStatusResume)
+                        // Upload fileName to Cloud
                     
-                    let ocNetworking : OCnetworking = OCnetworking.init(delegate: self!, metadataNet: metadataNet, withUser: self!.activeUser, withPassword: self!.activePassword, withUrl: self!.activeUrl, isCryptoCloudMode: self!.isCryptoCloudMode!)
-                    self!.networkingOperationQueue.addOperation(ocNetworking)
+                        let metadataNet = CCMetadataNet.init(account: self!.activeAccount)!
                     
-                    self!.hud.visibleHudTitle(NSLocalizedString("_uploading_", comment: ""), mode: MBProgressHUDMode.determinateHorizontalBar, color: self!.navigationController?.view.tintColor)
-                    self!.hud.addButtonCancel(withTarget: self, selector: "cancelTransfer")
+                        metadataNet.action = actionUploadFile
+                        metadataNet.cryptated = self!.parameterEncrypted
+                        metadataNet.fileName = fileName
+                        metadataNet.fileNamePrint = fileName
+                        metadataNet.serverUrl = self!.serverUrl
+                        metadataNet.session = k_upload_session_foreground
+                        metadataNet.taskStatus = Int(k_taskStatusResume)
                     
+                        let ocNetworking : OCnetworking = OCnetworking.init(delegate: self!, metadataNet: metadataNet, withUser: self!.activeUser, withPassword: self!.activePassword, withUrl: self!.activeUrl, isCryptoCloudMode: self!.isCryptoCloudMode)
+                        self!.networkingOperationQueue.addOperation(ocNetworking)
+                    
+                        self!.hud.visibleHudTitle(NSLocalizedString("_uploading_", comment: ""), mode: MBProgressHUDMode.determinate, color: NCBrandColor.sharedInstance.brand)
+                    }
                 } catch _ {
-                    
+                    self?.dismissGrantingAccess(to: self?.destinationURL)
                     print("error copying file")
                 }
             })
         
         default:
-            dismiss(animated: true, completion: nil)
+            dismissGrantingAccess(to: self.destinationURL)
         }
     }
     
@@ -733,7 +730,6 @@ extension DocumentPickerViewController: UITableViewDelegate {
 extension DocumentPickerViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        
        return recordsTableMetadata?.count ?? 0
     }
         
@@ -747,11 +743,11 @@ extension DocumentPickerViewController: UITableViewDataSource {
         //let metadata = CCCoreData.insertEntity(in: recordTableMetadata)!
         
         // File Image View
-        let filePath = "\(directoryUser!)/\(metadata!.fileID)).ico"
+        let fileNamePath = "\(directoryUser)/\(metadata!.fileID)).ico"
         
-        if FileManager.default.fileExists(atPath: filePath) {
+        if FileManager.default.fileExists(atPath: fileNamePath) {
             
-            cell.fileImageView.image = UIImage(contentsOfFile: filePath)
+            cell.fileImageView.image = UIImage(contentsOfFile: fileNamePath)
             
         } else {
             
@@ -775,15 +771,10 @@ extension DocumentPickerViewController: UITableViewDataSource {
         
         // Status Image View
         let lockServerUrl = CCUtility.stringAppendServerUrl(self.serverUrl!, addFileName: metadata!.fileNameData)
-        
-        var passcode: String? = CCUtility.getBlockCode()
-        if passcode == nil {
-            passcode = ""
-        }
-        
-        let tableDirectory = NCManageDatabase.sharedInstance.getTableDirectory(predicate:NSPredicate(format: "account = %@ AND serverUrl = %@", activeAccount!, lockServerUrl!))
+                
+        let tableDirectory = NCManageDatabase.sharedInstance.getTableDirectory(predicate:NSPredicate(format: "account = %@ AND serverUrl = %@", activeAccount, lockServerUrl!))
         if tableDirectory != nil {
-            if metadata!.directory &&  (tableDirectory?.lock)! && (passcode?.characters.count)! > 0 {
+            if metadata!.directory &&  (tableDirectory?.lock)! && (CCUtility.getBlockCode() != nil) {
                 cell.StatusImageView.image = UIImage(named: "passcode")
             } else {
                 cell.StatusImageView.image = nil
@@ -804,13 +795,15 @@ extension DocumentPickerViewController: UITableViewDataSource {
             return
         }
         
-        self.metadata = metadata!
+        recordMetadata = metadata!
 
         if metadata!.directory == false {
             
-            if FileManager.default.fileExists(atPath: "\(directoryUser!)/\(String(describing: self.metadata?.fileID))") {
+            let fileNamePath = "\(directoryUser)/\(metadata!.fileID)"
+            
+            if FileManager.default.fileExists(atPath: fileNamePath) {
                 
-                downloadFileSuccess(self.metadata?.fileID, serverUrl: self.serverUrl!, selector: selectorLoadFileView, selectorPost: nil)
+                downloadFileSuccess(recordMetadata.fileID, serverUrl: self.serverUrl!, selector: selectorLoadFileView, selectorPost: nil)
                 
             } else {
             
@@ -826,20 +819,18 @@ extension DocumentPickerViewController: UITableViewDataSource {
                 metadataNet.session = k_download_session_foreground
                 metadataNet.taskStatus = Int(k_taskStatusResume)
             
-                let ocNetworking : OCnetworking = OCnetworking.init(delegate: self, metadataNet: metadataNet, withUser: activeUser, withPassword: activePassword, withUrl: activeUrl, isCryptoCloudMode: self.isCryptoCloudMode!)
+                let ocNetworking : OCnetworking = OCnetworking.init(delegate: self, metadataNet: metadataNet, withUser: activeUser, withPassword: activePassword, withUrl: activeUrl, isCryptoCloudMode: self.isCryptoCloudMode)
                 networkingOperationQueue.addOperation(ocNetworking)
                 
-                hud.visibleHudTitle(NSLocalizedString("_loading_", comment: ""), mode: MBProgressHUDMode.determinateHorizontalBar, color: self.navigationController?.view.tintColor)
-                hud.addButtonCancel(withTarget: self, selector: "cancelTransfer")
+                hud.visibleHudTitle(NSLocalizedString("_loading_", comment: ""), mode: MBProgressHUDMode.determinate, color: NCBrandColor.sharedInstance.brand)
             }
             
         } else {
             
-            var dir : String! = self.metadata?.fileName
+            var dir = recordMetadata.fileName
             
-            if (self.metadata?.cryptated)! {
-                
-                dir = CCUtility.trasformedFileNamePlist(inCrypto: self.metadata?.fileName)
+            if recordMetadata.cryptated {
+                dir = CCUtility.trasformedFileNamePlist(inCrypto: recordMetadata.fileName)
             }
             
             serverUrlPush = CCUtility.stringAppendServerUrl(self.serverUrl!, addFileName: dir)
@@ -849,22 +840,20 @@ extension DocumentPickerViewController: UITableViewDataSource {
                 passcode = ""
             }
             
-            let tableDirectory = NCManageDatabase.sharedInstance.getTableDirectory(predicate:NSPredicate(format: "account = %@ AND serverUrl = %@", activeAccount!, serverUrlPush!))
+            let tableDirectory = NCManageDatabase.sharedInstance.getTableDirectory(predicate:NSPredicate(format: "account = %@ AND serverUrl = %@", activeAccount, serverUrlPush))
 
             if tableDirectory != nil {
                 
                 if (tableDirectory?.lock)! && (passcode?.characters.count)! > 0 {
                     
                     self.passcodeIsPush = true
-                    openBKPasscode(self.metadata?.fileNamePrint)
+                    openBKPasscode(recordMetadata.fileNamePrint)
                     
                 } else {
-                    
                     performSegue()
                 }
                 
             } else {
-                
                 performSegue()
             }
         }
@@ -880,7 +869,7 @@ extension DocumentPickerViewController: UITableViewDataSource {
         nextViewController.parameterPasscodeCorrect = parameterPasscodeCorrect
         nextViewController.parameterEncrypted = parameterEncrypted
         nextViewController.serverUrl = serverUrlPush
-        nextViewController.titleFolder = self.metadata?.fileNamePrint
+        nextViewController.titleFolder = recordMetadata.fileNamePrint
         
         self.navigationController?.pushViewController(nextViewController, animated: true)
     }

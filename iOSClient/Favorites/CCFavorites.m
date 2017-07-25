@@ -191,7 +191,7 @@
     if (app.activeAccount.length == 0)
         return;
     
-    // verify is offline procedure is in progress selectorDownloadSynchronize
+    // verify if is already in progress selectorDownloadSynchronize
     if ([[app verifyExistsInQueuesDownloadSelector:selectorDownloadSynchronize] count] > 0)
         return;
     
@@ -201,6 +201,8 @@
 - (void)addFavoriteFolder:(NSString *)serverUrl
 {
     NSString *directoryID = [[NCManageDatabase sharedInstance] getDirectoryID:serverUrl];
+    if (!directoryID) return;
+    
     NSString *selector;
     CCMetadataNet *metadataNet = [[CCMetadataNet alloc] initWithAccount:app.activeAccount];
     
@@ -332,42 +334,45 @@
     UIViewController *viewController;
     NSString *serverUrl = [[NCManageDatabase sharedInstance] getServerUrl:_metadata.directoryID];
     
-    if ([metadata.model isEqualToString:@"cartadicredito"])
-        viewController = [[CCCartaDiCredito alloc] initWithDelegate:self fileName:metadata.fileName uuid:metadata.uuid fileID:metadata.fileID isLocal:NO serverUrl:serverUrl];
-    
-    if ([metadata.model isEqualToString:@"bancomat"])
-        viewController = [[CCBancomat alloc] initWithDelegate:self fileName:metadata.fileName uuid:metadata.uuid fileID:metadata.fileID isLocal:NO serverUrl:serverUrl];
-    
-    if ([metadata.model isEqualToString:@"contocorrente"])
-        viewController = [[CCContoCorrente alloc] initWithDelegate:self fileName:metadata.fileName uuid:metadata.uuid fileID:metadata.fileID isLocal:NO serverUrl:serverUrl];
-    
-    if ([metadata.model isEqualToString:@"accountweb"])
-        viewController = [[CCAccountWeb alloc] initWithDelegate:self fileName:metadata.fileName uuid:metadata.uuid fileID:metadata.fileID isLocal:NO serverUrl:serverUrl];
-    
-    if ([metadata.model isEqualToString:@"patenteguida"])
-        viewController = [[CCPatenteGuida alloc] initWithDelegate:self fileName:metadata.fileName uuid:metadata.uuid fileID:metadata.fileID isLocal:NO serverUrl:serverUrl];
-    
-    if ([metadata.model isEqualToString:@"cartaidentita"])
-        viewController = [[CCCartaIdentita alloc] initWithDelegate:self fileName:metadata.fileName uuid:metadata.uuid fileID:metadata.fileID isLocal:NO serverUrl:serverUrl];
-    
-    if ([metadata.model isEqualToString:@"passaporto"])
-        viewController = [[CCPassaporto alloc] initWithDelegate:self fileName:metadata.fileName uuid:metadata.uuid fileID:metadata.fileID isLocal:NO serverUrl:serverUrl];
-    
-    if ([metadata.model isEqualToString:@"note"]) {
+    if (serverUrl) {
         
-        viewController = [[CCNote alloc] initWithDelegate:self fileName:metadata.fileName uuid:metadata.uuid fileID:metadata.fileID isLocal:NO serverUrl:serverUrl];
+        if ([metadata.model isEqualToString:@"cartadicredito"])
+            viewController = [[CCCartaDiCredito alloc] initWithDelegate:self fileName:metadata.fileName uuid:metadata.uuid fileID:metadata.fileID isLocal:NO serverUrl:serverUrl];
+    
+        if ([metadata.model isEqualToString:@"bancomat"])
+            viewController = [[CCBancomat alloc] initWithDelegate:self fileName:metadata.fileName uuid:metadata.uuid fileID:metadata.fileID isLocal:NO serverUrl:serverUrl];
+    
+        if ([metadata.model isEqualToString:@"contocorrente"])
+            viewController = [[CCContoCorrente alloc] initWithDelegate:self fileName:metadata.fileName uuid:metadata.uuid fileID:metadata.fileID isLocal:NO serverUrl:serverUrl];
+    
+        if ([metadata.model isEqualToString:@"accountweb"])
+            viewController = [[CCAccountWeb alloc] initWithDelegate:self fileName:metadata.fileName uuid:metadata.uuid fileID:metadata.fileID isLocal:NO serverUrl:serverUrl];
+    
+        if ([metadata.model isEqualToString:@"patenteguida"])
+            viewController = [[CCPatenteGuida alloc] initWithDelegate:self fileName:metadata.fileName uuid:metadata.uuid fileID:metadata.fileID isLocal:NO serverUrl:serverUrl];
+    
+        if ([metadata.model isEqualToString:@"cartaidentita"])
+            viewController = [[CCCartaIdentita alloc] initWithDelegate:self fileName:metadata.fileName uuid:metadata.uuid fileID:metadata.fileID isLocal:NO serverUrl:serverUrl];
+    
+        if ([metadata.model isEqualToString:@"passaporto"])
+            viewController = [[CCPassaporto alloc] initWithDelegate:self fileName:metadata.fileName uuid:metadata.uuid fileID:metadata.fileID isLocal:NO serverUrl:serverUrl];
+    
+        if ([metadata.model isEqualToString:@"note"]) {
         
-        UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:viewController];
+            viewController = [[CCNote alloc] initWithDelegate:self fileName:metadata.fileName uuid:metadata.uuid fileID:metadata.fileID isLocal:NO serverUrl:serverUrl];
         
-        [self presentViewController:navigationController animated:YES completion:nil];
+            UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:viewController];
         
-    } else {
+            [self presentViewController:navigationController animated:YES completion:nil];
         
-        UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:viewController];
+        } else {
         
-        [navigationController setModalPresentationStyle:UIModalPresentationFormSheet];
+            UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:viewController];
         
-        [self presentViewController:navigationController animated:YES completion:nil];
+            [navigationController setModalPresentationStyle:UIModalPresentationFormSheet];
+        
+            [self presentViewController:navigationController animated:YES completion:nil];
+        }
     }
 }
 
@@ -459,8 +464,6 @@
     if (_metadata.cryptated == NO) {
         
         [actionSheet addButtonWithTitle:NSLocalizedString(@"_share_", nil) image:[CCGraphics changeThemingColorImage:[UIImage imageNamed:@"actionSheetShare"] color:[NCBrandColor sharedInstance].brand] backgroundColor:[UIColor whiteColor] height: 50.0 type:AHKActionSheetButtonTypeDefault handler:^(AHKActionSheet *as) {
-                // close swipe
-                [self setEditing:NO animated:YES];
                                     
                 [app.activeMain openWindowShare:metadata];
             }];
@@ -477,6 +480,18 @@
     
     [actionSheet show];
 }
+
+- (void)tapActionConnectionMounted:(UITapGestureRecognizer *)tapGesture
+{
+    CGPoint location = [tapGesture locationInView:self.tableView];
+    NSIndexPath *indexPath = [self.tableView indexPathForRowAtPoint:location];
+    
+    tableMetadata *metadata = [_dataSource objectAtIndex:indexPath.row];
+
+    if (metadata)
+        [app.activeMain openWindowShare:metadata];
+}
+
 
 #pragma mark -
 #pragma --------------------------------------------------------------------------------------------
@@ -533,16 +548,21 @@
 {
     NSMutableArray *metadatas = [NSMutableArray new];
     NSArray *recordsTableMetadata ;
+    
+    NSString *sorted = [CCUtility getOrderSettings];
+    if ([sorted isEqualToString:@"fileName"])
+        sorted = @"fileNamePrint";
         
     if (!_serverUrl) {
-            
-        recordsTableMetadata = [[NCManageDatabase sharedInstance] getMetadatasWithPredicate:[NSPredicate predicateWithFormat:@"account = %@ AND favorite = true", app.activeAccount] sorted:nil ascending:NO];
+        
+        recordsTableMetadata = [[NCManageDatabase sharedInstance] getMetadatasWithPredicate:[NSPredicate predicateWithFormat:@"account = %@ AND favorite = true", app.activeAccount] sorted:sorted ascending:[CCUtility getAscendingSettings]];
             
     } else {
         
         NSString *directoryID = [[NCManageDatabase sharedInstance] getDirectoryID:_serverUrl];        
         
-        recordsTableMetadata = [[NCManageDatabase sharedInstance] getMetadatasWithPredicate:[NSPredicate predicateWithFormat:@"account = %@ AND directoryID = %@", app.activeAccount, directoryID] sorted:[CCUtility getOrderSettings] ascending:[CCUtility getAscendingSettings]];
+        if (directoryID)
+            recordsTableMetadata = [[NCManageDatabase sharedInstance] getMetadatasWithPredicate:[NSPredicate predicateWithFormat:@"account = %@ AND directoryID = %@", app.activeAccount, directoryID] sorted:sorted ascending:[CCUtility getAscendingSettings]];
     }
         
     CCSectionDataSourceMetadata *sectionDataSource = [CCSectionMetadata creataDataSourseSectionMetadata:recordsTableMetadata listProgressMetadata:nil groupByField:nil replaceDateToExifDate:NO activeAccount:app.activeAccount];
@@ -587,6 +607,7 @@
     cell.status.image = nil;
     cell.favorite.image = nil;
     cell.local.image = nil;
+    cell.shared.image = nil;
         
     // change color selection
     UIView *selectionColor = [[UIView alloc] init];
@@ -595,13 +616,9 @@
     
     metadata = [_dataSource objectAtIndex:indexPath.row];
         
-    cell.file.image = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/%@.ico", app.directoryUser, metadata.fileID]];
-        
+    // favorite
     if (_serverUrl == nil)
         cell.favorite.image = [UIImage imageNamed:@"favorite"];
-    
-    if (cell.file.image == nil && metadata.thumbnailExists)
-        [[CCActions sharedInstance] downloadTumbnail:metadata delegate:self];
     
     // encrypted color
     if (metadata.cryptated) {
@@ -610,20 +627,51 @@
         cell.labelTitle.textColor = [UIColor blackColor];
     }
     
-    // File name
+    // filename
     cell.labelTitle.text = metadata.fileNamePrint;
     cell.labelInfoFile.text = @"";
     
-    // Immagine del file, se non c'è l'anteprima mettiamo quella standard
-    if (cell.file.image == nil) {
-        
-        if (metadata.directory) {
+    // Shared
+    NSString *serverUrl = [[NCManageDatabase sharedInstance] getServerUrl:metadata.directoryID];
+    if (!serverUrl)
+        return cell;
+    NSString *shareLink = [app.sharesLink objectForKey:[serverUrl stringByAppendingString:metadata.fileName]];
+    NSString *shareUserAndGroup = [app.sharesUserAndGroup objectForKey:[serverUrl stringByAppendingString:metadata.fileName]];
+
+    // Immage
+    if (metadata.directory) {
             
-            cell.file.image = [CCGraphics changeThemingColorImage:[UIImage imageNamed:metadata.iconName] color:[NCBrandColor sharedInstance].brand];
-            
+        if ([shareLink length] > 0) {
+            cell.file.image = [CCGraphics changeThemingColorImage:[UIImage imageNamed:@"folder_public"] color:[NCBrandColor sharedInstance].brand];
+        } else if ([shareUserAndGroup length] > 0) {
+            cell.file.image = [CCGraphics changeThemingColorImage:[UIImage imageNamed:@"folder_shared_with_me"] color:[NCBrandColor sharedInstance].brand];
         } else {
+            cell.file.image = [CCGraphics changeThemingColorImage:[UIImage imageNamed:metadata.iconName] color:[NCBrandColor sharedInstance].brand];
+        }
+            
+    } else {
+            
+        if ([shareLink length] > 0 || [shareUserAndGroup length] > 0) {
+            
+            if ([shareLink length] > 0)
+                cell.shared.image = [CCGraphics changeThemingColorImage:[UIImage imageNamed:@"shareLink"] color:[NCBrandColor sharedInstance].brand];
+            else
+                cell.shared.image = [CCGraphics changeThemingColorImage:[UIImage imageNamed:@"actionSheetShare"] color:[NCBrandColor sharedInstance].brand];
+                
+            UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapActionConnectionMounted:)];
+            [tap setNumberOfTapsRequired:1];
+            cell.shared.userInteractionEnabled = YES;
+            [cell.shared addGestureRecognizer:tap];
+        }
+        
+        cell.file.image = [UIImage imageWithContentsOfFile:[NSString stringWithFormat:@"%@/%@.ico", app.directoryUser, metadata.fileID]];
+        
+        if (cell.file.image == nil) {
             
             cell.file.image = [UIImage imageNamed:metadata.iconName];
+            
+            if (metadata.thumbnailExists)
+                [[CCActions sharedInstance] downloadTumbnail:metadata delegate:self];
         }
     }
     
@@ -635,8 +683,8 @@
     if (metadata.directory) {
         
         cell.labelInfoFile.text = [CCUtility dateDiff:metadata.date];
-        cell.accessoryType = UITableViewCellAccessoryNone;
-        //cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+        //cell.accessoryType = UITableViewCellAccessoryNone;
+        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
           
     } else {
         
@@ -646,7 +694,7 @@
         if ([metadata.type isEqualToString: k_metadataType_template])
             cell.labelInfoFile.text = [NSString stringWithFormat:@"%@", date];
         
-        if ([metadata.type isEqualToString: k_metadataType_file] || [metadata.type isEqualToString: k_metadataType_local]) {
+        if ([metadata.type isEqualToString: k_metadataType_file]) {
             
             BOOL fileExists = [[NSFileManager defaultManager] fileExistsAtPath:[NSString stringWithFormat:@"%@/%@", app.directoryUser, metadata.fileID]];
             
@@ -670,11 +718,21 @@
         cell.leftButtons = @[[MGSwipeButton buttonWithTitle:[NSString stringWithFormat:@" %@ ", NSLocalizedString(@"_unfavorite_", nil)] icon:[UIImage imageNamed:@"swipeUnfavorite"] backgroundColor:[UIColor colorWithRed:242.0/255.0 green:220.0/255.0 blue:132.0/255.0 alpha:1.000]]];
         cell.leftExpansion.buttonIndex = 0;
         cell.leftExpansion.fillOnTrigger = NO;
+        
+        //centerIconOverText
+        MGSwipeButton *favoriteButton = (MGSwipeButton *)[cell.leftButtons objectAtIndex:0];
+        [favoriteButton centerIconOverText];
     }
     
     //configure right buttons
     cell.rightButtons = @[[MGSwipeButton buttonWithTitle:[NSString stringWithFormat:@" %@ ", NSLocalizedString(@"_delete_", nil)] icon:[UIImage imageNamed:@"swipeDelete"] backgroundColor:[UIColor redColor]], [MGSwipeButton buttonWithTitle:[NSString stringWithFormat:@" %@ ", NSLocalizedString(@"_more_", nil)] icon:[UIImage imageNamed:@"swipeMore"] backgroundColor:[UIColor lightGrayColor]]];
     cell.rightSwipeSettings.transition = MGSwipeTransitionBorder;
+    
+    //centerIconOverText
+    MGSwipeButton *deleteButton = (MGSwipeButton *)[cell.rightButtons objectAtIndex:0];
+    MGSwipeButton *moreButton = (MGSwipeButton *)[cell.rightButtons objectAtIndex:1];
+    [deleteButton centerIconOverText];
+    [moreButton centerIconOverText];
     
     return cell;
 }
@@ -696,13 +754,15 @@
         // File do not exists
         NSString *serverUrl = [[NCManageDatabase sharedInstance] getServerUrl:_metadata.directoryID];
 
-        if ([[NSFileManager defaultManager] fileExistsAtPath:[NSString stringWithFormat:@"%@/%@", app.directoryUser, _metadata.fileID]]) {
+        if (serverUrl) {
+            if ([[NSFileManager defaultManager] fileExistsAtPath:[NSString stringWithFormat:@"%@/%@", app.directoryUser, _metadata.fileID]]) {
             
-            [self downloadFileSuccess:_metadata.fileID serverUrl:serverUrl selector:selectorLoadFileView selectorPost:nil];
+                [self downloadFileSuccess:_metadata.fileID serverUrl:serverUrl selector:selectorLoadFileView selectorPost:nil];
             
-        } else {
+            } else {
             
-            [[CCNetworking sharedNetworking] downloadFile:_metadata.fileID serverUrl:serverUrl downloadData:YES downloadPlist:NO selector:selectorLoadFileView selectorPost:nil session:k_download_session taskStatus:k_taskStatusResume delegate:self];
+                [[CCNetworking sharedNetworking] downloadFile:_metadata.fileID serverUrl:serverUrl downloadData:YES downloadPlist:NO selector:selectorLoadFileView selectorPost:nil session:k_download_session taskStatus:k_taskStatusResume delegate:self];
+            }
         }
     }
     
@@ -721,10 +781,13 @@
     
     NSString *serverUrl = [[NCManageDatabase sharedInstance] getServerUrl:_metadata.directoryID];
     
-    vc.serverUrl = [CCUtility stringAppendServerUrl:serverUrl addFileName:_metadata.fileNameData];
-    vc.titleViewControl = _metadata.fileNamePrint;
+    if (serverUrl) {
+        
+        vc.serverUrl = [CCUtility stringAppendServerUrl:serverUrl addFileName:_metadata.fileNameData];
+        vc.titleViewControl = _metadata.fileNamePrint;
     
-    [self.navigationController pushViewController:vc animated:YES];
+        [self.navigationController pushViewController:vc animated:YES];
+    }
 }
 
 #pragma --------------------------------------------------------------------------------------------
