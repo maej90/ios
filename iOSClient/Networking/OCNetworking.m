@@ -140,71 +140,6 @@
 }
 
 #pragma --------------------------------------------------------------------------------------------
-#pragma mark ===== downloadFile =====
-#pragma --------------------------------------------------------------------------------------------
-
-- (void)downloadFile
-{
-    [[CCNetworking sharedNetworking] downloadFile:_metadataNet.fileID serverUrl:_metadataNet.serverUrl downloadData:_metadataNet.downloadData downloadPlist:_metadataNet.downloadPlist selector:_metadataNet.selector selectorPost:_metadataNet.selectorPost session:_metadataNet.session taskStatus:_metadataNet.taskStatus delegate:self];
-}
-
-- (void)downloadFileSuccess:(NSString *)fileID serverUrl:(NSString *)serverUrl selector:(NSString *)selector selectorPost:(NSString *)selectorPost
-{
-    [self complete];
-    
-    if ([self.delegate respondsToSelector:@selector(downloadFileSuccess:serverUrl:selector:selectorPost:)])
-        [self.delegate downloadFileSuccess:fileID serverUrl:serverUrl selector:selector selectorPost:selectorPost];
-}
-
-- (void)downloadFileFailure:(NSString *)fileID serverUrl:(NSString *)serverUrl selector:(NSString *)selector message:(NSString *)message errorCode:(NSInteger)errorCode
-{
-    [self complete];
- 
-    if ([self.delegate respondsToSelector:@selector(downloadFileFailure:serverUrl:selector:message:errorCode:)])
-        [self.delegate downloadFileFailure:fileID serverUrl:serverUrl selector:selector message:message errorCode:errorCode];
-}
-
-#pragma --------------------------------------------------------------------------------------------
-#pragma mark ===== uploadFile =====
-#pragma --------------------------------------------------------------------------------------------
-
-- (void)uploadFile
-{
-    [[CCNetworking sharedNetworking] uploadFile:_metadataNet.fileName serverUrl:_metadataNet.serverUrl cryptated:_metadataNet.cryptated onlyPlist:NO session:_metadataNet.session taskStatus:_metadataNet.taskStatus selector:_metadataNet.selector selectorPost:_metadataNet.selectorPost errorCode:_metadataNet.errorCode delegate:self];
-}
-
-- (void)uploadOnlyPlist
-{
-    [[CCNetworking sharedNetworking] uploadFile:_metadataNet.fileName serverUrl:_metadataNet.serverUrl cryptated:YES onlyPlist:YES session:_metadataNet.session taskStatus:_metadataNet.taskStatus selector:_metadataNet.selector selectorPost:_metadataNet.selectorPost errorCode:_metadataNet.errorCode delegate:self];
-}
-
-- (void)uploadAsset
-{
-    [[CCNetworking sharedNetworking] uploadFileFromAssetLocalIdentifier:_metadataNet delegate:self];
-}
-
-- (void)uploadTemplate
-{
-    [[CCNetworking sharedNetworking] uploadTemplate:_metadataNet.fileNamePrint fileNameCrypto:_metadataNet.fileName serverUrl:_metadataNet.serverUrl session:_metadataNet.session taskStatus:_metadataNet.taskStatus selector:_metadataNet.selector selectorPost:_metadataNet.selectorPost errorCode:_metadataNet.errorCode delegate:self];
-}
-
-- (void)uploadFileSuccess:(CCMetadataNet *)metadataNet fileID:(NSString *)fileID serverUrl:(NSString *)serverUrl selector:(NSString *)selector selectorPost:(NSString *)selectorPost
-{
-    [self complete];
-    
-    if ([self.delegate respondsToSelector:@selector(uploadFileSuccess:fileID:serverUrl:selector:selectorPost:)])
-        [self.delegate uploadFileSuccess:_metadataNet fileID:fileID serverUrl:serverUrl selector:selector selectorPost:selectorPost];
-}
-
-- (void)uploadFileFailure:(CCMetadataNet *)metadataNet fileID:(NSString *)fileID serverUrl:(NSString *)serverUrl selector:(NSString *)selector message:(NSString *)message errorCode:(NSInteger)errorCode
-{
-    [self complete];
-    
-    if ([self.delegate respondsToSelector:@selector(uploadFileFailure:fileID:serverUrl:selector:message:errorCode:)])
-        [self.delegate uploadFileFailure:_metadataNet fileID:fileID serverUrl:serverUrl selector:selector message:message errorCode:errorCode];
-}
-
-#pragma --------------------------------------------------------------------------------------------
 #pragma mark ===== downloadThumbnail =====
 #pragma --------------------------------------------------------------------------------------------
 
@@ -271,6 +206,12 @@
                 [self.delegate downloadThumbnailFailure:_metadataNet message:[CCError manageErrorOC:response.statusCode error:error] errorCode:errorCode];
         }
         
+#ifndef EXTENSION
+        // Unauthorized
+        if (errorCode == kOCErrorServerUnauthorized)
+            [app openLoginView:self loginType:loginModifyPasswordUser];
+#endif
+        
         [self complete];
     }];
 }
@@ -286,7 +227,7 @@
     [communication setCredentialsWithUser:_activeUser andPassword:_activePassword];
     [communication setUserAgent:[CCUtility getUserAgent]];
     
-    [communication readFolder:_metadataNet.serverUrl withUserSessionToken:nil onCommunication:communication successRequest:^(NSHTTPURLResponse *response, NSArray *items, NSString *redirectedServer, NSString *token) {
+    [communication readFolder:_metadataNet.serverUrl depth:_metadataNet.depth withUserSessionToken:nil onCommunication:communication successRequest:^(NSHTTPURLResponse *response, NSArray *items, NSString *redirectedServer, NSString *token) {
         
         NSMutableArray *metadatas = [NSMutableArray new];
         BOOL showHiddenFiles = [CCUtility getShowHiddenFiles];
@@ -416,6 +357,12 @@
                 [self.delegate readFolderFailure:_metadataNet message:[error.userInfo valueForKey:@"NSLocalizedDescription"] errorCode:errorCode];
         }
         
+#ifndef EXTENSION
+        // Unauthorized
+        if (errorCode == kOCErrorServerUnauthorized)
+            [app openLoginView:self loginType:loginModifyPasswordUser];
+#endif
+        
         // Request trusted certificated
         if ([error code] == NSURLErrorServerCertificateUntrusted)
             [[CCCertificate sharedManager] presentViewControllerCertificateWithTitle:[error localizedDescription] viewController:(UIViewController *)self.delegate delegate:self];
@@ -451,7 +398,7 @@
         dateLastModified = [dateFormatter stringFromDate:_metadataNet.date];
     }
     
-    [communication search:path folder:folder fileName: [NSString stringWithFormat:@"%%%@%%", _metadataNet.fileName] depth:_metadataNet.options dateLastModified:dateLastModified withUserSessionToken:nil onCommunication:communication successRequest:^(NSHTTPURLResponse *response, NSArray *items, NSString *redirectedServer, NSString *token) {
+    [communication search:path folder:folder fileName: [NSString stringWithFormat:@"%%%@%%", _metadataNet.fileName] depth:_metadataNet.depth dateLastModified:dateLastModified withUserSessionToken:nil onCommunication:communication successRequest:^(NSHTTPURLResponse *response, NSArray *items, NSString *redirectedServer, NSString *token) {
         
         NSMutableArray *metadatas = [NSMutableArray new];
         BOOL showHiddenFiles = [CCUtility getShowHiddenFiles];
@@ -537,6 +484,12 @@
                 [self.delegate searchFailure:_metadataNet message:[error.userInfo valueForKey:@"NSLocalizedDescription"] errorCode:errorCode];
         }
         
+#ifndef EXTENSION
+        // Unauthorized
+        if (errorCode == kOCErrorServerUnauthorized)
+            [app openLoginView:self loginType:loginModifyPasswordUser];
+#endif
+
         // Request trusted certificated
         if ([error code] == NSURLErrorServerCertificateUntrusted)
             [[CCCertificate sharedManager] presentViewControllerCertificateWithTitle:[error localizedDescription] viewController:(UIViewController *)self.delegate delegate:self];
@@ -580,6 +533,12 @@
                 [self.delegate settingFavoriteFailure:_metadataNet message:[error.userInfo valueForKey:@"NSLocalizedDescription"] errorCode:errorCode];
         }
         
+#ifndef EXTENSION
+        // Unauthorized
+        if (errorCode == kOCErrorServerUnauthorized)
+            [app openLoginView:self loginType:loginModifyPasswordUser];
+#endif
+
         // Request trusted certificated
         if ([error code] == NSURLErrorServerCertificateUntrusted)
             [[CCCertificate sharedManager] presentViewControllerCertificateWithTitle:[error localizedDescription] viewController:(UIViewController *)self.delegate delegate:self];
@@ -697,6 +656,12 @@
                 [self.delegate listingFavoritesFailure:_metadataNet message:[error.userInfo valueForKey:@"NSLocalizedDescription"] errorCode:errorCode];
         }
         
+#ifndef EXTENSION
+        // Unauthorized
+        if (errorCode == kOCErrorServerUnauthorized)
+            [app openLoginView:self loginType:loginModifyPasswordUser];
+#endif
+
         // Request trusted certificated
         if ([error code] == NSURLErrorServerCertificateUntrusted)
             [[CCCertificate sharedManager] presentViewControllerCertificateWithTitle:[error localizedDescription] viewController:(UIViewController *)self.delegate delegate:self];
@@ -748,6 +713,12 @@
         if ([self.delegate respondsToSelector:@selector(createFolderFailure:message:errorCode:)])
             [self.delegate createFolderFailure:_metadataNet message:message errorCode:errorCode];
         
+#ifndef EXTENSION
+        // Unauthorized
+        if (errorCode == kOCErrorServerUnauthorized)
+            [app openLoginView:self loginType:loginModifyPasswordUser];
+#endif
+
         // Request trusted certificated
         if ([error code] == NSURLErrorServerCertificateUntrusted)
             [[CCCertificate sharedManager] presentViewControllerCertificateWithTitle:[error localizedDescription] viewController:(UIViewController *)self.delegate delegate:self];
@@ -857,6 +828,12 @@
                 [self.delegate deleteFileOrFolderFailure:_metadataNet message:[error.userInfo valueForKey:@"NSLocalizedDescription"] errorCode:errorCode];
         }
         
+#ifndef EXTENSION
+        // Unauthorized
+        if (errorCode == kOCErrorServerUnauthorized)
+            [app openLoginView:self loginType:loginModifyPasswordUser];
+#endif
+
         // Request trusted certificated
         if ([error code] == NSURLErrorServerCertificateUntrusted)
             [[CCCertificate sharedManager] presentViewControllerCertificateWithTitle:[error localizedDescription] viewController:(UIViewController *)self.delegate delegate:self];
@@ -898,6 +875,12 @@
         if ([self.delegate respondsToSelector:@selector(renameMoveFileOrFolderFailure:message:errorCode:)])
             [self.delegate renameMoveFileOrFolderFailure:_metadataNet message:[CCError manageErrorOC:response.statusCode error:error] errorCode:errorCode];
         
+#ifndef EXTENSION
+        // Unauthorized
+        if (errorCode == kOCErrorServerUnauthorized)
+            [app openLoginView:self loginType:loginModifyPasswordUser];
+#endif
+
         // Request trusted certificated
         if ([error code] == NSURLErrorServerCertificateUntrusted)
             [[CCCertificate sharedManager] presentViewControllerCertificateWithTitle:[error localizedDescription] viewController:(UIViewController *)self.delegate delegate:self];
@@ -1010,6 +993,12 @@
                 [self.delegate readFileFailure:_metadataNet message:[CCError manageErrorOC:response.statusCode error:error] errorCode:errorCode];
         }
         
+#ifndef EXTENSION
+        // Unauthorized
+        if (errorCode == kOCErrorServerUnauthorized)
+            [app openLoginView:self loginType:loginModifyPasswordUser];
+#endif
+
         // Request trusted certificated
         if ([error code] == NSURLErrorServerCertificateUntrusted)
             [[CCCertificate sharedManager] presentViewControllerCertificateWithTitle:[error localizedDescription] viewController:(UIViewController *)self.delegate delegate:self];
@@ -1108,6 +1097,12 @@
                 [self.delegate shareFailure:_metadataNet message:[error.userInfo valueForKey:@"NSLocalizedDescription"] errorCode:errorCode];
         }
         
+#ifndef EXTENSION
+        // Unauthorized
+        if (errorCode == kOCErrorServerUnauthorized)
+            [app openLoginView:self loginType:loginModifyPasswordUser];
+#endif
+
         // Request trusted certificated
         if ([error code] == NSURLErrorServerCertificateUntrusted)
             [[CCCertificate sharedManager] presentViewControllerCertificateWithTitle:[error localizedDescription] viewController:(UIViewController *)self.delegate delegate:self];
@@ -1142,6 +1137,12 @@
                 [self.delegate shareFailure:_metadataNet message:[error.userInfo valueForKey:@"NSLocalizedDescription"] errorCode:errorCode];
         }
         
+#ifndef EXTENSION
+        // Unauthorized
+        if (errorCode == kOCErrorServerUnauthorized)
+            [app openLoginView:self loginType:loginModifyPasswordUser];
+#endif
+
         // Request trusted certificated
         if ([error code] == NSURLErrorServerCertificateUntrusted)
             [[CCCertificate sharedManager] presentViewControllerCertificateWithTitle:[error localizedDescription] viewController:(UIViewController *)self.delegate delegate:self];
@@ -1178,6 +1179,12 @@
                 [self.delegate shareFailure:_metadataNet message:[error.userInfo valueForKey:@"NSLocalizedDescription"] errorCode:errorCode];
         }
         
+#ifndef EXTENSION
+        // Unauthorized
+        if (errorCode == kOCErrorServerUnauthorized)
+            [app openLoginView:self loginType:loginModifyPasswordUser];
+#endif
+
         // Request trusted certificated
         if ([error code] == NSURLErrorServerCertificateUntrusted)
             [[CCCertificate sharedManager] presentViewControllerCertificateWithTitle:[error localizedDescription] viewController:(UIViewController *)self.delegate delegate:self];
@@ -1216,6 +1223,12 @@
                 [self.delegate shareFailure:_metadataNet message:[error.userInfo valueForKey:@"NSLocalizedDescription"] errorCode:errorCode];
         }
         
+#ifndef EXTENSION
+        // Unauthorized
+        if (errorCode == kOCErrorServerUnauthorized)
+            [app openLoginView:self loginType:loginModifyPasswordUser];
+#endif
+
         // Request trusted certificated
         if ([error code] == NSURLErrorServerCertificateUntrusted)
             [[CCCertificate sharedManager] presentViewControllerCertificateWithTitle:[error localizedDescription] viewController:(UIViewController *)self.delegate delegate:self];
@@ -1257,6 +1270,12 @@
                 [self.delegate shareFailure:_metadataNet message:[error.userInfo valueForKey:@"NSLocalizedDescription"] errorCode:errorCode];
         }
         
+#ifndef EXTENSION
+        // Unauthorized
+        if (errorCode == kOCErrorServerUnauthorized)
+            [app openLoginView:self loginType:loginModifyPasswordUser];
+#endif
+
         // Request trusted certificated
         if ([error code] == NSURLErrorServerCertificateUntrusted)
             [[CCCertificate sharedManager] presentViewControllerCertificateWithTitle:[error localizedDescription] viewController:(UIViewController *)self.delegate delegate:self];
@@ -1294,6 +1313,12 @@
                 [self.delegate getUserAndGroupFailure:_metadataNet message:[error.userInfo valueForKey:@"NSLocalizedDescription"] errorCode:errorCode];
         }
         
+#ifndef EXTENSION
+        // Unauthorized
+        if (errorCode == kOCErrorServerUnauthorized)
+            [app openLoginView:self loginType:loginModifyPasswordUser];
+#endif
+
         // Request trusted certificated
         if ([error code] == NSURLErrorServerCertificateUntrusted)
             [[CCCertificate sharedManager] presentViewControllerCertificateWithTitle:[error localizedDescription] viewController:(UIViewController *)self.delegate delegate:self];
@@ -1335,6 +1360,12 @@
                 [self.delegate getActivityServerFailure:_metadataNet message:[error.userInfo valueForKey:@"NSLocalizedDescription"] errorCode:errorCode];
         }
         
+#ifndef EXTENSION
+        // Unauthorized
+        if (errorCode == kOCErrorServerUnauthorized)
+            [app openLoginView:self loginType:loginModifyPasswordUser];
+#endif
+
         // Request trusted certificated
         if ([error code] == NSURLErrorServerCertificateUntrusted)
             [[CCCertificate sharedManager] presentViewControllerCertificateWithTitle:[error localizedDescription] viewController:(UIViewController *)self.delegate delegate:self];
@@ -1376,6 +1407,12 @@
                 [self.delegate getExternalSitesServerFailure:_metadataNet message:[error.userInfo valueForKey:@"NSLocalizedDescription"] errorCode:errorCode];
         }
         
+#ifndef EXTENSION
+        // Unauthorized
+        if (errorCode == kOCErrorServerUnauthorized)
+            [app openLoginView:self loginType:loginModifyPasswordUser];
+#endif
+
         // Request trusted certificated
         if ([error code] == NSURLErrorServerCertificateUntrusted)
             [[CCCertificate sharedManager] presentViewControllerCertificateWithTitle:[error localizedDescription] viewController:(UIViewController *)self.delegate delegate:self];
@@ -1458,6 +1495,12 @@
                 [self.delegate getNotificationServerFailure:_metadataNet message:[error.userInfo valueForKey:@"NSLocalizedDescription"] errorCode:errorCode];
         }
         
+#ifndef EXTENSION
+        // Unauthorized
+        if (errorCode == kOCErrorServerUnauthorized)
+            [app openLoginView:self loginType:loginModifyPasswordUser];
+#endif
+
         // Request trusted certificated
         if ([error code] == NSURLErrorServerCertificateUntrusted)
             [[CCCertificate sharedManager] presentViewControllerCertificateWithTitle:[error localizedDescription] viewController:(UIViewController *)self.delegate delegate:self];
@@ -1500,6 +1543,12 @@
                 [self.delegate setNotificationServerFailure:_metadataNet message:[error.userInfo valueForKey:@"NSLocalizedDescription"] errorCode:errorCode];
         }
         
+#ifndef EXTENSION
+        // Unauthorized
+        if (errorCode == kOCErrorServerUnauthorized)
+            [app openLoginView:self loginType:loginModifyPasswordUser];
+#endif
+
         // Request trusted certificated
         if ([error code] == NSURLErrorServerCertificateUntrusted)
             [[CCCertificate sharedManager] presentViewControllerCertificateWithTitle:[error localizedDescription] viewController:(UIViewController *)self.delegate delegate:self];
@@ -1577,6 +1626,12 @@
                 [self.delegate subscribingNextcloudServerFailure:_metadataNet message:[error.userInfo valueForKey:@"NSLocalizedDescription"] errorCode:errorCode];
         }
 
+#ifndef EXTENSION
+        // Unauthorized
+        if (errorCode == kOCErrorServerUnauthorized)
+            [app openLoginView:self loginType:loginModifyPasswordUser];
+#endif
+
         // Request trusted certificated
         if ([error code] == NSURLErrorServerCertificateUntrusted)
             [[CCCertificate sharedManager] presentViewControllerCertificateWithTitle:[error localizedDescription] viewController:(UIViewController *)self.delegate delegate:self];
@@ -1621,6 +1676,12 @@
                 [self.delegate getUserProfileFailure:_metadataNet message:[error.userInfo valueForKey:@"NSLocalizedDescription"] errorCode:errorCode];
         }
         
+#ifndef EXTENSION
+        // Unauthorized
+        if (errorCode == kOCErrorServerUnauthorized)
+            [app openLoginView:self loginType:loginModifyPasswordUser];
+#endif
+
         // Request trusted certificated
         if ([error code] == NSURLErrorServerCertificateUntrusted)
             [[CCCertificate sharedManager] presentViewControllerCertificateWithTitle:[error localizedDescription] viewController:(UIViewController *)self.delegate delegate:self];
@@ -1700,6 +1761,12 @@
                 [self.delegate getCapabilitiesOfServerFailure:_metadataNet message:[error.userInfo valueForKey:@"NSLocalizedDescription"] errorCode:errorCode];
         }
         
+#ifndef EXTENSION
+        // Unauthorized
+        if (errorCode == kOCErrorServerUnauthorized)
+            [app openLoginView:self loginType:loginModifyPasswordUser];
+#endif
+
         // Request trusted certificated
         if ([error code] == NSURLErrorServerCertificateUntrusted)
             [[CCCertificate sharedManager] presentViewControllerCertificateWithTitle:[error localizedDescription] viewController:(UIViewController *)self.delegate delegate:self];

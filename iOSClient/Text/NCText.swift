@@ -1,10 +1,26 @@
 //
 //  NCText.swift
-//  Nextcloud
+//  Crypto Cloud Technology Nextcloud
 //
 //  Created by Marino Faggiana on 24/07/17.
-//  Copyright © 2017 TWS. All rights reserved.
+//  Copyright (c) 2017 TWS. All rights reserved.
 //
+//  Author Marino Faggiana <m.faggiana@twsweb.it>
+//
+//  This program is free software: you can redistribute it and/or modify
+//  it under the terms of the GNU General Public License as published by
+//  the Free Software Foundation, either version 3 of the License, or
+//  (at your option) any later version.
+//
+//  This program is distributed in the hope that it will be useful,
+//  but WITHOUT ANY WARRANTY; without even the implied warranty of
+//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//  GNU General Public License for more details.
+//
+//  You should have received a copy of the GNU General Public License
+//  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+//
+
 
 import Foundation
 
@@ -14,23 +30,21 @@ class NCText: UIViewController, UITextViewDelegate {
     @IBOutlet weak var nextButton: UIBarButtonItem!
     @IBOutlet weak var textView: UITextView!
     
-    @IBOutlet weak var openInButton: UIBarButtonItem!
-    @IBOutlet weak var shareButton: UIBarButtonItem!
-    @IBOutlet weak var deleteButton: UIBarButtonItem!
-
+    @IBOutlet weak var bottomConstraint: NSLayoutConstraint!
+    
     let appDelegate = UIApplication.shared.delegate as! AppDelegate
     
-    weak var delegate: CCMain?
-    var fileName: String?
-    var loadText: String? = ""
-    var serverUrl: String = ""
-    var titleMain: String = ""
+    var metadata: tableMetadata?
+    var loadText: String?
     
     override func viewDidLoad() {
         
         super.viewDidLoad()
         
-        self.navigationController?.navigationBar.topItem?.title = NSLocalizedString("_title_new_text_file_", comment: "")
+        NotificationCenter.default.addObserver(self, selector: #selector(self.keyboardWillShowHandle(info:)), name: .UIKeyboardWillShow, object: nil)
+        NotificationCenter.default.addObserver(self, selector:#selector(self.keyboardWillHideHandle), name: .UIKeyboardWillHide, object: nil)
+
+        self.navigationController?.navigationBar.topItem?.title = NSLocalizedString("_untitled_txt_", comment: "")
         self.navigationController?.navigationBar.barTintColor = NCBrandColor.sharedInstance.brand
         self.navigationController?.navigationBar.tintColor = NCBrandColor.sharedInstance.navigationBarText
         self.navigationController?.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: NCBrandColor.sharedInstance.navigationBarText]
@@ -40,28 +54,65 @@ class NCText: UIViewController, UITextViewDelegate {
         
         cancelButton.title = NSLocalizedString("_cancel_", comment: "")
         nextButton.title = NSLocalizedString("_next_", comment: "")
+        
+        // Modify
+        if let metadata = metadata {
+            
+            loadText = ""
+            let path = "\(appDelegate.directoryUser!)/\(metadata.fileID)"
+            let data = NSData(contentsOfFile: path)
+            
+            if let data = data {
+            
+                let encodingCFName = NCUchardet.sharedNUCharDet().encodingCFStringDetect(with: data as Data)
+                let se = CFStringConvertEncodingToNSStringEncoding(encodingCFName)
+                let encoding = String.Encoding(rawValue: se)
+                
+                loadText = try? String(contentsOfFile: path, encoding: encoding)
+                textView.text = loadText
+                nextButton.title = NSLocalizedString("_save_", comment: "")
+                self.navigationController?.navigationBar.topItem?.title = NSLocalizedString(metadata.fileNamePrint, comment: "")
+            
+            }
+                
+        } else {
+            
+            loadText = ""
+        }
+        
+        textView.isUserInteractionEnabled = true
+        textView.becomeFirstResponder()
+        textView.delegate = self
+        textView.selectedTextRange = textView.textRange(from: textView.beginningOfDocument, to: textView.beginningOfDocument)
+
+        textViewDidChange(textView)
     }
 
-    override func viewWillAppear(_ animated: Bool) {
-
-        super.viewWillAppear(animated)
+    func keyboardWillShowHandle(info:NSNotification) {
         
-        textView.becomeFirstResponder()
+        let frameView = self.view.convert(self.view.bounds, to: self.view.window)
+        let endView = frameView.origin.y + frameView.size.height
         
-        if let fileName = fileName {
-            let path = "\(appDelegate.directoryUser!)/\(fileName)"
-            loadText = try? String(contentsOfFile: path, encoding: String.Encoding.utf8)
-            if loadText == nil {
-                loadText = ""
+        if let keyboardSize = (info.userInfo?[UIKeyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue, let _ = self.view.window?.frame {
+            
+            if endView - keyboardSize.origin.y > 0 {
+                bottomConstraint.constant = endView - keyboardSize.origin.y
+            } else {
+                bottomConstraint.constant = 0
             }
+        }
+    }
+    
+    func keyboardWillHideHandle() {
+        bottomConstraint.constant = 0
+    }
+    
+    func textViewDidChange(_ textView: UITextView) {
+        
+        if textView.text.characters.count == 0 {
+            nextButton.isEnabled = false
         } else {
-            self.fileName =  NSLocalizedString("_untitled_txt_", comment: "")
-            openInButton.tintColor = UIColor.clear
-            openInButton = nil
-            shareButton.tintColor = UIColor.clear
-            shareButton = nil
-            deleteButton.tintColor = UIColor.clear
-            deleteButton = nil
+            nextButton.isEnabled = true
         }
     }
     
@@ -92,25 +143,45 @@ class NCText: UIViewController, UITextViewDelegate {
     
     @IBAction func nextButtonTapped(_ sender: AnyObject) {
         
-        self.dismiss(animated: false, completion: {
-        
-            let form = CreateFormUploadFile.init(self.titleMain, serverUrl: self.serverUrl, text: self.textView.text, fileName: self.fileName!)
-            let navigationController = UINavigationController.init(rootViewController: form)
-            navigationController.modalPresentationStyle = UIModalPresentationStyle.formSheet
-        
-            self.delegate?.present(navigationController, animated: true, completion: nil)
-        })
-    }
-    
-    @IBAction func openInButtonTapped(_ sender: AnyObject) {
-        
-    }
-    
-    @IBAction func shareButtonTapped(_ sender: AnyObject) {
-        
-    }
-    
-    @IBAction func deleteButtonTapped(_ sender: AnyObject) {
-        
+        if let metadata = metadata {
+            
+            if textView.text != loadText {
+            
+                let uploadID = k_uploadSessionID + CCUtility.createRandomString(16)
+                let data = textView.text.data(using: .utf8)
+                let success = FileManager.default.createFile(atPath: "\(self.appDelegate.directoryUser!)/\(uploadID)", contents: data, attributes: nil)
+            
+                if success {
+                
+                    // Prepare for send Metadata
+                    metadata.sessionID = uploadID
+                    metadata.session = k_upload_session
+                    metadata.sessionTaskIdentifier = Int(k_taskIdentifierWaitStart)
+                    _ = NCManageDatabase.sharedInstance.updateMetadata(metadata)
+                    appDelegate.activeMain.clearDateReadDataSource(nil)
+                
+                    self.dismiss(animated: true, completion: {
+                        
+                        // Send file
+                        CCNetworking.shared().verifyUploadInErrorOrWait()
+                        
+                        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "detailBack"), object: nil)
+                    })
+
+                } else {
+                    self.appDelegate.messageNotification("_error_", description: "_error_creation_file_", visible: true, delay: TimeInterval(k_dismissAfterSecond), type: TWMessageBarMessageType.info, errorCode: 0)
+                }
+                
+            } else {
+                self.dismiss(animated: true, completion: nil)
+            }
+            
+        } else {
+            
+            let serverUrl = self.appDelegate.getTabBarControllerActiveServerUrl()
+            
+            let formViewController = CreateFormUploadFile.init(serverUrl: serverUrl!, text: self.textView.text, fileName: NSLocalizedString("_untitled_txt_", comment: ""))
+            self.navigationController?.pushViewController(formViewController, animated: true)
+        }
     }
 }

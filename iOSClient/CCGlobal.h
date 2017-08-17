@@ -74,7 +74,7 @@ extern NSString *const urlBaseUploadDB;
 #define k_databaseDefault                               @"nextcloud.realm"
 
 // Picker select image
-#define k_pickerControllerMax                           100.0
+#define k_pickerControllerMax                           1000.0
 
 // define Nextcloud IOS
 #define k_share_link_middle_part_url_after_version_8    @"index.php/s/"
@@ -127,7 +127,7 @@ extern NSString *const urlBaseUploadDB;
 #define k_taskStatusSuspend                             -3
 
 #define k_timerVerifySession                            10
-#define k_timerProcessAutoUpload                        5
+#define k_timerProcessAutoDownloadUpload                5
 #define k_timerUpdateApplicationIconBadgeNumber         3
 
 #define k_maxConcurrentOperation                         10
@@ -175,6 +175,8 @@ extern NSString *const urlBaseUploadDB;
 #define selectorReadFileVerifyUpload                    @"readFileVerifyUpload"
 #define selectorReadFileWithDownload                    @"readFileWithDownload"
 #define selectorReadFileReloadFolder                    @"readFileReloadFolder"
+#define selectorReadFileFolder                          @"readFileFolder"
+#define selectorReadFileFolderWithDownload              @"readFileFolderWithDownload"
 #define selectorReadFolder                              @"readFolder"
 #define selectorReadFolderForced                        @"readFolderForced"
 #define selectorReadFolderWithDownload                  @"readFolderWithDownload"
@@ -195,7 +197,6 @@ extern NSString *const urlBaseUploadDB;
 // Metadata.Net ACTION
 #define actionCreateFolder                              @"createFolder"
 #define actionDeleteFileDirectory                       @"deleteFileOrFolder"
-#define actionDownloadFile                              @"downloadFile"
 #define actionDownloadThumbnail                         @"downloadThumbnail"
 #define actionGetActivityServer                         @"getActivityServer"
 #define actionGetCapabilities                           @"getCapabilitiesOfServer"
@@ -217,10 +218,6 @@ extern NSString *const urlBaseUploadDB;
 #define actionSubscribingNextcloudServer                @"subscribingNextcloudServer"
 #define actionUnShare                                   @"unShare"
 #define actionUpdateShare                               @"updateShare"
-#define actionUploadFile                                @"uploadFile"
-#define actionUploadAsset                               @"uploadAsset"
-#define actionUploadTemplate                            @"uploadTemplate"
-#define actionUploadOnlyPlist                           @"uploadOnlyPlist"
 
 // Metadata : FileType
 #define k_metadataTypeFile_audio                        @"audio"

@@ -315,12 +315,13 @@
     [self.hud visibleHudTitle:NSLocalizedString(@"_remove_cache_", nil) mode:MBProgressHUDModeIndeterminate color:nil];
     
     [[NCManageDatabase sharedInstance] clearTable:[tableQueueUpload class] account:app.activeAccount];
+    [[NCManageDatabase sharedInstance] clearTable:[tableQueueDownload class] account:app.activeAccount];
     
-    [app cancelAllOperations];
+    [app.netQueue cancelAllOperations];
     
     [[CCNetworking sharedNetworking] settingSessionsDownload:YES upload:YES taskStatus:k_taskStatusCancel activeAccount:app.activeAccount activeUser:app.activeUser activeUrl:app.activeUrl];
     
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 3 * NSEC_PER_SEC),dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 5 * NSEC_PER_SEC),dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         
         [[NSURLCache sharedURLCache] setMemoryCapacity:0];
         [[NSURLCache sharedURLCache] setDiskCapacity:0];
@@ -333,6 +334,8 @@
         [[NCManageDatabase sharedInstance] clearTable:[tableLocalFile class] account:app.activeAccount];
         [[NCManageDatabase sharedInstance] clearTable:[tableMetadata class] account:app.activeAccount];
         [[NCManageDatabase sharedInstance] clearTable:[tableShare class] account:app.activeAccount];
+        
+        [[NCAutoUpload sharedInstance] alignPhotoLibrary];
         
         [self emptyUserDirectoryUser:app.activeUser url:app.activeUrl removeIco:removeIco];
         
@@ -366,7 +369,8 @@
         UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"" message:NSLocalizedString(@"_want_delete_thumbnails_", nil) preferredStyle:UIAlertControllerStyleActionSheet];
         
         [alertController addAction: [UIAlertAction actionWithTitle:NSLocalizedString(@"_yes_", nil)
-                                                             style:UIAlertActionStyleDefault                                                         handler:^(UIAlertAction *action) {
+                                                             style:UIAlertActionStyleDefault
+                                                           handler:^(UIAlertAction *action) {
                                                                [self removeAllFiles:YES];
                                                            }]];
         
@@ -438,7 +442,7 @@
         
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.01 * NSEC_PER_SEC), dispatch_get_main_queue(), ^(void) {
             
-            [app cancelAllOperations];
+            [app.netQueue cancelAllOperations];
             [[CCNetworking sharedNetworking] settingSessionsDownload:YES upload:YES taskStatus:k_taskStatusCancel activeAccount:app.activeAccount activeUser:app.activeUser activeUrl:app.activeUrl];
             
             [[NSURLCache sharedURLCache] setMemoryCapacity:0];

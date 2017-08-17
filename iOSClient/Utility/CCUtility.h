@@ -93,7 +93,6 @@
 
 + (void)setShowHiddenFiles:(BOOL)show;
 
-
 // GET
 
 + (NSString *)getKeyChainPasscodeForUUID:(NSString *)uuid;
